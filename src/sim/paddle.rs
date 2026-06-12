@@ -40,11 +40,24 @@ impl Paddle {
             self.just_spawned = false;
             return;
         }
-        self.pos.0 -= (self.pos.0 - mouse.0) / PLAYER_EASE;
-        self.pos.1 -= (self.pos.1 - mouse.1) / PLAYER_EASE;
-        clamp_to_world(&mut self.pos);
+        self.pos = self.predicted_pos(mouse);
         self.speed = (self.pos.0 - self.old.0, self.pos.1 - self.old.1);
         self.old = self.pos;
+    }
+
+    /// Position after one easing step toward `mouse`, without mutating the
+    /// paddle. Rendering uses this to reduce live input latency without
+    /// changing the fixed-step simulation state.
+    #[must_use]
+    pub fn predicted_pos(&self, mouse: (f64, f64)) -> (f64, f64) {
+        if self.just_spawned {
+            return self.pos;
+        }
+        let mut pos = self.pos;
+        pos.0 -= (pos.0 - mouse.0) / PLAYER_EASE;
+        pos.1 -= (pos.1 - mouse.1) / PLAYER_EASE;
+        clamp_to_world(&mut pos);
+        pos
     }
 }
 

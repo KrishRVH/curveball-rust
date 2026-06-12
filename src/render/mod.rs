@@ -17,6 +17,12 @@ use macroquad::prelude::*;
 
 pub use entities::Textures;
 
+const FPS_COUNTER_X: f32 = 5.0;
+const FPS_COUNTER_BASELINE: f32 = 12.0;
+const FPS_COUNTER_FONT_PX: u16 = 7;
+const FPS_COUNTER_TRACKING: f32 = 0.4;
+const FPS_COUNTER_ASPECT: f32 = 0.72;
+
 /// Cosmetic render snapshots interpolated between fixed 30 Hz simulation
 /// ticks. The sim state remains frame-accurate; this only prevents repeated
 /// visual positions on faster displays.
@@ -51,6 +57,12 @@ impl Visuals {
             ball_rect: blend_rect(previous.ball_rect, current.ball_rect, alpha),
             ring_z: blend_scalar(previous.ring_z, current.ring_z, alpha),
         }
+    }
+
+    #[must_use]
+    pub fn with_player_pos(mut self, pos: Option<(f64, f64)>) -> Self {
+        self.player_pos = pos;
+        self
     }
 }
 
@@ -297,6 +309,8 @@ pub fn draw_scene(app: &App, textures: &Textures, visuals: &Visuals) {
             }
         },
     }
+
+    draw_fps_counter();
 }
 
 fn draw_gameplay(app: &App, textures: &Textures, visuals: &Visuals, show_pop: bool) {
@@ -319,6 +333,19 @@ fn draw_gameplay(app: &App, textures: &Textures, visuals: &Visuals, show_pop: bo
     hud::draw_lives(app, textures);
     // Depth 43: the player paddle draws over the ball and the HUD.
     entities::draw_player(app, textures, visuals);
+}
+
+fn draw_fps_counter() {
+    let label = text::text_buf::<16>(format_args!("FPS: {}", get_fps()));
+    text::left_tracked_aspect(
+        label.as_str(),
+        FPS_COUNTER_X,
+        FPS_COUNTER_BASELINE,
+        FPS_COUNTER_FONT_PX,
+        WHITE,
+        FPS_COUNTER_TRACKING,
+        FPS_COUNTER_ASPECT,
+    );
 }
 
 #[cfg(test)]

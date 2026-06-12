@@ -281,9 +281,6 @@ pub const LIVES_PLAYER_ANCHOR: (f32, f32) = (280.0, 48.0);
 /// See [`LIVES_ENEMY_ANCHOR`].
 pub const LIVES_DOT_SPACING: f32 = 7.0;
 
-/// Banner black bar (shape 52, 240 × 18) at (175, 206): spans x 55..295,
-/// y 188..206. Always rendered during gameplay — it occludes the ball.
-pub const BANNER_BAR: (f32, f32, f32, f32) = (55.0, 188.0, 240.0, 18.0);
 /// Banner text: centered at x 175; top edge = 206 + rel_y from the §7.5
 /// table; baseline = top + 0.8 × 14 px.
 pub const BANNER_TEXT_CX: f32 = 175.0;

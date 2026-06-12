@@ -178,7 +178,7 @@ pub struct App {
     pub player_flash: Option<PipFlash>,
     pub enemy_flash: Option<PipFlash>,
     /// `None` while the banner clip is absent (before the first level setup)
-    /// or idle (black bar only).
+    /// or idle.
     pub banner: Option<Banner>,
     /// Set when Game Over blanks `bonusWord`/`bonusScore`; cleared by init.
     pub bonus_hud_blanked: bool,

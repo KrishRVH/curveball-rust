@@ -47,4 +47,8 @@ impl InputLatch {
             backspaces: std::mem::take(&mut self.backspaces),
         }
     }
+
+    pub const fn mouse(&self) -> (f64, f64) {
+        self.mouse
+    }
 }

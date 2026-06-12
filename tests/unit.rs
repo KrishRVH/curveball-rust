@@ -17,8 +17,8 @@ use curveball::consts::{
 };
 use curveball::highscores::ScoreTable;
 use curveball::sim::{
-    Ball, CurveClass, Economy, Enemy, Published, SimEvent, SimInput, Vec3, World, Zone, classify,
-    level_params, scale, vis,
+    Ball, CurveClass, Economy, Enemy, PaddleSnapshot, Published, Rect, SimEvent, SimInput, Vec3,
+    World, Zone, classify, level_params, scale, vis,
 };
 
 fn unique_temp_path(prefix: &str) -> std::path::PathBuf {
@@ -185,6 +185,44 @@ fn serve_awards_no_hit_score() {
     assert_eq!(world.economy.accuracy_bonus, 90);
 }
 
+#[test]
+fn serve_curve_uses_cached_paddle_speed_and_level_curve() {
+    let mut world = serve_world((WORLD_CX, WORLD_CY));
+    world.ball.as_mut().expect("ball").snapshot = PaddleSnapshot {
+        pos: (WORLD_CX, WORLD_CY),
+        speed: (3.0, -3.0),
+    };
+
+    let events = world.tick(&SimInput {
+        mouse: (WORLD_CX, WORLD_CY),
+        serve_clicks: 1,
+    });
+
+    assert!(
+        matches!(
+            events.as_slice(),
+            [SimEvent::Serve {
+                zone: Zone::C,
+                accuracy: true,
+                curve: CurveClass::SuperCurve
+            }]
+        ),
+        "events: {events:?}"
+    );
+    let ball = world.ball.expect("ball");
+    let assigned = -3.0 / world.params.curve_amount;
+    assert_eq!(assigned, -0.12);
+    // A serve runs before the frame, so the first ball enterFrame has already
+    // integrated and decayed the just-assigned curve once by the time we read it.
+    assert_eq!(ball.curve.0.to_bits(), (assigned / 1.004).to_bits());
+    assert_eq!(ball.curve.1.to_bits(), (assigned / 1.004).to_bits());
+    assert_eq!(ball.vel.x.to_bits(), assigned.to_bits());
+    assert_eq!(ball.vel.y.to_bits(), assigned.to_bits());
+    assert_eq!(ball.vel.z.to_bits(), world.params.speed.to_bits());
+    assert_eq!(world.economy.score, 250, "accuracy + super curve");
+    assert_eq!(world.economy.hit_score, 100, "serves do not award hitScore");
+}
+
 // ---------------------------------------------------------------------------
 // Economy (§3.7)
 // ---------------------------------------------------------------------------
@@ -286,6 +324,25 @@ fn paddle_easing_and_clamps() {
         });
     }
     assert_eq!(world.paddle.pos, (296.0, 206.0));
+}
+
+#[test]
+fn paddle_predicted_pos_matches_next_step_without_mutating() {
+    let mut world = World::new(Published::default());
+    world.tick(&SimInput {
+        mouse: (WORLD_CX, WORLD_CY),
+        serve_clicks: 0,
+    });
+    let target = (WORLD_CX + 15.0, WORLD_CY + 9.0);
+    let before = world.paddle.pos;
+    let predicted = world.paddle.predicted_pos(target);
+
+    assert_eq!(world.paddle.pos, before);
+    world.tick(&SimInput {
+        mouse: target,
+        serve_clicks: 0,
+    });
+    assert_eq!(world.paddle.pos, predicted);
 }
 
 #[test]
@@ -474,6 +531,58 @@ fn negative_zero_curve_skips_decay_q10() {
         "-0.0 preserved un-decayed"
     );
     assert_eq!(ball.curve.1.to_bits(), 0.0_f64.to_bits());
+}
+
+#[test]
+fn player_return_curve_uses_current_paddle_speed_without_minimum_injection() {
+    let mut world = flying_ball_world();
+    {
+        let ball = world.ball.as_mut().expect("ball");
+        ball.pos = Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: 1.0,
+        };
+        ball.vel = Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: -2.0,
+        };
+        ball.curve = (0.0, 0.0);
+        ball.prev_rect = Rect::centered((WORLD_CX, WORLD_CY), 30.0, 30.0);
+    }
+
+    let events = world.tick(&SimInput {
+        mouse: (WORLD_CX + 15.0, WORLD_CY - 9.0),
+        serve_clicks: 0,
+    });
+
+    assert!(
+        matches!(
+            events.as_slice(),
+            [SimEvent::PlayerHit {
+                zone: Zone::BL,
+                accuracy: false,
+                curve: CurveClass::SuperCurve
+            }]
+        ),
+        "events: {events:?}"
+    );
+    assert_eq!(world.paddle.speed, (10.0, -6.0));
+    let ball = world.ball.expect("ball");
+    assert_eq!(ball.pos.z, 0.0);
+    assert_eq!(ball.vel.z, 2.0);
+    assert_eq!(
+        ball.curve.0.to_bits(),
+        (-world.paddle.speed.0 / world.params.curve_amount).to_bits()
+    );
+    assert_eq!(
+        ball.curve.1.to_bits(),
+        (world.paddle.speed.1 / world.params.curve_amount).to_bits()
+    );
+    assert_eq!(ball.curve.0, -0.4);
+    assert_eq!(ball.curve.1, -0.24);
+    assert_eq!(world.economy.score, 250, "hitScore + super curve");
 }
 
 // ---------------------------------------------------------------------------

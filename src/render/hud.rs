@@ -2,14 +2,13 @@
 //!
 //! The HUD is placed at frame 90 (the end of the Level splash) and persists
 //! through Game Over and the screens over it; only the bonus strings blank
-//! at Game Over. The banner's black bar always renders during gameplay —
-//! black-on-black but opaque, it occludes the ball below depth 22.
+//! at Game Over. The bonus banner renders text over the stage background.
 
 use curveball::app::App;
 use curveball::consts::{
-    BANNER_BAR, BANNER_BASELINE_OFFSET, BANNER_TEXT_ANCHOR_Y, BANNER_TEXT_CX, BONUS_LABEL_X,
-    COLOR_HUD, HUD_BOTTOM_BASELINE, HUD_FONT_PX, HUD_TOP_BASELINE, LEVEL_LABEL_X,
-    LIVES_DOT_SPACING, LIVES_ENEMY_ANCHOR, LIVES_PLAYER_ANCHOR, SCORE_LABEL_X,
+    BANNER_BASELINE_OFFSET, BANNER_TEXT_ANCHOR_Y, BANNER_TEXT_CX, BONUS_LABEL_X, COLOR_HUD,
+    HUD_BOTTOM_BASELINE, HUD_FONT_PX, HUD_TOP_BASELINE, LEVEL_LABEL_X, LIVES_DOT_SPACING,
+    LIVES_ENEMY_ANCHOR, LIVES_PLAYER_ANCHOR, SCORE_LABEL_X,
 };
 use macroquad::prelude::*;
 
@@ -99,11 +98,8 @@ fn draw_dot(texture: &Texture2D, cx: f32, cy: f32) {
     );
 }
 
-/// Depth 22: the bonus banner — opaque black bar always, animated white text
-/// per the §7.5 table while a bonus animation runs.
+/// Depth 22: animated white bonus text per the §7.5 table.
 pub fn draw_banner(app: &App) {
-    let (x, y, w, h) = BANNER_BAR;
-    draw_rectangle(x, y, w, h, BLACK);
     let Some(banner) = &app.banner else { return };
     let Some(&(rel_y, alpha)) = BANNER_FRAMES.get(banner.tick as usize) else {
         return;

@@ -1,3 +1,5 @@
+#![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]
+
 //! Thin macroquad launcher; runtime details live under `runtime/`.
 
 mod render;

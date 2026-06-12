@@ -7,7 +7,9 @@ mod input;
 mod perf;
 
 use curveball::app::App;
-use curveball::consts::{RENDER_SCALE, STAGE_H, STAGE_W, WORLD_CX, WORLD_CY};
+#[cfg(debug_assertions)]
+use curveball::consts::{RENDER_SCALE, WORLD_CX, WORLD_CY};
+use curveball::consts::{STAGE_H, STAGE_W};
 use macroquad::prelude::*;
 
 use self::config::{letterbox, letterbox_viewport};
@@ -23,8 +25,6 @@ pub async fn run() {
     let audio = audio::Audio::load();
     render::install_display_font();
     let textures = render::Textures::bake();
-    let mut camera =
-        Camera2D::from_display_rect(Rect::new(0.0, 0.0, STAGE_W as f32, STAGE_H as f32));
 
     let mut app = App::new();
     let mut previous_visuals = render::Visuals::capture(&app);
@@ -101,12 +101,13 @@ pub async fn run() {
         let (scale, off_x, off_y) = letterbox();
         let scene_start = perf_now(perf.as_ref());
         let blit_elapsed = if let Some(canvas) = &canvas {
-            draw_to_capture_target(&mut camera, canvas, &app, &textures, &visuals);
+            draw_to_capture_target(canvas, &app, &textures, &visuals);
             let blit_start = perf_now(perf.as_ref());
             draw_capture_to_window(canvas, scale, off_x, off_y);
             perf_elapsed(blit_start)
         } else {
-            draw_to_window(&mut camera, scale, off_x, off_y, &app, &textures, &visuals);
+            let visuals = live_visuals(&app, visuals, latch.mouse(), alpha);
+            draw_to_window(scale, off_x, off_y, &app, &textures, &visuals);
             std::time::Duration::ZERO
         };
         let scene_elapsed = perf_elapsed(scene_start).saturating_sub(blit_elapsed);
@@ -143,15 +144,15 @@ pub async fn run() {
 }
 
 fn draw_to_capture_target(
-    camera: &mut Camera2D,
     canvas: &RenderTarget,
     app: &App,
     textures: &render::Textures,
     visuals: &render::Visuals,
 ) {
+    let mut camera = capture_stage_camera();
     camera.render_target = Some(canvas.clone());
     camera.viewport = None;
-    set_camera(camera);
+    set_camera(&camera);
     render::draw_scene(app, textures, visuals);
 }
 
@@ -173,7 +174,6 @@ fn draw_capture_to_window(canvas: &RenderTarget, scale: f32, off_x: f32, off_y: 
 }
 
 fn draw_to_window(
-    camera: &mut Camera2D,
     scale: f32,
     off_x: f32,
     off_y: f32,
@@ -181,11 +181,69 @@ fn draw_to_window(
     textures: &render::Textures,
     visuals: &render::Visuals,
 ) {
+    let mut camera = window_stage_camera();
     camera.render_target = None;
     camera.viewport = Some(letterbox_viewport(scale, off_x, off_y));
     set_default_camera();
     clear_background(BLACK);
-    set_camera(camera);
+    set_camera(&camera);
     render::draw_scene(app, textures, visuals);
     set_default_camera();
+}
+
+fn live_visuals(
+    app: &App,
+    visuals: render::Visuals,
+    mouse: (f64, f64),
+    alpha: f32,
+) -> render::Visuals {
+    let Some(world) = &app.world else {
+        return visuals;
+    };
+    let current = world.paddle.pos;
+    let next = world.paddle.predicted_pos(mouse);
+    let alpha = f64::from(alpha.clamp(0.0, 1.0));
+    let pos = (
+        (next.0 - current.0).mul_add(alpha, current.0),
+        (next.1 - current.1).mul_add(alpha, current.1),
+    );
+    visuals.with_player_pos(Some(pos))
+}
+
+fn window_stage_camera() -> Camera2D {
+    Camera2D::from_display_rect(Rect::new(
+        0.0,
+        STAGE_H as f32,
+        STAGE_W as f32,
+        -(STAGE_H as f32),
+    ))
+}
+
+fn capture_stage_camera() -> Camera2D {
+    Camera2D::from_display_rect(Rect::new(0.0, 0.0, STAGE_W as f32, STAGE_H as f32))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn window_stage_camera_uses_y_down_stage_coordinates() {
+        let camera = window_stage_camera();
+        let top = camera.matrix().transform_point3(vec3(0.0, 0.0, 0.0)).y;
+        let bottom = camera
+            .matrix()
+            .transform_point3(vec3(0.0, STAGE_H as f32, 0.0))
+            .y;
+
+        assert!(camera.zoom.y.is_sign_positive());
+        assert!(top > bottom);
+    }
+
+    #[test]
+    fn capture_stage_camera_preserves_render_target_orientation() {
+        let camera = capture_stage_camera();
+
+        assert!(camera.zoom.y.is_sign_negative());
+    }
 }

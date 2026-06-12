@@ -178,10 +178,13 @@ fn audio_env_override() -> Option<bool> {
 
 #[cfg(all(feature = "audio", target_os = "linux"))]
 fn linux_audio_route_exists() -> bool {
-    if running_under_wsl() {
-        return false;
-    }
     if std::env::var_os("ALSA_CONFIG_PATH").is_some() {
+        return true;
+    }
+    if pulse_socket_connects() {
+        return true;
+    }
+    if pipewire_socket_connects() && pipewire_alsa_config_exists() {
         return true;
     }
     if std::fs::read_to_string("/proc/asound/cards").is_ok_and(|cards| {
@@ -191,7 +194,7 @@ fn linux_audio_route_exists() -> bool {
         return true;
     }
 
-    pulse_socket_connects() || (pipewire_socket_connects() && pipewire_alsa_config_exists())
+    false
 }
 
 #[cfg(all(feature = "audio", target_os = "linux"))]
@@ -239,10 +242,4 @@ fn pipewire_alsa_config_exists() -> bool {
 #[cfg(all(feature = "audio", target_os = "linux"))]
 fn unix_socket_connects(path: impl AsRef<std::path::Path>) -> bool {
     std::os::unix::net::UnixStream::connect(path).is_ok()
-}
-
-#[cfg(all(feature = "audio", target_os = "linux"))]
-fn running_under_wsl() -> bool {
-    std::fs::read_to_string("/proc/sys/kernel/osrelease")
-        .is_ok_and(|text| text.to_ascii_lowercase().contains("microsoft"))
 }
