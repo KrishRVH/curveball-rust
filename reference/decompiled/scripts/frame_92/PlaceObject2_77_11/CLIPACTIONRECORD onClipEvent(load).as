@@ -1,0 +1,35 @@
+onClipEvent(load){
+   wleft = _parent.world.left;
+   wright = _parent.world.right;
+   wtop = _parent.world.top;
+   wbottom = _parent.world.bottom;
+   wdepth = _parent.world.depth;
+   wl = wleft;
+   wr = wright;
+   wt = wtop;
+   wb = wbottom;
+   wx = (wright - wleft) / 2 + wleft;
+   wy = (wbottom - wtop) / 2 + wtop;
+   speed = _parent.world.speed;
+   myPos = new Object();
+   myPos.x = wl;
+   myPos.y = wt;
+   myPos.z = 0;
+   VisPos = new Object();
+   VisPos.x = myPos.x;
+   VisPos.y = myPos.y;
+   mySpeed = new Object();
+   mySpeed.x = speed;
+   mySpeed.y = speed;
+   mySpeed.z = speed;
+   m = 100;
+   f = 0.8;
+   swidth = _width;
+   sheight = _height;
+   _X = myPos.x;
+   _Y = myPos.y;
+   varA = 31.066017;
+   _width = swidth * ((90 - Math.atan(myPos.z / varA) * 180 / 3.141592653589793) / 90);
+   _height = sheight * ((90 - Math.atan(myPos.z / varA) * 180 / 3.141592653589793) / 90);
+   growshrink = 0;
+}

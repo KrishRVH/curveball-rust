@@ -1,0 +1,11973 @@
+{
+ "header": {
+  "signature": "FWS",
+  "version": 5,
+  "file_len": 59360,
+  "stage_twips": [
+   0,
+   7000,
+   0,
+   5000
+  ],
+  "stage_px": [
+   0.0,
+   350.0,
+   0.0,
+   250.0
+  ],
+  "fps": 30.0,
+  "frames": 115
+ },
+ "tags": [
+  {
+   "tag": "SetBackgroundColor",
+   "frame": 1,
+   "sprite": null,
+   "len": 3,
+   "rgb": "#000000"
+  },
+  {
+   "tag": "DefineSound",
+   "frame": 1,
+   "sprite": null,
+   "len": 1465,
+   "id": 1,
+   "fmt": "MP3",
+   "rate": 11025,
+   "bits": 16,
+   "channels": 1,
+   "samples": 5487
+  },
+  {
+   "tag": "ExportAssets",
+   "frame": 1,
+   "sprite": null,
+   "len": 16,
+   "exports": [
+    [
+     1,
+     "wallBounce2"
+    ]
+   ]
+  },
+  {
+   "tag": "DefineSound",
+   "frame": 1,
+   "sprite": null,
+   "len": 1361,
+   "id": 2,
+   "fmt": "MP3",
+   "rate": 11025,
+   "bits": 16,
+   "channels": 1,
+   "samples": 4688
+  },
+  {
+   "tag": "ExportAssets",
+   "frame": 1,
+   "sprite": null,
+   "len": 16,
+   "exports": [
+    [
+     2,
+     "wallBounce1"
+    ]
+   ]
+  },
+  {
+   "tag": "DefineSound",
+   "frame": 1,
+   "sprite": null,
+   "len": 1673,
+   "id": 3,
+   "fmt": "MP3",
+   "rate": 11025,
+   "bits": 16,
+   "channels": 1,
+   "samples": 6732
+  },
+  {
+   "tag": "ExportAssets",
+   "frame": 1,
+   "sprite": null,
+   "len": 18,
+   "exports": [
+    [
+     3,
+     "pPaddleBounce"
+    ]
+   ]
+  },
+  {
+   "tag": "DefineSound",
+   "frame": 1,
+   "sprite": null,
+   "len": 1361,
+   "id": 4,
+   "fmt": "MP3",
+   "rate": 11025,
+   "bits": 16,
+   "channels": 1,
+   "samples": 4674
+  },
+  {
+   "tag": "ExportAssets",
+   "frame": 1,
+   "sprite": null,
+   "len": 14,
+   "exports": [
+    [
+     4,
+     "missSound"
+    ]
+   ]
+  },
+  {
+   "tag": "DefineSound",
+   "frame": 1,
+   "sprite": null,
+   "len": 1153,
+   "id": 5,
+   "fmt": "MP3",
+   "rate": 11025,
+   "bits": 16,
+   "channels": 1,
+   "samples": 3472
+  },
+  {
+   "tag": "ExportAssets",
+   "frame": 1,
+   "sprite": null,
+   "len": 18,
+   "exports": [
+    [
+     5,
+     "ePaddleBounce"
+    ]
+   ]
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": null,
+   "len": 4
+  },
+  {
+   "tag": "DefineShape2",
+   "frame": 1,
+   "sprite": null,
+   "len": 461,
+   "id": 6,
+   "bounds_twips": [
+    -10,
+    6010,
+    -10,
+    4010
+   ],
+   "fills": [],
+   "lines": [
+    {
+     "width_twips": 20,
+     "color": "#00ff66"
+    }
+   ]
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 1,
+   "sprite": null,
+   "len": 22,
+   "id": 7,
+   "frames": 1
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 7,
+   "len": 4
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 7,
+   "len": 6,
+   "depth": 9,
+   "char_id": 6,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": null,
+   "len": 16,
+   "depth": 1,
+   "char_id": 7,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 500,
+    "ty_twips": 500
+   },
+   "name": "bounds",
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineFont2",
+   "frame": 1,
+   "sprite": null,
+   "len": 17765,
+   "id": 8,
+   "font_name": ""
+  },
+  {
+   "tag": "DefineText",
+   "frame": 1,
+   "sprite": null,
+   "len": 48,
+   "id": 9
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": null,
+   "len": 14,
+   "depth": 11,
+   "char_id": 9,
+   "matrix": {
+    "scale_x": 0.999786376953125,
+    "scale_y": 1.0010986328125,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1206,
+    "ty_twips": 645
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 1,
+   "sprite": null,
+   "len": 59,
+   "id": 10,
+   "bounds_twips": [
+    -640,
+    640,
+    -113,
+    113
+   ],
+   "fills": [
+    "#ffffff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineText",
+   "frame": 1,
+   "sprite": null,
+   "len": 46,
+   "id": 11
+  },
+  {
+   "tag": "DefineButton2",
+   "frame": 1,
+   "sprite": null,
+   "len": 72,
+   "id": 12
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": null,
+   "len": 10,
+   "depth": 12,
+   "char_id": 12,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3490,
+    "ty_twips": 2302
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 1,
+   "sprite": null,
+   "len": 48,
+   "id": 13
+  },
+  {
+   "tag": "DefineButton2",
+   "frame": 1,
+   "sprite": null,
+   "len": 73,
+   "id": 14
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": null,
+   "len": 10,
+   "depth": 15,
+   "char_id": 14,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3510,
+    "ty_twips": 2646
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 4,
+   "sprite": null,
+   "len": 6,
+   "label": "Start"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 5,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 6,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 6,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 6,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 14,
+   "sprite": null,
+   "len": 11,
+   "label": "HighScores"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 15,
+   "sprite": null,
+   "len": 51
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 15,
+   "sprite": null,
+   "len": 73,
+   "id": 15,
+   "bounds_twips": [
+    1330,
+    5649,
+    1060,
+    3940
+   ],
+   "fills": [
+    "#000000"
+   ],
+   "lines": [
+    {
+     "width_twips": 20,
+     "color": "#ffffff"
+    }
+   ]
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 6,
+   "depth": 11,
+   "char_id": 15,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 15,
+   "sprite": null,
+   "len": 52,
+   "id": 16
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 12,
+   "char_id": 16,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 2060,
+    "ty_twips": 1081
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 15,
+   "sprite": null,
+   "len": 37,
+   "id": 17
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 13,
+   "char_id": 17,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0033721923828125,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3083,
+    "ty_twips": 1370
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 15,
+   "sprite": null,
+   "len": 39,
+   "id": 18
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 14,
+   "depth": 14,
+   "char_id": 18,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0033721923828125,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 653,
+    "ty_twips": 1370
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 15,
+   "sprite": null,
+   "len": 39,
+   "id": 19
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 14,
+   "depth": 15,
+   "char_id": 19,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0033721923828125,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1643,
+    "ty_twips": 1370
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 15,
+   "sprite": null,
+   "len": 44,
+   "id": 20
+  },
+  {
+   "tag": "DefineButton2",
+   "frame": 15,
+   "sprite": null,
+   "len": 61,
+   "id": 21
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 12,
+   "depth": 16,
+   "char_id": 21,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3529,
+    "ty_twips": 4317
+   },
+   "ratio": 14,
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 22,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel1",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 14,
+   "depth": 19,
+   "char_id": 22,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 1910
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 23,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore1",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 14,
+   "depth": 20,
+   "char_id": 23,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 1910
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 24,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel2",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 21,
+   "char_id": 24,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 2110
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 25,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore2",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 22,
+   "char_id": 25,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 2110
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 26,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName2",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 23,
+   "char_id": 26,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 2110
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 27,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName1",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 24,
+   "char_id": 27,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 1911
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 28,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel3",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 25,
+   "char_id": 28,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 2310
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 29,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore3",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 26,
+   "char_id": 29,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 2310
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 30,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName3",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 27,
+   "char_id": 30,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 2310
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 31,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel4",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 28,
+   "char_id": 31,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 2510
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 32,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore4",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 29,
+   "char_id": 32,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 2510
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 33,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName4",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 30,
+   "char_id": 33,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 2510
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 34,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel5",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 31,
+   "char_id": 34,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 2710
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 35,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore5",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 32,
+   "char_id": 35,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 2710
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 36,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName5",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 33,
+   "char_id": 36,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 2710
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 37,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel6",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 34,
+   "char_id": 37,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 2910
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 38,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore6",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 35,
+   "char_id": 38,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 2910
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 39,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName6",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 36,
+   "char_id": 39,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 2910
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 40,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel7",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 37,
+   "char_id": 40,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 3110
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 41,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore7",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 38,
+   "char_id": 41,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 3110
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 42,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName7",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 39,
+   "char_id": 42,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 3110
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 43,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel8",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 40,
+   "char_id": 43,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 3310
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 44,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore8",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 41,
+   "char_id": 44,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 3310
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 45,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName8",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 42,
+   "char_id": 45,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 3310
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 46,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel9",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 43,
+   "char_id": 46,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 3510
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 47,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore9",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 44,
+   "char_id": 47,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 3510
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 48,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName9",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 45,
+   "char_id": 48,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 3510
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 40,
+   "id": 49,
+   "bounds_twips": [
+    1290,
+    1590,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsLevel0",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 14,
+   "depth": 46,
+   "char_id": 49,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 584,
+    "ty_twips": 1710
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 47,
+   "id": 50,
+   "bounds_twips": [
+    912,
+    1968,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsScore0",
+   "initial_text": "000000000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 14,
+   "depth": 47,
+   "char_id": 50,
+   "matrix": {
+    "scale_x": 1.00091552734375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1631,
+    "ty_twips": 1710
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 15,
+   "sprite": null,
+   "len": 72,
+   "id": 51,
+   "bounds_twips": [
+    516,
+    2364,
+    -40,
+    206
+   ],
+   "font_id": 8,
+   "font_height_twips": 140,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "hsName0",
+   "initial_text": "---------------none---------------"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 48,
+   "char_id": 51,
+   "matrix": {
+    "scale_x": 0.9997100830078125,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3142,
+    "ty_twips": 1710
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 15,
+   "sprite": null,
+   "len": 33,
+   "id": 52,
+   "bounds_twips": [
+    -2400,
+    2400,
+    -360,
+    0
+   ],
+   "fills": [
+    "#000000"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": null,
+   "len": 15,
+   "depth": 49,
+   "char_id": 52,
+   "matrix": {
+    "scale_x": 0.8416595458984375,
+    "scale_y": 6.22222900390625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3580,
+    "ty_twips": 3800
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 17,
+   "sprite": null,
+   "len": 89
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 18,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "DoAction",
+   "frame": 19,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 20,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 36,
+   "sprite": null,
+   "len": 10,
+   "label": "StartGame"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 44,
+   "sprite": null,
+   "len": 1488
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 45,
+   "sprite": null,
+   "len": 6,
+   "label": "Level"
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 45,
+   "sprite": null,
+   "len": 236,
+   "id": 53,
+   "bounds_twips": [
+    -600,
+    600,
+    -400,
+    400
+   ],
+   "fills": [
+    "#0000ff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 45,
+   "sprite": null,
+   "len": 49,
+   "id": 54,
+   "bounds_twips": [
+    -278,
+    278,
+    -178,
+    178
+   ],
+   "fills": [
+    "#ffffff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 45,
+   "sprite": null,
+   "len": 49,
+   "id": 55,
+   "bounds_twips": [
+    -278,
+    278,
+    -178,
+    178
+   ],
+   "fills": [
+    "#ffffff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 45,
+   "sprite": null,
+   "len": 49,
+   "id": 56,
+   "bounds_twips": [
+    -278,
+    278,
+    -178,
+    178
+   ],
+   "fills": [
+    "#ffffff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 45,
+   "sprite": null,
+   "len": 49,
+   "id": 57,
+   "bounds_twips": [
+    -278,
+    278,
+    -178,
+    178
+   ],
+   "fills": [
+    "#ffffff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 45,
+   "sprite": null,
+   "len": 57,
+   "id": 58,
+   "bounds_twips": [
+    -120,
+    120,
+    -80,
+    80
+   ],
+   "fills": [
+    "#ffffff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 45,
+   "sprite": null,
+   "len": 3118,
+   "id": 59,
+   "frames": 59
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 59,
+   "len": 4
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 1,
+   "sprite": 59,
+   "len": 2,
+   "label": "N"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 59,
+   "len": 12,
+   "depth": 1,
+   "char_id": 53,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    128
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 59,
+   "len": 15,
+   "depth": 2,
+   "char_id": 54,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 282,
+    "ty_twips": -182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 59,
+   "len": 15,
+   "depth": 3,
+   "char_id": 55,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -282,
+    "ty_twips": -182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 59,
+   "len": 15,
+   "depth": 4,
+   "char_id": 56,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -282,
+    "ty_twips": 182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 59,
+   "len": 15,
+   "depth": 5,
+   "char_id": 57,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 282,
+    "ty_twips": 182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 59,
+   "len": 12,
+   "depth": 6,
+   "char_id": 58,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 9,
+   "sprite": 59,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 10,
+   "sprite": 59,
+   "len": 3,
+   "label": "UR"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 59,
+   "len": 4,
+   "depth": 2,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 19,
+   "sprite": 59,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 20,
+   "sprite": 59,
+   "len": 3,
+   "label": "UL"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 59,
+   "len": 4,
+   "depth": 3,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 29,
+   "sprite": 59,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 30,
+   "sprite": 59,
+   "len": 3,
+   "label": "BL"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 59,
+   "len": 4,
+   "depth": 4,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 39,
+   "sprite": 59,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 40,
+   "sprite": 59,
+   "len": 3,
+   "label": "BR"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 59,
+   "len": 4,
+   "depth": 5,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 49,
+   "sprite": 59,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 50,
+   "sprite": 59,
+   "len": 2,
+   "label": "C"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 59,
+   "len": 14,
+   "depth": 6,
+   "cxform": [
+    0,
+    0,
+    0,
+    256,
+    255,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    28,
+    28,
+    28,
+    238,
+    227,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    57,
+    57,
+    57,
+    219,
+    198,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    85,
+    85,
+    85,
+    201,
+    170,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    114,
+    114,
+    114,
+    182,
+    142,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    142,
+    142,
+    142,
+    164,
+    113,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    171,
+    171,
+    171,
+    145,
+    85,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    199,
+    199,
+    199,
+    127,
+    57,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 59,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    228,
+    228,
+    228,
+    108,
+    28,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 59,
+   "sprite": 59,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 59,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 59,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 59,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 59,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 59,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": null,
+   "len": 1638,
+   "depth": 43,
+   "char_id": 59,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 5377,
+    "ty_twips": 3097
+   },
+   "ratio": 44,
+   "name": "userPaddle",
+   "has_clipactions": true
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 45,
+   "sprite": null,
+   "len": 43,
+   "id": 60,
+   "bounds_twips": [
+    -40,
+    4650,
+    -40,
+    869
+   ],
+   "font_id": 8,
+   "font_height_twips": 800,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "level",
+   "initial_text": "Level 1"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": null,
+   "len": 15,
+   "depth": 50,
+   "char_id": 60,
+   "matrix": {
+    "scale_x": 1.0004730224609375,
+    "scale_y": 1.0010986328125,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1196,
+    "ty_twips": 2085
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "DoAction",
+   "frame": 90,
+   "sprite": null,
+   "len": 500
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 90,
+   "sprite": null,
+   "len": 48,
+   "id": 61,
+   "bounds_twips": [
+    -40,
+    6637,
+    -40,
+    330
+   ],
+   "font_id": 8,
+   "font_height_twips": 280,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "bonus",
+   "initial_text": "Curve Bonus!"
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 90,
+   "sprite": null,
+   "len": 1158,
+   "id": 62,
+   "frames": 70
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 62,
+   "len": 4
+  },
+  {
+   "tag": "DoAction",
+   "frame": 1,
+   "sprite": 62,
+   "len": 2
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 62,
+   "len": 8,
+   "depth": 1,
+   "char_id": 52,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 10,
+   "sprite": 62,
+   "len": 6,
+   "label": "bonus"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 62,
+   "len": 21,
+   "depth": 2,
+   "char_id": 61,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": 55
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": 28
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    17
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": 2
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    34
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -25
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    51
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -52
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    68
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -78
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    85
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -105
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    102
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -132
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    119
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -158
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    137
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -185
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    154
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -212
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    171
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -238
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    188
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -265
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    205
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -292
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    222
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -318
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    239
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 62,
+   "len": 14,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -345
+   },
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    244
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    232
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    220
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    208
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    196
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    184
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    172
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    161
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    149
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    137
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    125
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    89
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    77
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    88
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    99
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    111
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    122
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    133
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    144
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    155
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    167
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    178
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    189
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    200
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    211
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    222
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    234
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 62,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    245
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 62,
+   "len": 4,
+   "depth": 2,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -316
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -288
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -259
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 60,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -231
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    183
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 61,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -202
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    165
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 62,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -174
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    146
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 63,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -145
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    128
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 64,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -116
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    110
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 65,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -88
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    91
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 66,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -59
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    73
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 67,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -31
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    55
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 68,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": -2
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    37
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 69,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": 26
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    18
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 70,
+   "sprite": 62,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 70,
+   "sprite": 62,
+   "len": 19,
+   "depth": 2,
+   "matrix": {
+    "scale_x": 0.999847412109375,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -3298,
+    "ty_twips": 55
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 18,
+   "depth": 22,
+   "char_id": 62,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3500,
+    "ty_twips": 4120
+   },
+   "ratio": 89,
+   "name": "bonus",
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 90,
+   "sprite": null,
+   "len": 37,
+   "id": 63,
+   "bounds_twips": [
+    1448,
+    3439,
+    -40,
+    289
+   ],
+   "font_id": 8,
+   "font_height_twips": 240,
+   "color": "#00ffff@255",
+   "align": 0,
+   "var_name": "score",
+   "initial_text": "0"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 14,
+   "depth": 26,
+   "char_id": 63,
+   "matrix": {
+    "scale_x": 0.9994964599609375,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 433,
+    "ty_twips": 534
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 90,
+   "sprite": null,
+   "len": 63,
+   "id": 64,
+   "bounds_twips": [
+    375,
+    475,
+    -50,
+    50
+   ],
+   "fills": []
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 90,
+   "sprite": null,
+   "len": 64,
+   "id": 65,
+   "bounds_twips": [
+    515,
+    615,
+    -50,
+    50
+   ],
+   "fills": []
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 90,
+   "sprite": null,
+   "len": 243,
+   "id": 66,
+   "frames": 30
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 66,
+   "len": 4
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 1,
+   "sprite": 66,
+   "len": 3,
+   "label": "L5"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 66,
+   "len": 9,
+   "depth": 1,
+   "char_id": 64,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -420,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 66,
+   "len": 9,
+   "depth": 2,
+   "char_id": 64,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -280,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 66,
+   "len": 9,
+   "depth": 3,
+   "char_id": 64,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -140,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 66,
+   "len": 6,
+   "depth": 4,
+   "char_id": 64,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 66,
+   "len": 6,
+   "depth": 5,
+   "char_id": 65,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 3,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "DoAction",
+   "frame": 5,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 6,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 6,
+   "sprite": 66,
+   "len": 3,
+   "label": "L4"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 10,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 11,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 11,
+   "sprite": 66,
+   "len": 3,
+   "label": "L3"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 15,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 16,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 16,
+   "sprite": 66,
+   "len": 3,
+   "label": "L2"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 20,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 21,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 21,
+   "sprite": 66,
+   "len": 3,
+   "label": "L1"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 25,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 26,
+   "sprite": 66,
+   "len": 3,
+   "label": "L0"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 30,
+   "sprite": 66,
+   "len": 2
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 22,
+   "depth": 27,
+   "char_id": 66,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1400,
+    "ty_twips": 960
+   },
+   "ratio": 89,
+   "name": "enemyLives",
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 90,
+   "sprite": null,
+   "len": 59,
+   "id": 67,
+   "bounds_twips": [
+    -50,
+    50,
+    -50,
+    50
+   ],
+   "fills": []
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 90,
+   "sprite": null,
+   "len": 231,
+   "id": 68,
+   "frames": 30
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 68,
+   "len": 4
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 1,
+   "sprite": 68,
+   "len": 3,
+   "label": "L5"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 68,
+   "len": 9,
+   "depth": 1,
+   "char_id": 67,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -420,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 68,
+   "len": 9,
+   "depth": 2,
+   "char_id": 67,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -280,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 68,
+   "len": 9,
+   "depth": 3,
+   "char_id": 67,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -140,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 68,
+   "len": 6,
+   "depth": 4,
+   "char_id": 67,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 5,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 6,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 6,
+   "sprite": 68,
+   "len": 3,
+   "label": "L4"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 10,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 11,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 11,
+   "sprite": 68,
+   "len": 3,
+   "label": "L3"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 15,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 16,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 16,
+   "sprite": 68,
+   "len": 3,
+   "label": "L2"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 20,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 21,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 21,
+   "sprite": 68,
+   "len": 3,
+   "label": "L1"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 25,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 26,
+   "sprite": 68,
+   "len": 3,
+   "label": "L0"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 30,
+   "sprite": 68,
+   "len": 2
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 24,
+   "depth": 33,
+   "char_id": 68,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 5600,
+    "ty_twips": 960
+   },
+   "ratio": 89,
+   "name": "playerLives",
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 90,
+   "sprite": null,
+   "len": 45,
+   "id": 69,
+   "bounds_twips": [
+    -40,
+    950,
+    -40,
+    289
+   ],
+   "font_id": 8,
+   "font_height_twips": 240,
+   "color": "#00ffff@255",
+   "align": 0,
+   "var_name": "bonusWord",
+   "initial_text": "bonus:"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 15,
+   "depth": 38,
+   "char_id": 69,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 4320,
+    "ty_twips": 4214
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 90,
+   "sprite": null,
+   "len": 44,
+   "id": 70,
+   "bounds_twips": [
+    -40,
+    850,
+    -40,
+    289
+   ],
+   "font_id": 8,
+   "font_height_twips": 240,
+   "color": "#00ffff@255",
+   "align": 0,
+   "var_name": "bonusScore",
+   "initial_text": "3000"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 15,
+   "depth": 39,
+   "char_id": 70,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 5310,
+    "ty_twips": 4214
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 90,
+   "sprite": null,
+   "len": 36,
+   "id": 71
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 14,
+   "depth": 40,
+   "char_id": 71,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 970,
+    "ty_twips": 534
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineText",
+   "frame": 90,
+   "sprite": null,
+   "len": 36,
+   "id": 72
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 15,
+   "depth": 41,
+   "char_id": 72,
+   "matrix": {
+    "scale_x": 0.9988555908203125,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 4801,
+    "ty_twips": 534
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 90,
+   "sprite": null,
+   "len": 42,
+   "id": 73,
+   "bounds_twips": [
+    -40,
+    420,
+    -40,
+    289
+   ],
+   "font_id": 8,
+   "font_height_twips": 240,
+   "color": "#00ffff@255",
+   "align": 0,
+   "var_name": "levelNumber",
+   "initial_text": "00"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 90,
+   "sprite": null,
+   "len": 15,
+   "depth": 42,
+   "char_id": 73,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 5670,
+    "ty_twips": 534
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 91,
+   "sprite": null,
+   "len": 6,
+   "label": "Serve"
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 91,
+   "sprite": null,
+   "len": 237,
+   "id": 74,
+   "bounds_twips": [
+    -600,
+    600,
+    -400,
+    400
+   ],
+   "fills": [
+    "#ff0000"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 91,
+   "sprite": null,
+   "len": 3118,
+   "id": 75,
+   "frames": 59
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 75,
+   "len": 4
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 1,
+   "sprite": 75,
+   "len": 2,
+   "label": "N"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 75,
+   "len": 12,
+   "depth": 1,
+   "char_id": 74,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    128
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 75,
+   "len": 15,
+   "depth": 2,
+   "char_id": 54,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 282,
+    "ty_twips": -182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 75,
+   "len": 15,
+   "depth": 3,
+   "char_id": 55,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -282,
+    "ty_twips": -182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 75,
+   "len": 15,
+   "depth": 4,
+   "char_id": 56,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -282,
+    "ty_twips": 182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 75,
+   "len": 15,
+   "depth": 5,
+   "char_id": 57,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 282,
+    "ty_twips": 182
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 75,
+   "len": 12,
+   "depth": 6,
+   "char_id": 58,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 9,
+   "sprite": 75,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 10,
+   "sprite": 75,
+   "len": 3,
+   "label": "UR"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 75,
+   "len": 4,
+   "depth": 2,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 10,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 11,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 12,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 13,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 14,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 15,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 16,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 17,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 18,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 19,
+   "sprite": 75,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 19,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 20,
+   "sprite": 75,
+   "len": 3,
+   "label": "UL"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 75,
+   "len": 4,
+   "depth": 3,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 20,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 21,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 22,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 23,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 24,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 25,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 26,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 27,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 28,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 29,
+   "sprite": 75,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 29,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 30,
+   "sprite": 75,
+   "len": 3,
+   "label": "BL"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 75,
+   "len": 4,
+   "depth": 4,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 30,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 31,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 32,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 33,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 34,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 35,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 36,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 37,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 38,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 39,
+   "sprite": 75,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 39,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 40,
+   "sprite": 75,
+   "len": 3,
+   "label": "BR"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 75,
+   "len": 4,
+   "depth": 5,
+   "cxform": [],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 40,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    238
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 41,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    219
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 42,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    201
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 43,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    182
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 44,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    164
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 45,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    145
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 46,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    127
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 47,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    108
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 48,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 49,
+   "sprite": 75,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 49,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 50,
+   "sprite": 75,
+   "len": 2,
+   "label": "C"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    192
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 50,
+   "sprite": 75,
+   "len": 14,
+   "depth": 6,
+   "cxform": [
+    0,
+    0,
+    0,
+    256,
+    255,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    181
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 51,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    28,
+    28,
+    28,
+    238,
+    227,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    169
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 52,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    57,
+    57,
+    57,
+    219,
+    198,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    158
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 53,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    85,
+    85,
+    85,
+    201,
+    170,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    147
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 54,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    114,
+    114,
+    114,
+    182,
+    142,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    135
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 55,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    142,
+    142,
+    142,
+    164,
+    113,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    124
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 56,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    171,
+    171,
+    171,
+    145,
+    85,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    113
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 57,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    199,
+    199,
+    199,
+    127,
+    57,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    101
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 58,
+   "sprite": 75,
+   "len": 13,
+   "depth": 6,
+   "cxform": [
+    228,
+    228,
+    228,
+    108,
+    28,
+    0,
+    0,
+    0
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 59,
+   "sprite": 75,
+   "len": 7
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 75,
+   "len": 9,
+   "depth": 2,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 75,
+   "len": 9,
+   "depth": 3,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 75,
+   "len": 9,
+   "depth": 4,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 75,
+   "len": 9,
+   "depth": 5,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 59,
+   "sprite": 75,
+   "len": 9,
+   "depth": 6,
+   "cxform": [
+    256,
+    256,
+    256,
+    90
+   ],
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 91,
+   "sprite": null,
+   "len": 2723,
+   "depth": 13,
+   "char_id": 75,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 4477,
+    "ty_twips": 1737
+   },
+   "ratio": 90,
+   "name": "enemyPaddle",
+   "has_clipactions": true
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 92,
+   "sprite": null,
+   "len": 35,
+   "id": 76,
+   "bounds_twips": [
+    -10,
+    6010,
+    -9,
+    4011
+   ],
+   "fills": [],
+   "lines": [
+    {
+     "width_twips": 20,
+     "color": "#77fffc"
+    }
+   ]
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 92,
+   "sprite": null,
+   "len": 22,
+   "id": 77,
+   "frames": 1
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 77,
+   "len": 4
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 77,
+   "len": 6,
+   "depth": 1,
+   "char_id": 76,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 92,
+   "sprite": null,
+   "len": 1564,
+   "depth": 11,
+   "char_id": 77,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 500,
+    "ty_twips": 500
+   },
+   "ratio": 91,
+   "has_clipactions": true
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 92,
+   "sprite": null,
+   "len": 71,
+   "id": 78,
+   "bounds_twips": [
+    -300,
+    300,
+    -300,
+    300
+   ],
+   "fills": []
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 92,
+   "sprite": null,
+   "len": 71,
+   "id": 79,
+   "bounds_twips": [
+    -300,
+    300,
+    -300,
+    300
+   ],
+   "fills": []
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 92,
+   "sprite": null,
+   "len": 477,
+   "id": 80,
+   "frames": 20
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 80,
+   "len": 4
+  },
+  {
+   "tag": "DoAction",
+   "frame": 1,
+   "sprite": 80,
+   "len": 2
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 80,
+   "len": 6,
+   "depth": 1,
+   "char_id": 78,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 2,
+   "sprite": 80,
+   "len": 5,
+   "depth": 1,
+   "char_id": 79,
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 20,
+   "sprite": 80,
+   "len": 396
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 92,
+   "sprite": null,
+   "len": 9685,
+   "depth": 20,
+   "char_id": 80,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1867,
+    "ty_twips": 2467
+   },
+   "ratio": 91,
+   "has_clipactions": true
+  },
+  {
+   "tag": "DoAction",
+   "frame": 96,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 97,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 97,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 97,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 97,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 97,
+   "sprite": null,
+   "len": 9,
+   "label": "GameOver"
+  },
+  {
+   "tag": "DefineText",
+   "frame": 97,
+   "sprite": null,
+   "len": 48,
+   "id": 81
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 97,
+   "sprite": null,
+   "len": 14,
+   "depth": 43,
+   "char_id": 81,
+   "matrix": {
+    "scale_x": 0.99981689453125,
+    "scale_y": 1.0010986328125,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 901,
+    "ty_twips": 1925
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 101,
+   "sprite": null,
+   "len": 126
+  },
+  {
+   "tag": "DoAction",
+   "frame": 103,
+   "sprite": null,
+   "len": 150
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 104,
+   "sprite": null,
+   "len": 7,
+   "label": "Winner"
+  },
+  {
+   "tag": "DefineShape2",
+   "frame": 104,
+   "sprite": null,
+   "len": 96,
+   "id": 82,
+   "bounds_twips": [
+    -1800,
+    1860,
+    -840,
+    680
+   ],
+   "fills": [
+    "#000000"
+   ],
+   "lines": [
+    {
+     "width_twips": 20,
+     "color": "#ffffff"
+    }
+   ]
+  },
+  {
+   "tag": "DefineEditText",
+   "frame": 104,
+   "sprite": null,
+   "len": 47,
+   "id": 83,
+   "bounds_twips": [
+    661,
+    3010,
+    -40,
+    289
+   ],
+   "font_id": 8,
+   "font_height_twips": 240,
+   "color": "#ffffff@255",
+   "align": 2,
+   "var_name": "Name",
+   "initial_text": "enter here"
+  },
+  {
+   "tag": "DefineText",
+   "frame": 104,
+   "sprite": null,
+   "len": 36,
+   "id": 84
+  },
+  {
+   "tag": "DefineShape",
+   "frame": 104,
+   "sprite": null,
+   "len": 61,
+   "id": 85,
+   "bounds_twips": [
+    -565,
+    580,
+    -135,
+    170
+   ],
+   "fills": [
+    "#ffffff"
+   ],
+   "lines": []
+  },
+  {
+   "tag": "DefineText",
+   "frame": 104,
+   "sprite": null,
+   "len": 41,
+   "id": 86
+  },
+  {
+   "tag": "DefineButton2",
+   "frame": 104,
+   "sprite": null,
+   "len": 332,
+   "id": 87
+  },
+  {
+   "tag": "DefineFont",
+   "frame": 104,
+   "sprite": null,
+   "len": 823
+  },
+  {
+   "tag": "DefineFontInfo",
+   "frame": 104,
+   "sprite": null,
+   "len": 39
+  },
+  {
+   "tag": "DefineText",
+   "frame": 104,
+   "sprite": null,
+   "len": 65,
+   "id": 89
+  },
+  {
+   "tag": "DefineSprite",
+   "frame": 104,
+   "sprite": null,
+   "len": 86,
+   "id": 90,
+   "frames": 1
+  },
+  {
+   "tag": "SoundStreamHead2",
+   "frame": 1,
+   "sprite": 90,
+   "len": 4
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 90,
+   "len": 6,
+   "depth": 2,
+   "char_id": 82,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 0,
+    "ty_twips": 0
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 90,
+   "len": 14,
+   "depth": 3,
+   "char_id": 83,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -1420,
+    "ty_twips": -284
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 90,
+   "len": 14,
+   "depth": 4,
+   "char_id": 84,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -1666,
+    "ty_twips": -283
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 90,
+   "len": 14,
+   "depth": 5,
+   "char_id": 87,
+   "matrix": {
+    "scale_x": 1.0008697509765625,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 1,
+    "ty_twips": 312
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 1,
+   "sprite": 90,
+   "len": 14,
+   "depth": 8,
+   "char_id": 89,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 0.9969635009765625,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": -1440,
+    "ty_twips": -691
+   },
+   "has_clipactions": false
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 104,
+   "sprite": null,
+   "len": 12,
+   "depth": 44,
+   "char_id": 90,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3500,
+    "ty_twips": 3626
+   },
+   "ratio": 103,
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 108,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "RemoveObject2",
+   "frame": 109,
+   "sprite": null,
+   "len": 2
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 109,
+   "sprite": null,
+   "len": 7,
+   "label": "Submit"
+  },
+  {
+   "tag": "DoAction",
+   "frame": 110,
+   "sprite": null,
+   "len": 63
+  },
+  {
+   "tag": "FrameLabel",
+   "frame": 111,
+   "sprite": null,
+   "len": 4,
+   "label": "End"
+  },
+  {
+   "tag": "PlaceObject2",
+   "frame": 111,
+   "sprite": null,
+   "len": 12,
+   "depth": 44,
+   "char_id": 21,
+   "matrix": {
+    "scale_x": 1.0,
+    "scale_y": 1.0,
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "tx_twips": 3497,
+    "ty_twips": 2797
+   },
+   "ratio": 110,
+   "has_clipactions": false
+  },
+  {
+   "tag": "DoAction",
+   "frame": 115,
+   "sprite": null,
+   "len": 2
+  }
+ ]
+}

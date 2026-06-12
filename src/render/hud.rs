@@ -1,0 +1,121 @@
+//! HUD: score/level/bonus text rows, lives dots, and the bonus banner.
+//!
+//! The HUD is placed at frame 90 (the end of the Level splash) and persists
+//! through Game Over and the screens over it; only the bonus strings blank
+//! at Game Over. The banner's black bar always renders during gameplay —
+//! black-on-black but opaque, it occludes the ball below depth 22.
+
+use curveball::app::App;
+use curveball::consts::{
+    BANNER_BAR, BANNER_BASELINE_OFFSET, BANNER_TEXT_ANCHOR_Y, BANNER_TEXT_CX, BONUS_LABEL_X,
+    COLOR_HUD, HUD_BOTTOM_BASELINE, HUD_FONT_PX, HUD_TOP_BASELINE, LEVEL_LABEL_X,
+    LIVES_DOT_SPACING, LIVES_ENEMY_ANCHOR, LIVES_PLAYER_ANCHOR, SCORE_LABEL_X,
+};
+use macroquad::prelude::*;
+
+use super::anim::BANNER_FRAMES;
+use super::entities::{Textures, rgb, rgba};
+use super::text;
+
+const HUD_TEXT_ASPECT: f32 = 0.72;
+const HUD_TRACKING: f32 = 1.0;
+const BANNER_TEXT_ASPECT: f32 = 0.72;
+const BANNER_TRACKING: f32 = 0.8;
+const BANNER_DISPLAY_FONT_PX: u16 = 10;
+
+/// Depths 26–42: the text HUD.
+pub fn draw_text_hud(app: &App) {
+    let Some(world) = &app.world else { return };
+    let cyan = rgb(COLOR_HUD);
+    let score = text::text_buf::<32>(format_args!("SCORE: {}", world.economy.score));
+    text::left_tracked_aspect(
+        score.as_str(),
+        SCORE_LABEL_X,
+        HUD_TOP_BASELINE,
+        HUD_FONT_PX,
+        cyan,
+        HUD_TRACKING,
+        HUD_TEXT_ASPECT,
+    );
+    let level = text::text_buf::<24>(format_args!("LEVEL: {}", world.level));
+    text::left_tracked_aspect(
+        level.as_str(),
+        LEVEL_LABEL_X,
+        HUD_TOP_BASELINE,
+        HUD_FONT_PX,
+        cyan,
+        HUD_TRACKING,
+        HUD_TEXT_ASPECT,
+    );
+    if !app.bonus_hud_blanked {
+        let bonus = text::text_buf::<32>(format_args!("BONUS: {}", world.economy.bonus_display));
+        text::left_tracked_aspect(
+            bonus.as_str(),
+            BONUS_LABEL_X,
+            HUD_BOTTOM_BASELINE,
+            HUD_FONT_PX,
+            cyan,
+            HUD_TRACKING,
+            HUD_TEXT_ASPECT,
+        );
+    }
+}
+
+/// Depths 27/33: lives dots. Both displays show lives − 1 (quirk Q4 /
+/// correction C2): enemy dots extend right of (70.25, 48), player dots left
+/// of (280, 48), survivors hugging the anchor.
+pub fn draw_lives(app: &App, textures: &Textures) {
+    let Some(world) = &app.world else { return };
+    let enemy_dots = (world.enemy_lives - 1).clamp(0, 4);
+    for i in 0..enemy_dots {
+        draw_dot(
+            &textures.enemy_dot,
+            LIVES_DOT_SPACING.mul_add(i as f32, LIVES_ENEMY_ANCHOR.0),
+            LIVES_ENEMY_ANCHOR.1,
+        );
+    }
+    let player_dots = (world.player_lives - 1).clamp(0, 4);
+    for i in 0..player_dots {
+        draw_dot(
+            &textures.player_dot,
+            LIVES_DOT_SPACING.mul_add(-(i as f32), LIVES_PLAYER_ANCHOR.0),
+            LIVES_PLAYER_ANCHOR.1,
+        );
+    }
+}
+
+fn draw_dot(texture: &Texture2D, cx: f32, cy: f32) {
+    use curveball::consts::DOT_SIZE;
+
+    draw_texture_ex(
+        texture,
+        cx - DOT_SIZE / 2.0,
+        cy - DOT_SIZE / 2.0,
+        WHITE,
+        DrawTextureParams {
+            dest_size: Some(vec2(DOT_SIZE, DOT_SIZE)),
+            ..Default::default()
+        },
+    );
+}
+
+/// Depth 22: the bonus banner — opaque black bar always, animated white text
+/// per the §7.5 table while a bonus animation runs.
+pub fn draw_banner(app: &App) {
+    let (x, y, w, h) = BANNER_BAR;
+    draw_rectangle(x, y, w, h, BLACK);
+    let Some(banner) = &app.banner else { return };
+    let Some(&(rel_y, alpha)) = BANNER_FRAMES.get(banner.tick as usize) else {
+        return;
+    };
+    let color = rgba((0xff, 0xff, 0xff), f32::from(alpha) / 256.0);
+    text::centered_tracked_aspect(
+        banner.kind.text_upper(),
+        BANNER_TEXT_CX,
+        BANNER_TEXT_ANCHOR_Y + rel_y + BANNER_BASELINE_OFFSET,
+        BANNER_DISPLAY_FONT_PX,
+        color,
+        BANNER_TRACKING,
+        BANNER_TEXT_ASPECT,
+    );
+}

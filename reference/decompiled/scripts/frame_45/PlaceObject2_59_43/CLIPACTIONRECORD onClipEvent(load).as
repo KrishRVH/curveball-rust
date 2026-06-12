@@ -1,0 +1,32 @@
+onClipEvent(load){
+   lagFactor = _parent.world.lagFactor;
+   wleft = _parent.world.left;
+   wright = _parent.world.right;
+   wtop = _parent.world.top;
+   wbottom = _parent.world.bottom;
+   wdepth = _parent.world.depth;
+   wl = wleft;
+   wr = wright;
+   wt = wtop;
+   wb = wbottom;
+   wx = (wright - wleft) / 2 + wleft;
+   wy = (wbottom - wtop) / 2 + wtop;
+   myPos = new Object();
+   myPos.x = wx;
+   myPos.y = wy;
+   _root._xmouse = wx;
+   _root._ymouse = wy;
+   myPos.z = 0;
+   oldPos = new Object();
+   oldPos.x = myPos.x;
+   oldPos.y = myPos.y;
+   mySpeed = new Object();
+   mySpeed.x = 0;
+   mySpeed.y = 0;
+   m = 100;
+   f = 0.8;
+   swidth = _width;
+   sheight = _height;
+   _X = myPos.x;
+   _Y = myPos.y;
+}

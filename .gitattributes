@@ -1,0 +1,44 @@
+# Normalize project text files to LF. The game targets desktop Linux/Windows via
+# Rust tooling, and LF keeps generated diffs stable across WSL and native hosts.
+* text=auto eol=lf
+
+# Rust project source and config.
+*.rs text eol=lf diff=rust
+*.toml text eol=lf
+Cargo.lock text eol=lf
+*.lock text eol=lf
+*.md text eol=lf diff=markdown
+*.txt text eol=lf
+*.json text eol=lf
+*.py text eol=lf diff=python
+*.as text eol=lf linguist-language=ActionScript
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary runtime/reference assets.
+*.swf binary
+*.wav binary
+*.mp3 binary
+*.ttf binary
+*.otf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.tgz binary
+
+# Keep GitHub language stats focused on the Rust port while retaining the
+# original Flash material in-tree for provenance and parity audits.
+reference/decompiled/** linguist-vendored
+reference/kit/sounds/** linguist-vendored
+reference/kit/tags.json linguist-generated

@@ -1,0 +1,34 @@
+# Deviations ledger
+
+Deliberate, documented departures of the Rust port from `curveball.swf`. Anything not listed here
+is intended to be frame- and bit-faithful to the original (see `PLAN.md` §1).
+
+| ID | What | Why |
+|----|------|-----|
+| D1 | Level ≥ 11 clamps the level-table index to 9 (last entry). `consts::STRICT_LEVEL_11_SOFTLOCK = true` restores the original softlock: AS1/SWF5 reads `levelSpeed[10]` as `undefined`, which coerces to **0** in numeric context (SWF ≤ 6 semantics), so the serve sets `vel.z = 0` and the ball never travels — unwinnable as shipped. | Original softlocks after beating level 10 |
+| D2 | The embedded font (a subset of **BankGothicBT-Medium** — the SWF *does* name it; PLAN.md's "nameless" was a parser artifact) is replaced by bundled **Michroma Regular** (`assets/fonts/Michroma-Regular.ttf`, SIL Open Font License). Text is rasterized at the native render scale, and menu/HUD labels use uppercase tracked styling to match the supplied SWF screenshots. Static-text blocks are anchored at the original glyph-run baseline; texts that read as centered (title, splash, "Game Over", button labels, banner, table rows) are centered on the original ink-span center so optical placement survives the metric differences. | Bank Gothic is commercial; Michroma is a redistributable close substitute |
+| D3 | Local `highscores.txt` (10 lines, `name<TAB>level<TAB>score`) replaces the dead `highscore.php` / `checkscore.php` / `enterscore.php` endpoints. The brief 240×18 "loading" bar on the HighScores screen never appears (the local "request" is instant). The `"a83l9xj"` hash salt is not reimplemented. | Servers gone since ~2005 |
+| D4 | Simulation and input stay in the original 350×250 stage coordinates, but rendering targets a 4× native default window (1400×1000 by default) through an integer-scaled letterbox viewport. Deterministic screenshot captures still use a 4× offscreen target. Vector primitives, text glyphs, balls, dots, and baked paddle textures are rasterized at native scale instead of scaling a low-resolution 350×250 image. | The desktop reference screenshot is high-resolution and smooth; scaling the 350×250 target looked visibly too low-res |
+| D5 | Name-entry editing niceties are approximated: printable-ASCII input, 14-char cap (the original capped by field width), backspace, first keypress clears the `enter here` placeholder, and a blinking caret. As in the original, **Submit always navigates on** to the HighScores screen; the entry is only recorded when the text was edited (the original's `if(Name != "enter here")` guard). | Flash TextField internals unspecified |
+| D6 | The title intro (timeline frames 1–4, ~0.13 s) is skipped — the title screen appears instantly. | Transition content not recoverable from the tag stream |
+| D7 | Gameplay draws a persistent perspective tunnel lattice (projected depth rectangles plus corner rails), a rounded framed player/enemy paddle with guide lines, a cyan static outer frame, and green tunnel/depth-ring lines. These are generated from the same world projection as the SWF-derived ring/ball, but they are not a direct transcription of the single-ring SWF tag plan. | The supplied desktop reference image shows the richer tunnel/paddle presentation as the visual source of truth |
+| D8 | Returning to the title from post-game overlays (`End` main menu or the HighScores main menu after name submission) clears the old world, flashes, banner, blanked bonus state, and name-entry draft before a new Start Game. | Fixes a restart/navigation wart instead of preserving stale post-game state from the SWF timeline |
+| D9 | The title menu adds a `zen` button that starts a normal game with unlimited player lives: player misses still reset rally bonuses and re-serve, but do not decrement lives or route to Game Over. | Requested quality-of-life mode |
+| D10 | Rendering interpolates player paddle, enemy paddle, ball rect, and ring depth between fixed 30 Hz simulation snapshots. Collision, scoring, phase timing, sounds, and all state mutation still occur only on the original 30 Hz tick. | The SWF's 30 fps judder is not desirable on modern high-refresh displays; the Rust port should feel smooth without changing gameplay math |
+| D11 | `CURVEBALL_SIM_HZ=<hz>` can opt into a non-faithful fixed-step cadence for experiments. One `App::tick()` still means one original Flash frame, so higher values intentionally accelerate physics, timeline phases, scoring drain, and animation clocks in wall-clock time. The default remains 30 Hz. | Makes it easy to feel-test 144/240/400 Hz sim rates without rewriting the faithful 30 Hz model |
+
+## Plan corrections discovered during implementation
+
+These are *fidelity fixes*, not deviations — places where PLAN.md disagreed with the decompiled
+source / tag stream, which win by the plan's own rule (§1). Recorded for the M6 audit; the
+corresponding PLAN.md passages carry inline markers pointing back at the entries below. The
+tag-stream evidence comes from `reference/kit/swf_deep.py`, an extension of the kit's
+parser that decodes gradients, per-frame cxforms, text glyph runs, font code tables, and removal
+depths.
+
+| ID | PLAN.md said | Source/tags say |
+|----|--------------|-----------------|
+| C1 | §3.7: bonus drain = "one −25 step every 12 in-flight ticks; 3000 drains in 1440 ticks = 48 s"; §14: "3000 through tick 11" | The counter starts at 10 and the step fires when it goes *below* zero — i.e. after **11** decrements. One −25 step every **11** in-flight ticks; 3000 drains in 1320 ticks = 44 s; first step lands at flight tick 11 (`bonusDisplay` is 2975 at the end of tick 11). `golden_sim.py` and the GOLD-1 checkpoints (2825 at f77, 2675 final) confirm. |
+| C2 | §7.6: enemy pips equal enemy lives; dots extend left of both anchors | Sprite 66's tag stream removes one dot at frame 3 (inside "L5") and one at the start of each later segment, so the **enemy display also shows lives − 1** (L3 → 2 dots), matching the player display (Q4 applies to both). Enemy dots extend **right** of the (70, 48) anchor (centers at +0.25 + 7·i); player dots extend left of (280, 48) (centers at −7·i). |
+| C3 | §10: congratulation line "[APPROX wording — undecodable glyph run]" | Decodes against the embedded DefineFontInfo code table as **"You Got a High Score!"** (12 px white, ink-centered at x ≈ 177.7, baseline ≈ 156.4). |
+| C4 | §7.2: "Game Over" size approximate; §10 high-score header/row sizes "7 px" | "Game Over" is 40 px (same as the splash). HighScores screen: heading 12 px, column headers 10 px, rows 7 px, button labels 10 px (from DefineText records). |
