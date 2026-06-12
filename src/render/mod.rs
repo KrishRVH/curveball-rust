@@ -176,14 +176,6 @@ pub mod text {
         }
     }
 
-    fn params(font_px: u16, color: Color) -> TextParams<'static> {
-        params_with_aspect(font_px, color, DEFAULT_TEXT_ASPECT)
-    }
-
-    pub fn left(s: &str, x: f32, baseline: f32, font_px: u16, color: Color) {
-        draw_text_ex(s, x, baseline, params(font_px, color));
-    }
-
     pub fn centered(s: &str, cx: f32, baseline: f32, font_px: u16, color: Color) {
         centered_tracked_aspect(s, cx, baseline, font_px, color, 0.0, DEFAULT_TEXT_ASPECT);
     }

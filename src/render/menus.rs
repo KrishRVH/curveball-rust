@@ -4,12 +4,11 @@
 use curveball::app::App;
 use curveball::consts::{
     BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_SCORES, BTN_TITLE_START, BTN_TITLE_ZEN, CONGRATS_BASELINE,
-    CONGRATS_CX, CONGRATS_TEXT, END_MENU_LABEL, GAME_OVER_BASELINE, GAME_OVER_CX, HS_COL_LEVEL_CX,
+    CONGRATS_CX, CONGRATS_TEXT, END_MENU_LABEL, GAME_OVER_BASELINE, HS_COL_LEVEL_CX,
     HS_COL_NAME_CX, HS_COL_SCORE_CX, HS_HEADER_BASELINE, HS_HEADER_LEVEL_CX, HS_HEADER_NAME_CX,
     HS_HEADER_SCORE_CX, HS_HEADING, HS_MENU_LABEL, HS_PANEL, HS_ROW_BASELINE, HS_ROW_STEP,
-    HUD_FONT_PX, NAME_BASELINE, NAME_BOX, NAME_INPUT_CX, NAME_LABEL_X, SPLASH_FONT_PX,
-    SUBMIT_LABEL, SUBMIT_RECT, TITLE_BASELINE, TITLE_CX, TITLE_SCORES_LABEL, TITLE_START_LABEL,
-    TITLE_ZEN_LABEL,
+    NAME_BASELINE, NAME_BOX, NAME_INPUT_CX, NAME_LABEL_X, SPLASH_FONT_PX, SUBMIT_RECT,
+    TITLE_BASELINE, TITLE_CX, TITLE_SCORES_LABEL, TITLE_START_LABEL, TITLE_ZEN_LABEL, WORLD_CX,
 };
 use macroquad::prelude::*;
 
@@ -30,6 +29,13 @@ const MENU_LABEL_TRACKING: f32 = 0.35;
 const MENU_HEADER_TRACKING: f32 = 1.0;
 const MENU_ROW_TRACKING: f32 = 0.4;
 const PANEL_RADIUS: f32 = 5.0;
+const GAME_OVER_ASPECT: f32 = 0.9;
+const NAME_ENTRY_TEXT_FONT_PX: u16 = 8;
+const NAME_ENTRY_TEXT_ASPECT: f32 = 0.86;
+const NAME_ENTRY_TEXT_TRACKING: f32 = 0.35;
+const NAME_ENTRY_SUBMIT_FONT_PX: u16 = 7;
+const NAME_ENTRY_SUBMIT_ASPECT: f32 = 0.72;
+const NAME_ENTRY_SUBMIT_TRACKING: f32 = 0.15;
 
 /// A white pill button (rounded rect) with a black label, from its hit rect.
 fn draw_pill(rect: (f64, f64, f64, f64), label: &str, anchor: (f32, f32)) {
@@ -222,12 +228,14 @@ pub fn draw_high_scores(app: &App) {
 
 /// Depth 43 at frame 97: the "Game Over" text (the HUD around it persists).
 pub fn draw_game_over_text() {
-    text::centered(
+    text::centered_tracked_aspect(
         "Game Over",
-        GAME_OVER_CX,
+        WORLD_CX as f32,
         GAME_OVER_BASELINE,
         SPLASH_FONT_PX,
         WHITE,
+        0.0,
+        GAME_OVER_ASPECT,
     );
 }
 
@@ -236,27 +244,48 @@ pub fn draw_name_entry(app: &App) {
     let (x, y, w, h) = NAME_BOX;
     draw_rectangle(x, y, w, h, BLACK);
     outline(x, y, w, h, WHITE);
-    text::centered(
+    text::centered_tracked_aspect(
         CONGRATS_TEXT,
         CONGRATS_CX,
         CONGRATS_BASELINE,
-        HUD_FONT_PX,
+        NAME_ENTRY_TEXT_FONT_PX,
         WHITE,
+        NAME_ENTRY_TEXT_TRACKING,
+        NAME_ENTRY_TEXT_ASPECT,
     );
-    text::left("Name:", NAME_LABEL_X, NAME_BASELINE, HUD_FONT_PX, WHITE);
+    text::left_tracked_aspect(
+        "Name:",
+        NAME_LABEL_X,
+        NAME_BASELINE,
+        NAME_ENTRY_TEXT_FONT_PX,
+        WHITE,
+        NAME_ENTRY_TEXT_TRACKING,
+        NAME_ENTRY_TEXT_ASPECT,
+    );
     // Blinking caret while editing (deviation D5): 15 ticks on, 15 off.
     let caret = if app.caret_tick % 30 < 15 { "|" } else { "" };
     let shown = text::text_buf::<32>(format_args!("{}{caret}", app.name_entry.text));
-    text::centered(
+    text::centered_tracked_aspect(
         shown.as_str(),
         NAME_INPUT_CX,
         NAME_BASELINE,
-        HUD_FONT_PX,
+        NAME_ENTRY_TEXT_FONT_PX,
         WHITE,
+        NAME_ENTRY_TEXT_TRACKING,
+        NAME_ENTRY_TEXT_ASPECT,
     );
     let (sx, sy, sw, sh) = SUBMIT_RECT;
+    let submit_baseline = sh.mul_add(0.72, sy);
     draw_rectangle(sx, sy, sw, sh, WHITE);
-    text::centered("SUBMIT", SUBMIT_LABEL.0, SUBMIT_LABEL.1, HUD_FONT_PX, BLACK);
+    text::centered_tracked_aspect(
+        "SUBMIT",
+        sx + sw / 2.0,
+        submit_baseline,
+        NAME_ENTRY_SUBMIT_FONT_PX,
+        BLACK,
+        NAME_ENTRY_SUBMIT_TRACKING,
+        NAME_ENTRY_SUBMIT_ASPECT,
+    );
 }
 
 /// Depth 44 at frame 111: the end screen's main-menu button.
