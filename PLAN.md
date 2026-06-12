@@ -376,9 +376,10 @@ platforms. `atan` appears only in the projection (render + collision rects); ass
 relative tolerance, not bit-exact.
 
 ### 5.2 Timing model
-Fixed-timestep accumulator at exactly 30 Hz; render every display frame. D10 interpolates only
-cosmetic render snapshots between fixed sim ticks, so high-refresh displays are smooth while
-collision/scoring/timeline state remains 30 Hz faithful:
+Fixed-timestep accumulator at exactly 30 Hz; render every display frame. D10 interpolates
+cosmetic render snapshots between fixed sim ticks, and the live player paddle renders toward the
+latest mouse sample, so high-refresh displays are smooth while collision/scoring/timeline state
+remains 30 Hz faithful:
 
 ```rust
 const DT: f64 = 1.0 / 30.0;
@@ -540,10 +541,11 @@ alpha: 256, 238, 219, 201, 182, 164, 145, 127, 108, 90
 Re-triggering restarts the animation. After tick 10, the D7 framed paddle remains and flash overlays
 hide instead of restoring the SWF idle overlay look.
 
-### 7.5 Bonus banner **[VERIFIED]** — sprite at (175, 206): static black bar 240 × 18 (local y −18..0,
-i.e. covering y 188..206, x 55..295, behind the text). Text: white, 14 px, centered, content
-"Accuracy Bonus!" / "Curve Bonus!" / "Super Curve Bonus!". 61-tick animation, `(rel_y, alpha/256)`
-— rel_y is the text offset from the anchor:
+### 7.5 Bonus banner **[VERIFIED]** — sprite at (175, 206): white, 14 px, centered text with content
+"Accuracy Bonus!" / "Curve Bonus!" / "Super Curve Bonus!". The SWF sprite includes a static black
+bar, but the D7 desktop-reference tunnel presentation renders the banner as text-only so the green
+tunnel rails remain continuous behind it. 61-tick animation, `(rel_y, alpha/256)` — rel_y is the
+text offset from the anchor:
 
 ```
 in   (16): y 2.75 → −17.25 linear; alpha 0,17,34,51,68,85,102,119,137,154,171,188,205,222,239,256
@@ -552,14 +554,8 @@ rise (16): y hold −17.25;          alpha 88,99,111,122,133,144,155,167,178,189
 out  (14): y −15.8 → 2.75 linear;  alpha 238,219,201,183,165,146,128,110,91,73,55,37,18,0
 ```
 
-Idle: text hidden, bar visible. Re-trigger restarts at `in`; when one contact awards both an accuracy
-and a curve bonus, the curve/super banner triggers last and wins (its text and restart overwrite).
-
-**The bar always renders during gameplay** (black-on-black but opaque): it occludes the ball, the ring
-and anything below depth 22 inside stage rect x ∈ [55, 295], y ∈ [188, 206]. A low ball near the player
-wall visibly clips behind this invisible strip in the original — draw the opaque black bar every
-gameplay frame so the occlusion reproduces. (It persists on the Game Over/End screens too; nothing
-moves there, so it is inert.)
+Idle: text hidden. Re-trigger restarts at `in`; when one contact awards both an accuracy and a curve
+bonus, the curve/super banner triggers last and wins (its text and restart overwrite).
 
 ### 7.6 Lives pips **[VERIFIED]** [CORRECTED — see DEVIATIONS.md C2]
 5 × 5 px radial-gradient dots, 7 px horizontal spacing. Enemy dots extend **right** of the (70, 48)
@@ -787,8 +783,9 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 | D7 | Gameplay adds the desktop-reference tunnel lattice and framed paddles | Supplied desktop reference is the visual source of truth |
 | D8 | Post-game main-menu navigation clears stale gameplay state before returning to Title | Fixes restart behavior instead of preserving a SWF timeline wart |
 | D9 | Title-menu Zen mode starts a normal game with unlimited player lives | Requested quality-of-life mode |
-| D10 | Render interpolation between 30 Hz sim snapshots | Smooth high-refresh presentation without changing gameplay math |
+| D10 | Render interpolation between 30 Hz sim snapshots plus live player-paddle prediction | Smooth, responsive high-refresh presentation without changing gameplay math |
 | D11 | `CURVEBALL_SIM_HZ=<hz>` experimental sim/timeline-rate override | Feel-test 144/240/400 Hz behavior without changing the faithful default |
+| D12 | Always-visible FPS counter | Requested frame-pacing visibility |
 
 ## 17. AS → Rust symbol map
 

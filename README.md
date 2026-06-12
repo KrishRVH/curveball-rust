@@ -107,5 +107,7 @@ CURVEBALL_SHOT=/tmp/curveball-rally.png:45 \
 cargo run
 ```
 
-By default, gameplay state advances at the original 30 Hz. Rendering is not capped to 30 FPS; macroquad
-renders each display frame and interpolates cosmetic positions between fixed simulation snapshots.
+By default, gameplay state advances at the original 30 Hz. Rendering is not capped to 30 FPS;
+macroquad renders each display frame, interpolates autonomous visuals between fixed simulation
+snapshots, and renders the live player paddle toward the latest mouse sample without changing
+collision math. A small FPS counter is always visible at the top left.
