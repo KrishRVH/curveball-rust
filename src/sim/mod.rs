@@ -360,8 +360,8 @@ impl World {
         } else {
             ball.integrate_and_walls()
         };
-        let player_swept_rect = plane_crossing_rect(start_pos, ball.pos, 0.0, dt_scale);
-        let enemy_swept_rect = plane_crossing_rect(start_pos, ball.pos, WORLD_DEPTH, dt_scale);
+        let player_crossing = silky_plane_crossing(start_pos, ball.pos, 0.0, dt_scale);
+        let enemy_crossing = silky_plane_crossing(start_pos, ball.pos, WORLD_DEPTH, dt_scale);
         // The source checks (and sounds) the vertical walls first.
         if bounce_y {
             events.push(SimEvent::WallBounce { horizontal: false });
@@ -377,16 +377,26 @@ impl World {
                 let rect =
                     Rect::centered(vis(pos.0, pos.1, WORLD_DEPTH), PADDLE_W * s, PADDLE_H * s);
                 overlap(&ball.prev_rect, &rect)
-                    || enemy_swept_rect.is_some_and(|swept| overlap(&swept, &rect))
+                    || enemy_crossing.is_some_and(|crossing| overlap(&crossing.rect, &rect))
             });
             if let Some((e_pos, e_speed)) = hit {
-                let zone = classify(ball.pos.x, ball.pos.y, e_pos.0, e_pos.1);
-                ball.pos.z = WORLD_DEPTH;
+                let hit_pos = enemy_crossing.map_or(
+                    Vec3 {
+                        z: WORLD_DEPTH,
+                        ..ball.pos
+                    },
+                    |crossing| crossing.pos,
+                );
+                let zone = classify(hit_pos.x, hit_pos.y, e_pos.0, e_pos.1);
+                ball.pos = hit_pos;
                 ball.curve.0 = e_speed.0 / ball.curve_amount;
                 ball.curve.1 = -e_speed.1 / ball.curve_amount;
                 ball.vel.z = -ball.vel.z;
                 events.push(SimEvent::EnemyHit { zone });
             } else {
+                if let Some(crossing) = enemy_crossing {
+                    ball.pos = crossing.pos;
+                }
                 ball.stop_for_miss();
                 self.enemy_lives -= 1;
                 events.push(SimEvent::EnemyMiss);
@@ -395,15 +405,17 @@ impl World {
             // Player side.
             let paddle_rect = Rect::centered(self.paddle.pos, PADDLE_W, PADDLE_H);
             if overlap(&ball.prev_rect, &paddle_rect)
-                || player_swept_rect.is_some_and(|swept| overlap(&swept, &paddle_rect))
+                || player_crossing.is_some_and(|crossing| overlap(&crossing.rect, &paddle_rect))
             {
                 let snap = ball.snapshot;
-                let zone = classify(ball.pos.x, ball.pos.y, snap.pos.0, snap.pos.1);
+                let hit_pos =
+                    player_crossing.map_or(Vec3 { z: 0.0, ..ball.pos }, |crossing| crossing.pos);
+                let zone = classify(hit_pos.x, hit_pos.y, snap.pos.0, snap.pos.1);
                 let accuracy = zone == Zone::C;
                 if accuracy {
                     self.economy.award_accuracy();
                 }
-                ball.pos.z = 0.0;
+                ball.pos = hit_pos;
                 ball.curve.0 = -snap.speed.0 / ball.curve_amount;
                 ball.curve.1 = snap.speed.1 / ball.curve_amount;
                 ball.vel.z = -ball.vel.z;
@@ -415,6 +427,9 @@ impl World {
                     curve,
                 });
             } else {
+                if let Some(crossing) = player_crossing {
+                    ball.pos = crossing.pos;
+                }
                 ball.stop_for_miss();
                 if !self.unlimited_player_lives {
                     self.player_lives -= 1;
@@ -432,7 +447,18 @@ impl World {
     }
 }
 
-fn plane_crossing_rect(start: Vec3, end: Vec3, plane_z: f64, dt_scale: f64) -> Option<Rect> {
+#[derive(Debug, Clone, Copy)]
+struct PlaneCrossing {
+    pos: Vec3,
+    rect: Rect,
+}
+
+fn silky_plane_crossing(
+    start: Vec3,
+    end: Vec3,
+    plane_z: f64,
+    dt_scale: f64,
+) -> Option<PlaneCrossing> {
     if dt_scale >= 1.0 {
         return None;
     }
@@ -454,7 +480,10 @@ fn plane_crossing_rect(start: Vec3, end: Vec3, plane_z: f64, dt_scale: f64) -> O
         y: (end.y - start.y).mul_add(t, start.y),
         z: plane_z,
     };
-    Some(ball_rect_at(pos))
+    Some(PlaneCrossing {
+        pos,
+        rect: ball_rect_at(pos),
+    })
 }
 
 fn ball_rect_at(pos: Vec3) -> Rect {

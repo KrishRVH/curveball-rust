@@ -30,7 +30,7 @@ contains parser/extraction helpers, tag dumps, and extracted source sounds. Avoi
 - `CURVEBALL_WARP=rally CURVEBALL_MOUSE=222.75,114 CURVEBALL_SHOT=/tmp/curveball.png:45 cargo run`
   captures deterministic debug screenshots for parity checks.
 - `CURVEBALL_WARP=rally CURVEBALL_MOUSE=222.75,114 CURVEBALL_PERF=300 cargo run` prints frame
-  timing percentiles and per-frame tick pacing for render-performance checks.
+  timing percentiles, per-frame tick pacing, and accumulator debt for render-performance checks.
 - `CURVEBALL_SIM_HZ=144 cargo run` runs the experimental non-faithful sim/timeline-rate override
   (`240` and `400` are also useful probes); omit it for the default faithful 30 Hz sim.
 

@@ -56,9 +56,11 @@ land on the same original tick.
 
 Silky mode is intentionally non-faithful: `App::tick()` and `World::tick_silky_slice()` run at
 400 Hz. The runtime late-samples the mouse immediately before rendering for Silky-only paddle
-prediction, then suppresses prediction near the player plane if the predicted paddle would change the
-visible hit/miss result. The Silky ball path also checks swept contact at the player and enemy depth
-planes inside each 400 Hz slice.
+prediction, distributes mouse movement across multiple catch-up ticks in one rendered frame, then
+suppresses prediction near the player plane if the predicted paddle would change the visible
+hit/miss result or awarded hit zone. The Silky ball path classifies paddle hits at the swept
+plane-crossing point and also checks swept contact at the player and enemy depth planes inside each
+400 Hz slice.
 
 ```mermaid
 sequenceDiagram
@@ -124,8 +126,9 @@ The implementation contract is [PLAN.md](../PLAN.md). Intentional product or pla
 kept in [DEVIATIONS.md](../DEVIATIONS.md). The most important architectural deviations are:
 
 - gameplay is faithful by default, but rendering is native-scale and interpolated for modern displays;
-- Silky mode adds non-faithful 400 Hz world ticks, late mouse sampling, contact-aware prediction, and
-  swept paddle contact;
+- Silky mode adds non-faithful 400 Hz world ticks, late mouse sampling, catch-up mouse
+  distribution, zone-aware prediction, exact plane-crossing hit classification, and swept paddle
+  contact;
 - audio degrades to silence on broken hosts instead of crashing;
 - high scores are local because the original PHP endpoints are gone;
 - Zen mode is a Rust-only quality-of-life option;

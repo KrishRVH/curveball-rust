@@ -10,7 +10,7 @@ use curveball::app::{App, VisualMode};
 use curveball::consts::{BALL_DIAMETER, PADDLE_H, PADDLE_W, SILKY_DT_SCALE, STAGE_H, STAGE_W};
 #[cfg(debug_assertions)]
 use curveball::consts::{RENDER_SCALE, WORLD_CX, WORLD_CY};
-use curveball::sim::{Rect as SimRect, Vec3, overlap, scale, vis};
+use curveball::sim::{Rect as SimRect, Vec3, Zone, classify, overlap, scale, vis};
 use macroquad::prelude::*;
 
 use self::config::{letterbox, letterbox_viewport};
@@ -32,6 +32,7 @@ pub async fn run() {
     let mut current_visuals = previous_visuals;
     let mut latch = InputLatch::default();
     let mut accumulator = 0.0_f64;
+    let mut last_tick_mouse: Option<(f64, f64)> = None;
     let sim_dt_override = sim_dt_override_from_env();
     let mut perf = PerfProbe::from_env();
 
@@ -65,29 +66,43 @@ pub async fn run() {
         let frame_start = perf_now(perf.as_ref());
         let latch_start = perf_now(perf.as_ref());
         latch.latch(fixed_mouse);
+        let frame_mouse = latch.mouse();
+        let interpolation_start_mouse = *last_tick_mouse.get_or_insert(frame_mouse);
         let latch_elapsed = perf_elapsed(latch_start);
 
-        let tick_dt = sim_dt_override.unwrap_or_else(|| app.tick_dt());
+        let tick_dt = effective_tick_dt(&app, sim_dt_override);
         let frame_time = if canvas.is_some() {
             tick_dt
         } else {
             f64::from(get_frame_time()).min(0.25)
         };
         accumulator += frame_time;
+        let pending_tick_debt = accumulator;
         let tick_start = perf_now(perf.as_ref());
         let mut ticks_this_frame = 0_u32;
+        let ticks_due = pending_tick_count(accumulator, tick_dt);
         #[expect(
             clippy::while_float,
             reason = "fixed-timestep accumulator per PLAN.md §5.2"
         )]
-        while accumulator >= sim_dt_override.unwrap_or_else(|| app.tick_dt()) {
-            let tick_dt = sim_dt_override.unwrap_or_else(|| app.tick_dt());
-            let input = latch.drain();
+        while accumulator >= effective_tick_dt(&app, sim_dt_override) {
+            let tick_dt = effective_tick_dt(&app, sim_dt_override);
+            let mut input = latch.drain();
+            if let Some(mouse) = silky_catch_up_mouse(
+                app.visual_mode,
+                interpolation_start_mouse,
+                frame_mouse,
+                ticks_this_frame + 1,
+                ticks_due,
+            ) {
+                input.mouse = mouse;
+            }
             previous_visuals = render::Visuals::capture(&app);
             for sound in app.tick(&input) {
                 audio.play(sound);
             }
             current_visuals = render::Visuals::capture(&app);
+            last_tick_mouse = Some(input.mouse);
             accumulator -= tick_dt;
             ticks_this_frame += 1;
             #[cfg(debug_assertions)]
@@ -97,7 +112,7 @@ pub async fn run() {
         }
         let tick_elapsed = perf_elapsed(tick_start);
 
-        let tick_dt = sim_dt_override.unwrap_or_else(|| app.tick_dt());
+        let tick_dt = effective_tick_dt(&app, sim_dt_override);
         let alpha = if canvas.is_some() {
             1.0
         } else {
@@ -147,12 +162,44 @@ pub async fn run() {
                 blit: blit_elapsed,
                 wait: wait_elapsed,
                 ticks_this_frame,
+                mode: app.visual_mode.label(),
+                tick_dt,
+                pending_tick_debt,
+                residual_tick_debt: accumulator,
             })
         {
             perf.report();
             break;
         }
     }
+}
+
+fn effective_tick_dt(app: &App, sim_dt_override: Option<f64>) -> f64 {
+    sim_dt_override.unwrap_or_else(|| app.tick_dt())
+}
+
+fn pending_tick_count(accumulator: f64, tick_dt: f64) -> u32 {
+    if !(accumulator.is_finite() && tick_dt.is_finite()) || tick_dt <= 0.0 {
+        return 0;
+    }
+    (accumulator / tick_dt).floor().max(0.0) as u32
+}
+
+fn silky_catch_up_mouse(
+    mode: VisualMode,
+    previous_mouse: (f64, f64),
+    current_mouse: (f64, f64),
+    tick_index: u32,
+    ticks_due: u32,
+) -> Option<(f64, f64)> {
+    if mode != VisualMode::Silky || ticks_due <= 1 {
+        return None;
+    }
+    let t = f64::from(tick_index.min(ticks_due)) / f64::from(ticks_due);
+    Some((
+        (current_mouse.0 - previous_mouse.0).mul_add(t, previous_mouse.0),
+        (current_mouse.1 - previous_mouse.1).mul_add(t, previous_mouse.1),
+    ))
 }
 
 fn draw_to_capture_target(
@@ -275,10 +322,10 @@ fn silky_player_prediction_allowed(
 
     let current_rect = SimRect::centered(world.paddle.pos, PADDLE_W, PADDLE_H);
     let predicted_rect = SimRect::centered(predicted_pos, PADDLE_W, PADDLE_H);
-    let swept_rect = silky_player_plane_rect(ball);
-    let current_hit = paddle_contact_matches(ball.prev_rect, swept_rect, current_rect);
-    let predicted_hit = paddle_contact_matches(ball.prev_rect, swept_rect, predicted_rect);
-    current_hit == predicted_hit
+    let crossing = silky_player_plane_crossing(ball);
+    let current_contact = paddle_contact_zone(ball, crossing, world.paddle.pos, current_rect);
+    let predicted_contact = paddle_contact_zone(ball, crossing, predicted_pos, predicted_rect);
+    current_contact == predicted_contact
 }
 
 fn silky_player_contact_is_imminent(ball: &curveball::sim::Ball) -> bool {
@@ -288,16 +335,28 @@ fn silky_player_contact_is_imminent(ball: &curveball::sim::Ball) -> bool {
     dz_per_slice > 0.0 && ball.pos.z <= dz_per_slice * CONTACT_GUARD_SLICES
 }
 
-fn paddle_contact_matches(
-    previous_ball_rect: SimRect,
-    swept_ball_rect: Option<SimRect>,
+fn paddle_contact_zone(
+    ball: &curveball::sim::Ball,
+    crossing: Option<BallPlaneCrossing>,
+    paddle_pos: (f64, f64),
     paddle_rect: SimRect,
-) -> bool {
-    overlap(&previous_ball_rect, &paddle_rect)
-        || swept_ball_rect.is_some_and(|swept| overlap(&swept, &paddle_rect))
+) -> Option<Zone> {
+    let hits = overlap(&ball.prev_rect, &paddle_rect)
+        || crossing.is_some_and(|crossing| overlap(&crossing.rect, &paddle_rect));
+    if !hits {
+        return None;
+    }
+    let hit_pos = crossing.map_or(ball.pos, |crossing| crossing.pos);
+    Some(classify(hit_pos.x, hit_pos.y, paddle_pos.0, paddle_pos.1))
 }
 
-fn silky_player_plane_rect(ball: &curveball::sim::Ball) -> Option<SimRect> {
+#[derive(Debug, Clone, Copy)]
+struct BallPlaneCrossing {
+    pos: Vec3,
+    rect: SimRect,
+}
+
+fn silky_player_plane_crossing(ball: &curveball::sim::Ball) -> Option<BallPlaneCrossing> {
     let start = ball.pos;
     let end = Vec3 {
         x: ball
@@ -315,7 +374,7 @@ fn silky_player_plane_rect(ball: &curveball::sim::Ball) -> Option<SimRect> {
     player_plane_crossing_rect(start, end)
 }
 
-fn player_plane_crossing_rect(start: Vec3, end: Vec3) -> Option<SimRect> {
+fn player_plane_crossing_rect(start: Vec3, end: Vec3) -> Option<BallPlaneCrossing> {
     let dz = end.z - start.z;
     if dz == 0.0 || !(end.z < 0.0 && 0.0 <= start.z) {
         return None;
@@ -326,7 +385,10 @@ fn player_plane_crossing_rect(start: Vec3, end: Vec3) -> Option<SimRect> {
         y: (end.y - start.y).mul_add(t, start.y),
         z: 0.0,
     };
-    Some(ball_rect_at(pos))
+    Some(BallPlaneCrossing {
+        pos,
+        rect: ball_rect_at(pos),
+    })
 }
 
 fn ball_rect_at(pos: Vec3) -> SimRect {
@@ -374,6 +436,42 @@ mod tests {
         let camera = capture_stage_camera();
 
         assert!(camera.zoom.y.is_sign_negative());
+    }
+
+    #[test]
+    fn pending_tick_count_reports_due_fixed_steps() {
+        assert_eq!(pending_tick_count(0.0, 0.1), 0);
+        assert_eq!(pending_tick_count(0.099, 0.1), 0);
+        assert_eq!(pending_tick_count(0.1, 0.1), 1);
+        assert_eq!(pending_tick_count(0.35, 0.1), 3);
+    }
+
+    #[test]
+    fn silky_catch_up_mouse_distributes_frame_delta_across_due_ticks() {
+        assert_eq!(
+            silky_catch_up_mouse(VisualMode::Silky, (0.0, 0.0), (30.0, 60.0), 1, 3),
+            Some((10.0, 20.0))
+        );
+        assert_eq!(
+            silky_catch_up_mouse(VisualMode::Silky, (0.0, 0.0), (30.0, 60.0), 2, 3),
+            Some((20.0, 40.0))
+        );
+        assert_eq!(
+            silky_catch_up_mouse(VisualMode::Silky, (0.0, 0.0), (30.0, 60.0), 3, 3),
+            Some((30.0, 60.0))
+        );
+    }
+
+    #[test]
+    fn catch_up_mouse_keeps_faithful_latch_behavior() {
+        assert_eq!(
+            silky_catch_up_mouse(VisualMode::Faithful, (0.0, 0.0), (30.0, 60.0), 1, 3),
+            None
+        );
+        assert_eq!(
+            silky_catch_up_mouse(VisualMode::Silky, (0.0, 0.0), (30.0, 60.0), 1, 1),
+            None
+        );
     }
 
     fn settled_world() -> World {
@@ -503,6 +601,23 @@ mod tests {
 
         let visuals = render::Visuals::capture(&app);
         let pos = live_visuals(&app, visuals, (-100.0, current.1), 1.0).player_pos;
+
+        assert_eq!(pos, Some(current));
+    }
+
+    #[test]
+    fn silky_live_visuals_hold_paddle_when_imminent_prediction_would_change_zone() {
+        let (mut app, current) = app_with_ball(|ball| {
+            ball.just_spawned = false;
+            ball.pos.x = WORLD_CX + 7.0;
+            ball.pos.z = 0.1;
+            ball.vel.z = -2.0;
+            ball.prev_rect = Rect::centered((WORLD_CX + 7.0, WORLD_CY), 30.0, 30.0);
+        });
+        app.visual_mode = VisualMode::Silky;
+
+        let visuals = render::Visuals::capture(&app);
+        let pos = live_visuals(&app, visuals, (current.0 + 250.0, current.1), 1.0).player_pos;
 
         assert_eq!(pos, Some(current));
     }

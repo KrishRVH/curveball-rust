@@ -642,6 +642,86 @@ fn silky_player_contact_sweeps_between_previous_rect_and_player_plane() {
 }
 
 #[test]
+fn silky_player_contact_classifies_at_plane_crossing_point() {
+    let mut world = flying_ball_world();
+    {
+        let ball = world.ball.as_mut().expect("ball");
+        ball.pos = Vec3 {
+            x: WORLD_CX + 1.5,
+            y: WORLD_CY,
+            z: SILKY_DT_SCALE,
+        };
+        ball.vel = Vec3 {
+            x: 100.0,
+            y: 0.0,
+            z: -2.0,
+        };
+        ball.curve = (0.0, 0.0);
+        ball.prev_rect = Rect::centered((WORLD_CX + 1.5, WORLD_CY), 30.0, 30.0);
+    }
+
+    let events = world.tick_silky_slice(&SimInput {
+        mouse: (WORLD_CX, WORLD_CY),
+        serve_clicks: 0,
+    });
+
+    assert!(
+        matches!(
+            events.as_slice(),
+            [SimEvent::PlayerHit {
+                zone: Zone::C,
+                accuracy: true,
+                ..
+            }]
+        ),
+        "events: {events:?}"
+    );
+    let ball = world.ball.expect("ball");
+    assert_eq!(ball.pos.z, 0.0);
+    assert!((ball.pos.x - (WORLD_CX + 5.25)).abs() < 1e-12);
+}
+
+#[test]
+fn faithful_player_contact_keeps_end_of_tick_zone_classification() {
+    let mut world = flying_ball_world();
+    {
+        let ball = world.ball.as_mut().expect("ball");
+        ball.pos = Vec3 {
+            x: WORLD_CX + 1.5,
+            y: WORLD_CY,
+            z: 1.0,
+        };
+        ball.vel = Vec3 {
+            x: 10.0,
+            y: 0.0,
+            z: -2.0,
+        };
+        ball.curve = (0.0, 0.0);
+        ball.prev_rect = Rect::centered((WORLD_CX + 1.5, WORLD_CY), 30.0, 30.0);
+    }
+
+    let events = world.tick(&SimInput {
+        mouse: (WORLD_CX, WORLD_CY),
+        serve_clicks: 0,
+    });
+
+    assert!(
+        matches!(
+            events.as_slice(),
+            [SimEvent::PlayerHit {
+                zone: Zone::BR,
+                accuracy: false,
+                ..
+            }]
+        ),
+        "events: {events:?}"
+    );
+    let ball = world.ball.expect("ball");
+    assert_eq!(ball.pos.z, 0.0);
+    assert_eq!(ball.pos.x, WORLD_CX + 11.5);
+}
+
+#[test]
 fn player_hit_sound_and_flash_start_on_same_app_tick() {
     let mut world = flying_ball_world();
     {

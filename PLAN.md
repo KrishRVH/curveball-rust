@@ -405,8 +405,10 @@ runs a 400 Hz app/world tick for input, motion, collision/event detection, sound
 Flash-frame counters, score-bonus drain, caret blink, and SWF keyframe animations are scaled to keep
 their original 30 Hz wall-clock speed, and cosmetic keyframes are sampled fractionally at draw time.
 Silky late-samples the mouse immediately before rendering for paddle prediction, gates incoming-ball
-prediction on near-contact hit/miss agreement, and adds swept plane contact checks inside the 400 Hz
-ball/paddle collision slices. Faithful does not use those non-faithful contact or prediction paths.
+prediction on near-contact hit/miss and hit-zone agreement, distributes mouse movement across
+multiple catch-up ticks in one rendered frame, classifies Silky paddle hits at the swept
+plane-crossing point, and adds swept plane contact checks inside the 400 Hz ball/paddle collision
+slices. Faithful does not use those non-faithful contact or prediction paths.
 
 ### 5.3 Quirks ledger — preserve all of these **[VERIFIED]**
 
@@ -720,7 +722,7 @@ Notes: `panic = "abort"` + `lto = "fat"` + `strip = true` in release are compati
 | M3 | Phase machine + HUD + scoring/lives | Full game loop playable start→game over; splash/miss/serve durations are 46/19/n ticks exactly (assert via tick-stamped logs) |
 | M4 | Anim tables + audio | Pip flash, banner, lives pips match §7.4–7.6 tables; 5 sounds fire per §3.8; Q2 quirk demonstrable |
 | M5 | Menus + local high scores + name entry | Round-trips `highscores.txt`; layout anchors per §10 |
-| M6 | Fidelity audit (§15) | Checklist complete; `DEVIATIONS.md` finalized with intentional D1-D14 tradeoffs |
+| M6 | Fidelity audit (§15) | Checklist complete; `DEVIATIONS.md` finalized with intentional D1-D12 and D14 tradeoffs |
 
 ## 14. Test plan — GOLD-1 trajectory (normative values)
 
@@ -777,7 +779,8 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
    (Zen player misses re-serve without decrementing lives or entering Game Over), D10
    (render interpolation smooths high-refresh displays without mutating gameplay), D11
    (experimental sim-rate override is clearly non-faithful), D12 (FPS counter visibility),
-   and D14 (Silky runs a non-faithful 400 Hz app/world tick with wall-clock-scaled counters).
+   and D14 (Silky runs a non-faithful 400 Hz app/world tick with wall-clock-scaled counters,
+   catch-up mouse distribution, zone-aware prediction, and swept crossing contacts).
 6. Close `DEVIATIONS.md`: it must contain only approved fidelity or product-quality deviations
    (currently D1-D12 and D14) plus implementation corrections C1-C4.
 7. Residual-risk check: the normative per-tick entity order (§4: paddle → enemy → ring → ball) follows
@@ -801,7 +804,7 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 | D10 | Render interpolation between 30 Hz sim snapshots plus gated live player-paddle prediction | Smooth, responsive high-refresh presentation without changing gameplay math or desyncing player-hit sounds |
 | D11 | `CURVEBALL_SIM_HZ=<hz>` experimental app/world cadence override | Feel-test alternate rates without changing the mode defaults |
 | D12 | Always-visible FPS counter | Requested frame-pacing visibility |
-| D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz app/world cadence, late mouse sampling, contact-aware prediction, swept contacts, and smoother render keyframes while keeping the faithful default baseline |
+| D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz app/world cadence, late mouse sampling, catch-up mouse distribution, zone-aware prediction, swept crossing contacts, and smoother render keyframes while keeping the faithful default baseline |
 
 ## 17. AS → Rust symbol map
 

@@ -16,6 +16,13 @@ pub struct PerfProbe {
     total_ticks: u64,
     max_ticks_per_frame: u32,
     frames_without_ticks: u64,
+    mode: Option<&'static str>,
+    mode_switches: u32,
+    tick_dt: f64,
+    pending_tick_debt: f64,
+    residual_tick_debt: f64,
+    max_pending_tick_debt: f64,
+    max_residual_tick_debt: f64,
 }
 
 pub struct FrameSample {
@@ -26,6 +33,10 @@ pub struct FrameSample {
     pub blit: Duration,
     pub wait: Duration,
     pub ticks_this_frame: u32,
+    pub mode: &'static str,
+    pub tick_dt: f64,
+    pub pending_tick_debt: f64,
+    pub residual_tick_debt: f64,
 }
 
 impl PerfProbe {
@@ -52,6 +63,13 @@ impl PerfProbe {
             total_ticks: 0,
             max_ticks_per_frame: 0,
             frames_without_ticks: 0,
+            mode: None,
+            mode_switches: 0,
+            tick_dt: 0.0,
+            pending_tick_debt: 0.0,
+            residual_tick_debt: 0.0,
+            max_pending_tick_debt: 0.0,
+            max_residual_tick_debt: 0.0,
         })
     }
 
@@ -70,6 +88,15 @@ impl PerfProbe {
         if sample.ticks_this_frame == 0 {
             self.frames_without_ticks += 1;
         }
+        if self.mode.is_some_and(|mode| mode != sample.mode) {
+            self.mode_switches += 1;
+        }
+        self.mode = Some(sample.mode);
+        self.tick_dt = sample.tick_dt;
+        self.pending_tick_debt += sample.pending_tick_debt;
+        self.residual_tick_debt += sample.residual_tick_debt;
+        self.max_pending_tick_debt = self.max_pending_tick_debt.max(sample.pending_tick_debt);
+        self.max_residual_tick_debt = self.max_residual_tick_debt.max(sample.residual_tick_debt);
         self.frames >= self.limit
     }
 
@@ -101,6 +128,16 @@ impl PerfProbe {
             self.total_ticks as f64 / frames,
             self.max_ticks_per_frame,
             self.frames_without_ticks,
+        );
+        eprintln!(
+            "curveball perf: mode={} effective_tick_hz={:.1} mode_switches={} avg_pending_tick_debt={:.3}ms max_pending_tick_debt={:.3}ms avg_residual_tick_debt={:.3}ms max_residual_tick_debt={:.3}ms",
+            self.mode.unwrap_or("UNKNOWN"),
+            1.0 / self.tick_dt.max(f64::EPSILON),
+            self.mode_switches,
+            self.pending_tick_debt * 1000.0 / frames,
+            self.max_pending_tick_debt * 1000.0,
+            self.residual_tick_debt * 1000.0 / frames,
+            self.max_residual_tick_debt * 1000.0,
         );
     }
 }
