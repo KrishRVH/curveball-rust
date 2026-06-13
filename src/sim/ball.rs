@@ -99,6 +99,31 @@ impl Ball {
             self.curve.1 /= CURVE_DECAY;
         }
 
+        self.resolve_walls()
+    }
+
+    /// Time-scaled integration for Silky mode. Velocities and curve values are
+    /// still expressed in original 30 Hz frame units; `dt_scale` is the
+    /// fraction of one original frame represented by this substep.
+    pub fn integrate_and_walls_scaled(&mut self, dt_scale: f64) -> (bool, bool) {
+        self.vel.x = self.curve.0.mul_add(dt_scale, self.vel.x);
+        self.vel.y = self.curve.1.mul_add(dt_scale, self.vel.y);
+        self.pos.z = self.vel.z.mul_add(dt_scale, self.pos.z);
+        self.pos.x = self.vel.x.mul_add(dt_scale, self.pos.x);
+        self.pos.y = self.vel.y.mul_add(-dt_scale, self.pos.y);
+
+        let decay = CURVE_DECAY.powf(dt_scale);
+        if self.curve.0 != 0.0 {
+            self.curve.0 /= decay;
+        }
+        if self.curve.1 != 0.0 {
+            self.curve.1 /= decay;
+        }
+
+        self.resolve_walls()
+    }
+
+    fn resolve_walls(&mut self) -> (bool, bool) {
         let radius = BALL_DIAMETER / 2.0;
         let mut bounce_y = false;
         let mut bounce_x = false;

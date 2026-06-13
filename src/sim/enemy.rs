@@ -53,4 +53,27 @@ impl Enemy {
         self.speed = (self.pos.0 - self.old.0, self.pos.1 - self.old.1);
         self.old = self.pos;
     }
+
+    /// Time-scaled Silky step. Speeds are reported in original 30 Hz
+    /// frame-equivalent units so paddle-hit curve math stays in the same range.
+    pub fn step_scaled(&mut self, published: &Published, dt_scale: f64) {
+        if self.just_spawned {
+            self.just_spawned = false;
+            return;
+        }
+        let (tx, ty, divisor) = if published.dir.z > 0.0 {
+            (published.pos.x, published.pos.y, self.skill)
+        } else {
+            (WORLD_CX, WORLD_CY, ENEMY_EASE_HOME)
+        };
+        let alpha = 1.0 - (1.0 - 1.0 / divisor).powf(dt_scale);
+        self.pos.0 = (tx - self.pos.0).mul_add(alpha, self.pos.0);
+        self.pos.1 = (ty - self.pos.1).mul_add(alpha, self.pos.1);
+        clamp_to_world(&mut self.pos);
+        self.speed = (
+            (self.pos.0 - self.old.0) / dt_scale,
+            (self.pos.1 - self.old.1) / dt_scale,
+        );
+        self.old = self.pos;
+    }
 }

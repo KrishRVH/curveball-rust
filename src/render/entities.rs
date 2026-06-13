@@ -21,8 +21,22 @@ use super::Visuals;
 use super::anim::{C_PIP_ADD_RED, C_PIP_MULT, HIT_PIP_ALPHA, OTHER_PIP_ALPHA};
 
 const TUNNEL_DEPTHS: [f64; 9] = [0.0, 15.0, 25.0, 35.0, 45.0, 55.0, 65.0, 72.0, 75.0];
+type LineSegment = ((f32, f32), (f32, f32));
+
 static TUNNEL_CORNERS: LazyLock<[[(f32, f32); 4]; TUNNEL_DEPTHS.len()]> =
     LazyLock::new(|| TUNNEL_DEPTHS.map(projected_corners));
+static TUNNEL_SEGMENTS: LazyLock<Vec<LineSegment>> = LazyLock::new(|| {
+    let mut segments = Vec::with_capacity((TUNNEL_DEPTHS.len() - 1) * 8);
+    let mut previous = TUNNEL_CORNERS[0];
+    for corners in &TUNNEL_CORNERS[1..] {
+        for i in 0..4 {
+            segments.push((corners[i], corners[(i + 1) % 4]));
+            segments.push((previous[i], corners[i]));
+        }
+        previous = *corners;
+    }
+    segments
+});
 
 pub fn rgb(c: (u8, u8, u8)) -> Color {
     Color::from_rgba(c.0, c.1, c.2, 255)
@@ -400,33 +414,13 @@ fn projected_corners(z: f64) -> [(f32, f32); 4] {
     ]
 }
 
-fn draw_corner_path(corners: &[(f32, f32); 4], color: Color) {
-    for i in 0..4 {
-        let a = corners[i];
-        let b = corners[(i + 1) % 4];
-        draw_line(a.0, a.1, b.0, b.1, 1.0, color);
-    }
-}
-
 /// Static tunnel lattice used by the richer desktop original: projected world
 /// slices plus corner rails, all generated from the same perspective function
 /// as the ball and collision ring.
 pub fn draw_tunnel_grid() {
     let grid = rgb(COLOR_TUNNEL);
-    let mut previous = TUNNEL_CORNERS[0];
-    for corners in &TUNNEL_CORNERS[1..] {
-        draw_corner_path(corners, grid);
-        for i in 0..4 {
-            draw_line(
-                previous[i].0,
-                previous[i].1,
-                corners[i].0,
-                corners[i].1,
-                1.0,
-                grid,
-            );
-        }
-        previous = *corners;
+    for &(a, b) in TUNNEL_SEGMENTS.iter() {
+        draw_line(a.0, a.1, b.0, b.1, 1.0, grid);
     }
 }
 
@@ -445,20 +439,35 @@ pub fn draw_ring(ring_z: f64) {
     );
 }
 
+fn sample_keyframe<const N: usize>(table: &[u16; N], phase: f32, tail: u16) -> f32 {
+    let last = N - 1;
+    let phase = phase.clamp(0.0, N as f32);
+    if phase >= last as f32 {
+        let t = (phase - last as f32).clamp(0.0, 1.0);
+        return lerp(f32::from(table[last]), f32::from(tail), t);
+    }
+    let idx = phase.floor() as usize;
+    let t = phase - idx as f32;
+    lerp(f32::from(table[idx]), f32::from(table[idx + 1]), t)
+}
+
+fn lerp(a: f32, b: f32, t: f32) -> f32 {
+    (b - a).mul_add(t, a)
+}
+
 /// One flash overlay (or the C pip's red→white ramp on a center hit).
-fn pip_color(zone: Zone, flash: PipFlash) -> Color {
-    let tick = flash.tick as usize;
+fn pip_color(zone: Zone, flash: PipFlash, phase: f32) -> Color {
     if flash.zone == zone {
-        let alpha = f32::from(HIT_PIP_ALPHA[tick.min(9)]) / 256.0;
+        let alpha = sample_keyframe(&HIT_PIP_ALPHA, phase, 0) / 256.0;
         if zone == Zone::C {
             // rgb = (255·mult/256 + add_red, 255·mult/256, 255·mult/256)
-            let mult = f32::from(C_PIP_MULT[tick.min(9)]) / 256.0;
-            let red = (mult + f32::from(C_PIP_ADD_RED[tick.min(9)]) / 255.0).min(1.0);
+            let mult = sample_keyframe(&C_PIP_MULT, phase, 256) / 256.0;
+            let red = (mult + sample_keyframe(&C_PIP_ADD_RED, phase, 0) / 255.0).min(1.0);
             return Color::new(red, mult, mult, alpha);
         }
         return Color::new(1.0, 1.0, 1.0, alpha);
     }
-    let alpha = f32::from(OTHER_PIP_ALPHA[tick.min(9)]) / 256.0;
+    let alpha = sample_keyframe(&OTHER_PIP_ALPHA, phase, 0) / 256.0;
     Color::new(1.0, 1.0, 1.0, alpha)
 }
 
@@ -469,6 +478,7 @@ fn draw_paddle(
     s: f32,
     texture: &Texture2D,
     flash: Option<&PipFlash>,
+    flash_phase: f32,
     hit_outline: Option<Color>,
 ) {
     let (cx, cy) = center;
@@ -501,7 +511,7 @@ fn draw_paddle(
                 dy.mul_add(s, cy) - ph / 2.0,
                 pw,
                 ph,
-                pip_color(zone, *flash),
+                pip_color(zone, *flash, flash_phase),
             );
         }
         draw_rectangle(
@@ -509,7 +519,7 @@ fn draw_paddle(
             cy - ch / 2.0,
             cw,
             ch,
-            pip_color(Zone::C, *flash),
+            pip_color(Zone::C, *flash, flash_phase),
         );
         if let Some(color) = hit_outline {
             draw_hit_pip_outline(center, s, flash.zone, color);
@@ -567,11 +577,15 @@ pub fn draw_enemy(app: &App, textures: &Textures, visuals: &Visuals) {
     let pos = visuals.enemy_pos.unwrap_or(enemy.pos);
     let (vx, vy) = vis(pos.0, pos.1, WORLD_DEPTH);
     let s = scale(WORLD_DEPTH) as f32;
+    let flash_phase = app
+        .enemy_flash
+        .map_or(0.0, |flash| flash_phase(app, visuals, flash));
     draw_paddle(
         (vx as f32, vy as f32),
         s,
         &textures.enemy_paddle,
         app.enemy_flash.as_ref(),
+        flash_phase,
         None,
     );
 }
@@ -585,8 +599,19 @@ pub fn draw_player(app: &App, textures: &Textures, visuals: &Visuals) {
         1.0,
         &textures.player_paddle,
         app.player_flash.as_ref(),
+        app.player_flash
+            .map_or(0.0, |flash| flash_phase(app, visuals, flash)),
         Some(rgb(COLOR_BLUE)),
     );
+}
+
+fn flash_phase(app: &App, visuals: &Visuals, flash: PipFlash) -> f32 {
+    let alpha = if app.visual_mode.smooths_cosmetics() {
+        visuals.cosmetic_alpha
+    } else {
+        0.0
+    };
+    flash.tick as f32 + alpha
 }
 
 /// Depth 20: the ball (or the frozen pop during the Miss phase), drawn at its

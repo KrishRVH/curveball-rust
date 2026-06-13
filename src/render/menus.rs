@@ -3,12 +3,13 @@
 
 use curveball::app::App;
 use curveball::consts::{
-    BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_SCORES, BTN_TITLE_START, BTN_TITLE_ZEN, CONGRATS_BASELINE,
-    CONGRATS_CX, CONGRATS_TEXT, END_MENU_LABEL, GAME_OVER_BASELINE, HS_COL_LEVEL_CX,
-    HS_COL_NAME_CX, HS_COL_SCORE_CX, HS_HEADER_BASELINE, HS_HEADER_LEVEL_CX, HS_HEADER_NAME_CX,
-    HS_HEADER_SCORE_CX, HS_HEADING, HS_MENU_LABEL, HS_PANEL, HS_ROW_BASELINE, HS_ROW_STEP,
-    NAME_BASELINE, NAME_BOX, NAME_INPUT_CX, NAME_LABEL_X, SPLASH_FONT_PX, SUBMIT_RECT,
-    TITLE_BASELINE, TITLE_CX, TITLE_SCORES_LABEL, TITLE_START_LABEL, TITLE_ZEN_LABEL, WORLD_CX,
+    BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_SCORES, BTN_TITLE_SOUND, BTN_TITLE_START,
+    BTN_TITLE_VISUAL, BTN_TITLE_ZEN, CONGRATS_BASELINE, CONGRATS_CX, CONGRATS_TEXT, END_MENU_LABEL,
+    GAME_OVER_BASELINE, HS_COL_LEVEL_CX, HS_COL_NAME_CX, HS_COL_SCORE_CX, HS_HEADER_BASELINE,
+    HS_HEADER_LEVEL_CX, HS_HEADER_NAME_CX, HS_HEADER_SCORE_CX, HS_HEADING, HS_MENU_LABEL, HS_PANEL,
+    HS_ROW_BASELINE, HS_ROW_STEP, NAME_BASELINE, NAME_BOX, NAME_INPUT_CX, NAME_LABEL_X,
+    SPLASH_FONT_PX, SUBMIT_RECT, TITLE_BASELINE, TITLE_CX, TITLE_SCORES_LABEL, TITLE_SOUND_LABEL,
+    TITLE_START_LABEL, TITLE_VISUAL_LABEL, TITLE_ZEN_LABEL, WORLD_CX,
 };
 use macroquad::prelude::*;
 
@@ -132,7 +133,7 @@ fn display_centered(
     text::centered_tracked_aspect(s, cx, baseline, font_px, color, tracking, aspect);
 }
 
-pub fn draw_title() {
+pub fn draw_title(app: &App) {
     display_centered(
         "CURVEBALL",
         TITLE_CX,
@@ -145,6 +146,10 @@ pub fn draw_title() {
     draw_pill(BTN_TITLE_START, "START GAME", TITLE_START_LABEL);
     draw_pill(BTN_TITLE_SCORES, "HIGH SCORES", TITLE_SCORES_LABEL);
     draw_pill(BTN_TITLE_ZEN, "ZEN", TITLE_ZEN_LABEL);
+    let label = text::text_buf::<32>(format_args!("SOUND: {}", app.sound_set.label()));
+    draw_pill(BTN_TITLE_SOUND, label.as_str(), TITLE_SOUND_LABEL);
+    let label = text::text_buf::<32>(format_args!("VISUAL: {}", app.visual_mode.label()));
+    draw_pill(BTN_TITLE_VISUAL, label.as_str(), TITLE_VISUAL_LABEL);
 }
 
 pub fn draw_high_scores(app: &App) {

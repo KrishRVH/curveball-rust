@@ -12,6 +12,7 @@ use curveball::consts::{
 };
 use macroquad::prelude::*;
 
+use super::Visuals;
 use super::anim::BANNER_FRAMES;
 use super::entities::{Textures, rgb, rgba};
 use super::text;
@@ -99,11 +100,14 @@ fn draw_dot(texture: &Texture2D, cx: f32, cy: f32) {
 }
 
 /// Depth 22: animated white bonus text per the §7.5 table.
-pub fn draw_banner(app: &App) {
+pub fn draw_banner(app: &App, visuals: &Visuals) {
     let Some(banner) = &app.banner else { return };
-    let Some(&(rel_y, alpha)) = BANNER_FRAMES.get(banner.tick as usize) else {
-        return;
+    let phase = if app.visual_mode.smooths_cosmetics() {
+        banner.tick as f32 + visuals.cosmetic_alpha
+    } else {
+        banner.tick as f32
     };
+    let (rel_y, alpha) = banner_frame(phase);
     let color = rgba((0xff, 0xff, 0xff), f32::from(alpha) / 256.0);
     text::centered_tracked_aspect(
         banner.kind.text_upper(),
@@ -114,4 +118,36 @@ pub fn draw_banner(app: &App) {
         BANNER_TRACKING,
         BANNER_TEXT_ASPECT,
     );
+}
+
+fn banner_frame(phase: f32) -> (f32, u16) {
+    let phase = phase.clamp(0.0, BANNER_FRAMES.len().saturating_sub(1) as f32);
+    let idx = phase.floor() as usize;
+    let &(y, alpha) = &BANNER_FRAMES[idx];
+    let Some(&(next_y, next_alpha)) = BANNER_FRAMES.get(idx + 1) else {
+        return (y, alpha);
+    };
+    let t = phase - idx as f32;
+    let y = (next_y - y).mul_add(t, y);
+    let alpha = (f32::from(next_alpha) - f32::from(alpha)).mul_add(t, f32::from(alpha));
+    (y, alpha.round() as u16)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn banner_frame_samples_original_keyframes_at_integer_phases() {
+        for (tick, &(y, alpha)) in BANNER_FRAMES.iter().enumerate() {
+            assert_eq!(banner_frame(tick as f32), (y, alpha));
+        }
+    }
+
+    #[test]
+    fn banner_frame_interpolates_between_keyframes() {
+        let (y, alpha) = banner_frame(0.5);
+        assert!((y - 2.075).abs() < f32::EPSILON);
+        assert_eq!(alpha, 9);
+    }
 }

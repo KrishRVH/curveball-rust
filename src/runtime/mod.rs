@@ -6,7 +6,7 @@ mod debug;
 mod input;
 mod perf;
 
-use curveball::app::App;
+use curveball::app::{App, VisualMode};
 #[cfg(debug_assertions)]
 use curveball::consts::{RENDER_SCALE, WORLD_CX, WORLD_CY};
 use curveball::consts::{STAGE_H, STAGE_W};
@@ -81,7 +81,7 @@ pub async fn run() {
             let input = latch.drain();
             previous_visuals = render::Visuals::capture(&app);
             for sound in app.tick(&input) {
-                audio.play(sound);
+                audio.play(app.sound_set, sound);
             }
             current_visuals = render::Visuals::capture(&app);
             accumulator -= sim_dt;
@@ -203,13 +203,17 @@ fn live_visuals(
     if !player_prediction_allowed(world) {
         return visuals;
     }
-    let current = world.paddle.pos;
-    let next = world.paddle.predicted_pos(mouse);
     let alpha = f64::from(alpha.clamp(0.0, 1.0));
-    let pos = (
-        (next.0 - current.0).mul_add(alpha, current.0),
-        (next.1 - current.1).mul_add(alpha, current.1),
-    );
+    let pos = if app.visual_mode == VisualMode::Silky {
+        world.paddle.predicted_pos_scaled(mouse, alpha)
+    } else {
+        let current = world.paddle.pos;
+        let next = world.paddle.predicted_pos(mouse);
+        (
+            (next.0 - current.0).mul_add(alpha, current.0),
+            (next.1 - current.1).mul_add(alpha, current.1),
+        )
+    };
     visuals.with_player_pos(Some(pos))
 }
 

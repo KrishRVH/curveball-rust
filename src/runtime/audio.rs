@@ -5,7 +5,7 @@
 //! A failed decode degrades to silent mode with a log line — audio is never
 //! worth crashing over.
 
-use curveball::app::SoundId;
+use curveball::app::{SoundId, SoundSet};
 
 #[cfg(feature = "audio")]
 use curveball::consts::MASTER_VOLUME;
@@ -21,14 +21,18 @@ use std::time::Duration;
 
 #[cfg(feature = "audio")]
 pub struct Audio {
-    tx: Option<Sender<SoundId>>,
+    tx: Option<Sender<Playback>>,
 }
+
+#[cfg(feature = "audio")]
+type Playback = (SoundSet, SoundId);
 
 #[cfg(feature = "audio")]
 struct Backend {
     _stream: OutputStream,
     handle: OutputStreamHandle,
-    sounds: Sounds,
+    faithful: Sounds,
+    modern: Sounds,
 }
 
 #[cfg(feature = "audio")]
@@ -93,14 +97,14 @@ impl Audio {
         }
     }
 
-    pub fn play(&self, id: SoundId) {
+    pub fn play(&self, set: SoundSet, id: SoundId) {
         let Some(tx) = &self.tx else { return };
-        let _ = tx.send(id);
+        let _ = tx.send((set, id));
     }
 }
 
 #[cfg(feature = "audio")]
-fn audio_thread(rx: Receiver<SoundId>, ready_tx: SyncSender<bool>) {
+fn audio_thread(rx: Receiver<Playback>, ready_tx: SyncSender<bool>) {
     let (stream, handle) = match OutputStream::try_default() {
         Ok(output) => output,
         Err(err) => {
@@ -109,32 +113,52 @@ fn audio_thread(rx: Receiver<SoundId>, ready_tx: SyncSender<bool>) {
             return;
         },
     };
-    let Some(sounds) = Sounds::decode() else {
-        eprintln!("curveball: failed to decode sound effects, running silent");
+    let Some(faithful) = Sounds::decode_faithful() else {
+        eprintln!("curveball: failed to decode faithful sound effects, running silent");
+        let _ = ready_tx.send(false);
+        return;
+    };
+    let Some(modern) = Sounds::decode_modern() else {
+        eprintln!("curveball: failed to decode modern sound effects, running silent");
         let _ = ready_tx.send(false);
         return;
     };
     let backend = Backend {
         _stream: stream,
         handle,
-        sounds,
+        faithful,
+        modern,
     };
 
     let _ = ready_tx.send(true);
-    while let Ok(id) = rx.recv() {
-        play(&backend, id);
+    while let Ok((set, id)) = rx.recv() {
+        play(&backend, set, id);
     }
 }
 
 #[cfg(feature = "audio")]
 impl Sounds {
-    fn decode() -> Option<Self> {
+    fn decode_faithful() -> Option<Self> {
         Some(Self {
             wall1: decode_sound(include_bytes!("../../assets/sounds/wallBounce1.wav"))?,
             wall2: decode_sound(include_bytes!("../../assets/sounds/wallBounce2.wav"))?,
             p_paddle: decode_sound(include_bytes!("../../assets/sounds/pPaddleBounce.wav"))?,
             e_paddle: decode_sound(include_bytes!("../../assets/sounds/ePaddleBounce.wav"))?,
             miss: decode_sound(include_bytes!("../../assets/sounds/missSound.wav"))?,
+        })
+    }
+
+    fn decode_modern() -> Option<Self> {
+        Some(Self {
+            wall1: decode_sound(include_bytes!("../../assets/sounds/modern/wallBounce1.wav"))?,
+            wall2: decode_sound(include_bytes!("../../assets/sounds/modern/wallBounce2.wav"))?,
+            p_paddle: decode_sound(include_bytes!(
+                "../../assets/sounds/modern/pPaddleBounce.wav"
+            ))?,
+            e_paddle: decode_sound(include_bytes!(
+                "../../assets/sounds/modern/ePaddleBounce.wav"
+            ))?,
+            miss: decode_sound(include_bytes!("../../assets/sounds/modern/missSound.wav"))?,
         })
     }
 }
@@ -153,13 +177,17 @@ fn decode_sound(bytes: &'static [u8]) -> Option<DecodedSound> {
 }
 
 #[cfg(feature = "audio")]
-fn play(backend: &Backend, id: SoundId) {
+fn play(backend: &Backend, set: SoundSet, id: SoundId) {
+    let sounds = match set {
+        SoundSet::Faithful => &backend.faithful,
+        SoundSet::Modern => &backend.modern,
+    };
     let sound = match id {
-        SoundId::WallBounce1 => &backend.sounds.wall1,
-        SoundId::WallBounce2 => &backend.sounds.wall2,
-        SoundId::PPaddleBounce => &backend.sounds.p_paddle,
-        SoundId::EPaddleBounce => &backend.sounds.e_paddle,
-        SoundId::Miss => &backend.sounds.miss,
+        SoundId::WallBounce1 => &sounds.wall1,
+        SoundId::WallBounce2 => &sounds.wall2,
+        SoundId::PPaddleBounce => &sounds.p_paddle,
+        SoundId::EPaddleBounce => &sounds.e_paddle,
+        SoundId::Miss => &sounds.miss,
     };
     if let Err(err) = backend
         .handle
@@ -224,9 +252,32 @@ mod tests {
 
     use super::*;
 
+    const MAX_DURATION_DELTA_SECS: f64 = 0.001;
+    const MAX_LEVEL_DELTA_DB: f64 = 0.25;
+
     #[test]
     fn embedded_sounds_decode_to_replayable_buffers() {
-        let sounds = Sounds::decode().expect("embedded wav sounds decode");
+        let faithful = Sounds::decode_faithful().expect("embedded faithful wav sounds decode");
+        let modern = Sounds::decode_modern().expect("embedded modern wav sounds decode");
+        for sounds in [&faithful, &modern] {
+            for sound in [
+                &sounds.wall1,
+                &sounds.wall2,
+                &sounds.p_paddle,
+                &sounds.e_paddle,
+                &sounds.miss,
+            ] {
+                assert_eq!(sound.channels, 1);
+                assert!(sound.sample_rate > 0);
+                assert!(!sound.samples.is_empty());
+                assert!(sound.source().total_duration().is_some());
+            }
+        }
+    }
+
+    #[test]
+    fn modern_sounds_are_high_rate_recreations() {
+        let sounds = Sounds::decode_modern().expect("embedded modern wav sounds decode");
         for sound in [
             &sounds.wall1,
             &sounds.wall2,
@@ -234,16 +285,43 @@ mod tests {
             &sounds.e_paddle,
             &sounds.miss,
         ] {
-            assert!(sound.channels > 0);
-            assert!(sound.sample_rate > 0);
-            assert!(!sound.samples.is_empty());
-            assert!(sound.source().total_duration().is_some());
+            assert_eq!(sound.channels, 1);
+            assert_eq!(sound.sample_rate, 48_000);
+        }
+    }
+
+    #[test]
+    fn modern_sounds_preserve_faithful_duration_loudness_and_peak() {
+        let faithful = Sounds::decode_faithful().expect("embedded faithful wav sounds decode");
+        let modern = Sounds::decode_modern().expect("embedded modern wav sounds decode");
+        for (name, faithful, modern) in [
+            ("wallBounce1", &faithful.wall1, &modern.wall1),
+            ("wallBounce2", &faithful.wall2, &modern.wall2),
+            ("pPaddleBounce", &faithful.p_paddle, &modern.p_paddle),
+            ("ePaddleBounce", &faithful.e_paddle, &modern.e_paddle),
+            ("missSound", &faithful.miss, &modern.miss),
+        ] {
+            let duration_delta = (duration_secs(faithful) - duration_secs(modern)).abs();
+            let rms_delta = (rms_db(faithful) - rms_db(modern)).abs();
+            let peak_delta = (peak_db(faithful) - peak_db(modern)).abs();
+            assert!(
+                duration_delta < MAX_DURATION_DELTA_SECS,
+                "{name} duration changed by {duration_delta:.6}s"
+            );
+            assert!(
+                rms_delta < MAX_LEVEL_DELTA_DB,
+                "{name} RMS changed by {rms_delta:.3} dB"
+            );
+            assert!(
+                peak_delta < MAX_LEVEL_DELTA_DB,
+                "{name} peak changed by {peak_delta:.3} dB"
+            );
         }
     }
 
     #[test]
     fn decoded_sound_sources_share_samples_and_replay_from_start() {
-        let sounds = Sounds::decode().expect("embedded wav sounds decode");
+        let sounds = Sounds::decode_faithful().expect("embedded wav sounds decode");
         let sound = &sounds.p_paddle;
 
         let mut first_trigger = sound.source();
@@ -263,6 +341,29 @@ mod tests {
             )
         );
     }
+
+    fn duration_secs(sound: &DecodedSound) -> f64 {
+        sound.samples.len() as f64 / f64::from(sound.sample_rate) / f64::from(sound.channels)
+    }
+
+    fn rms_db(sound: &DecodedSound) -> f64 {
+        let square_mean = sound
+            .samples
+            .iter()
+            .map(|sample| f64::from(*sample) * f64::from(*sample))
+            .sum::<f64>()
+            / sound.samples.len() as f64;
+        20.0 * square_mean.sqrt().log10()
+    }
+
+    fn peak_db(sound: &DecodedSound) -> f64 {
+        let peak = sound
+            .samples
+            .iter()
+            .map(|sample| sample.abs())
+            .fold(0.0_f32, f32::max);
+        20.0 * f64::from(peak).log10()
+    }
 }
 
 #[cfg(not(feature = "audio"))]
@@ -275,7 +376,7 @@ impl Audio {
         clippy::unused_self,
         reason = "no-audio facade keeps the same method interface as the audio backend"
     )]
-    pub const fn play(&self, _: SoundId) {}
+    pub const fn play(&self, _: SoundSet, _: SoundId) {}
 }
 
 #[cfg(feature = "audio")]

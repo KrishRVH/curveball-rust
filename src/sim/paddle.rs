@@ -45,6 +45,21 @@ impl Paddle {
         self.old = self.pos;
     }
 
+    /// Time-scaled Silky step. `dt_scale = 1.0` is one original 30 Hz frame;
+    /// smaller values preserve the same easing time constant over substeps.
+    pub fn step_scaled(&mut self, mouse: (f64, f64), dt_scale: f64) {
+        if self.just_spawned {
+            self.just_spawned = false;
+            return;
+        }
+        self.pos = self.predicted_pos_scaled(mouse, dt_scale);
+        self.speed = (
+            (self.pos.0 - self.old.0) / dt_scale,
+            (self.pos.1 - self.old.1) / dt_scale,
+        );
+        self.old = self.pos;
+    }
+
     /// Position after one easing step toward `mouse`, without mutating the
     /// paddle. Rendering uses this to reduce live input latency without
     /// changing the fixed-step simulation state.
@@ -56,6 +71,19 @@ impl Paddle {
         let mut pos = self.pos;
         pos.0 -= (pos.0 - mouse.0) / PLAYER_EASE;
         pos.1 -= (pos.1 - mouse.1) / PLAYER_EASE;
+        clamp_to_world(&mut pos);
+        pos
+    }
+
+    #[must_use]
+    pub fn predicted_pos_scaled(&self, mouse: (f64, f64), dt_scale: f64) -> (f64, f64) {
+        if self.just_spawned {
+            return self.pos;
+        }
+        let alpha = 1.0 - (1.0 - 1.0 / PLAYER_EASE).powf(dt_scale);
+        let mut pos = self.pos;
+        pos.0 = (mouse.0 - pos.0).mul_add(alpha, pos.0);
+        pos.1 = (mouse.1 - pos.1).mul_add(alpha, pos.1);
         clamp_to_world(&mut pos);
         pos
     }

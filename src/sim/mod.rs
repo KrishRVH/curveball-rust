@@ -21,7 +21,8 @@ pub use score::{CurveClass, Economy};
 
 use crate::consts::{
     ENEMY_LIVES_INIT, LEVEL_CURVE, LEVEL_SKILL, LEVEL_SPEED, PADDLE_H, PADDLE_W, PLAYER_LIVES_INIT,
-    SERVE_MIN_CURVE, STRICT_LEVEL_11_SOFTLOCK, WORLD_CX, WORLD_CY, WORLD_DEPTH, ZONE_DX, ZONE_DY,
+    SERVE_MIN_CURVE, SILKY_DT_SCALE, STRICT_LEVEL_11_SOFTLOCK, WORLD_CX, WORLD_CY, WORLD_DEPTH,
+    ZONE_DX, ZONE_DY,
 };
 
 /// `_parent.ballPosX/Y/Z` and `ballDirX/Y/Z` parent-timeline variables.
@@ -242,6 +243,33 @@ impl World {
         events
     }
 
+    /// Non-faithful Silky simulation: run `substeps` 400 Hz physics slices
+    /// while the caller's app/timeline tick remains one original 30 Hz frame.
+    pub fn tick_silky(&mut self, input: &SimInput, substeps: u32) -> Vec<SimEvent> {
+        let mut events = Vec::new();
+        let mut ran_ball = false;
+        let mut in_flight = false;
+        for step in 0..substeps {
+            let clicks = if step == 0 { input.serve_clicks } else { 0 };
+            for _ in 0..clicks {
+                self.try_serve(&mut events);
+            }
+            self.paddle.step_scaled(input.mouse, SILKY_DT_SCALE);
+            if let Some(enemy) = &mut self.enemy {
+                enemy.step_scaled(&self.published, SILKY_DT_SCALE);
+            }
+            self.ring_step();
+            if let Some(flight) = self.ball_step_scaled(&mut events, SILKY_DT_SCALE) {
+                ran_ball = true;
+                in_flight = flight;
+            }
+        }
+        if ran_ball {
+            self.economy.drain_tick(in_flight);
+        }
+        events
+    }
+
     fn ring_step(&mut self) {
         if self.ball.is_none() {
             return;
@@ -301,14 +329,22 @@ impl World {
 
     /// frame_92 ball enterFrame.
     fn ball_step(&mut self, events: &mut Vec<SimEvent>) {
-        let Some(ball) = &mut self.ball else { return };
+        if let Some(in_flight) = self.ball_step_scaled(events, 1.0) {
+            self.economy.drain_tick(in_flight);
+        }
+    }
+
+    fn ball_step_scaled(&mut self, events: &mut Vec<SimEvent>, dt_scale: f64) -> Option<bool> {
+        let Some(ball) = &mut self.ball else {
+            return None;
+        };
         if ball.just_spawned {
             // A clip placed at frame N runs its first enterFrame at N + 1.
             ball.just_spawned = false;
-            return;
+            return None;
         }
         if ball.stopped {
-            return;
+            return None;
         }
         // Snapshot reads at the top of the enterFrame — this tick's paddle
         // values (both paddles already ran), cached for the serve handler.
@@ -318,7 +354,11 @@ impl World {
         };
         let enemy_snap = self.enemy.as_ref().map(|e| (e.pos, e.speed));
 
-        let (bounce_x, bounce_y) = ball.integrate_and_walls();
+        let (bounce_x, bounce_y) = if dt_scale < 1.0 {
+            ball.integrate_and_walls_scaled(dt_scale)
+        } else {
+            ball.integrate_and_walls()
+        };
         // The source checks (and sounds) the vertical walls first.
         if bounce_y {
             events.push(SimEvent::WallBounce { horizontal: false });
@@ -382,6 +422,6 @@ impl World {
         // checked at the top): project, publish, drain.
         let pos = ball.project_and_rect();
         self.published = Published { pos, dir: ball.vel };
-        self.economy.drain_tick(ball.vel.z != 0.0);
+        Some(ball.vel.z != 0.0)
     }
 }

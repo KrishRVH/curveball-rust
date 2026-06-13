@@ -10,11 +10,11 @@
 )]
 #![expect(clippy::float_cmp, reason = "the sim specifies exact IEEE comparisons")]
 
-use curveball::app::{App, GameMode, Phase, SoundId, TickInput};
+use curveball::app::{App, GameMode, Phase, SoundId, SoundSet, TickInput, VisualMode};
 use curveball::consts::{
-    BONUS_COUNTER_INIT, BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_START, BTN_TITLE_ZEN, FRAME_PLAY_HOLD,
-    GAME_OVER_TICKS, MISS_TICKS, SPLASH_TICKS, START_GAME_TICKS, WALL_CURVE_DAMP, WORLD_CX,
-    WORLD_CY,
+    BONUS_COUNTER_INIT, BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_SCORES, BTN_TITLE_SOUND,
+    BTN_TITLE_START, BTN_TITLE_VISUAL, BTN_TITLE_ZEN, FRAME_PLAY_HOLD, GAME_OVER_TICKS, MISS_TICKS,
+    SILKY_PHYSICS_HZ, SPLASH_TICKS, START_GAME_TICKS, TICK_HZ, WALL_CURVE_DAMP, WORLD_CX, WORLD_CY,
 };
 use curveball::highscores::ScoreTable;
 use curveball::sim::{
@@ -344,6 +344,32 @@ fn paddle_predicted_pos_matches_next_step_without_mutating() {
         serve_clicks: 0,
     });
     assert_eq!(world.paddle.pos, predicted);
+}
+
+#[test]
+fn silky_400hz_ball_motion_preserves_wall_clock_speed() {
+    let mut world = World::new(Published::default());
+    world.spawn_ball();
+    let ball = world.ball.as_mut().expect("ball");
+    ball.just_spawned = false;
+    ball.vel.z = 2.0;
+
+    let mut accum = 0_u32;
+    for _ in 0..TICK_HZ {
+        accum += SILKY_PHYSICS_HZ;
+        let substeps = accum / TICK_HZ;
+        accum %= TICK_HZ;
+        world.tick_silky(
+            &SimInput {
+                mouse: (WORLD_CX, WORLD_CY),
+                serve_clicks: 0,
+            },
+            substeps,
+        );
+    }
+
+    let ball = world.ball.expect("ball");
+    assert!((ball.pos.z - 60.0).abs() < 1e-9, "z={}", ball.pos.z);
 }
 
 #[test]
@@ -823,6 +849,53 @@ fn full_flow_frame_accurate_timings() {
         app.world.as_ref().is_some_and(|w| w.ball.is_some()),
         "fresh ball at frame 92"
     );
+}
+
+#[test]
+fn title_sound_button_toggles_runtime_sound_set() {
+    let mut app = App::new();
+    assert_eq!(app.phase, Phase::Title);
+    assert_eq!(app.sound_set, SoundSet::Faithful);
+
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_SOUND)]));
+    assert_eq!(app.phase, Phase::Title);
+    assert_eq!(app.sound_set, SoundSet::Modern);
+
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_SOUND)]));
+    assert_eq!(app.phase, Phase::Title);
+    assert_eq!(app.sound_set, SoundSet::Faithful);
+}
+
+#[test]
+fn title_visual_button_toggles_runtime_visual_mode() {
+    let mut app = App::new();
+    assert_eq!(app.phase, Phase::Title);
+    assert_eq!(app.visual_mode, VisualMode::Faithful);
+
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_VISUAL)]));
+    assert_eq!(app.phase, Phase::Title);
+    assert_eq!(app.visual_mode, VisualMode::Silky);
+
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_VISUAL)]));
+    assert_eq!(app.phase, Phase::Title);
+    assert_eq!(app.visual_mode, VisualMode::Faithful);
+}
+
+#[test]
+fn returning_to_title_preserves_runtime_sound_and_visual_settings() {
+    let mut app = App::new();
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_SOUND)]));
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_VISUAL)]));
+    assert_eq!(app.sound_set, SoundSet::Modern);
+    assert_eq!(app.visual_mode, VisualMode::Silky);
+
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_SCORES)]));
+    assert_eq!(app.phase, Phase::HighScores);
+    app.tick(&pinned_input(vec![rect_center(BTN_HS_MENU)]));
+
+    assert_eq!(app.phase, Phase::Title);
+    assert_eq!(app.sound_set, SoundSet::Modern);
+    assert_eq!(app.visual_mode, VisualMode::Silky);
 }
 
 #[test]

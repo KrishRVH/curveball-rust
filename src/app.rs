@@ -8,9 +8,10 @@
 //! entry or the end screen.
 
 use crate::consts::{
-    BTN_END_MENU, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES, BTN_TITLE_START, BTN_TITLE_ZEN,
-    FRAME_BALL_SPAWN, FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD, FRAME_SPLASH_END, GAME_OVER_TICKS,
-    MISS_TICKS, NAME_MAX_LEN, NAME_PLACEHOLDER, SPLASH_TICKS, START_GAME_TICKS,
+    BTN_END_MENU, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES, BTN_TITLE_SOUND, BTN_TITLE_START,
+    BTN_TITLE_VISUAL, BTN_TITLE_ZEN, FRAME_BALL_SPAWN, FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD,
+    FRAME_SPLASH_END, GAME_OVER_TICKS, MISS_TICKS, NAME_MAX_LEN, NAME_PLACEHOLDER,
+    SILKY_PHYSICS_HZ, SPLASH_TICKS, START_GAME_TICKS, TICK_HZ,
 };
 use crate::highscores::ScoreTable;
 use crate::sim::{CurveClass, Published, SimEvent, SimInput, World, Zone};
@@ -47,6 +48,62 @@ pub enum SoundId {
     EPaddleBounce,
     /// Either side misses.
     Miss,
+}
+
+/// Runtime sound asset set. `Faithful` is the extracted SWF audio; `Modern`
+/// keeps the same event mapping while using the recreated 48 kHz clips.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SoundSet {
+    Faithful,
+    Modern,
+}
+
+impl SoundSet {
+    #[must_use]
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Faithful => "FAITHFUL",
+            Self::Modern => "MODERN",
+        }
+    }
+
+    const fn toggled(self) -> Self {
+        match self {
+            Self::Faithful => Self::Modern,
+            Self::Modern => Self::Faithful,
+        }
+    }
+}
+
+/// Runtime presentation mode. `Faithful` keeps the original 30 Hz world math;
+/// `Silky` runs non-faithful 400 Hz world substeps and blends render-only
+/// animation keyframes between fixed app ticks.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VisualMode {
+    Faithful,
+    Silky,
+}
+
+impl VisualMode {
+    #[must_use]
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Faithful => "FAITHFUL",
+            Self::Silky => "SILKY",
+        }
+    }
+
+    #[must_use]
+    pub const fn smooths_cosmetics(self) -> bool {
+        matches!(self, Self::Silky)
+    }
+
+    const fn toggled(self) -> Self {
+        match self {
+            Self::Faithful => Self::Silky,
+            Self::Silky => Self::Faithful,
+        }
+    }
 }
 
 /// Main-timeline position. Counters inside variants are explained in
@@ -185,6 +242,9 @@ pub struct App {
     pub scores: ScoreTable,
     pub name_entry: NameEntry,
     pub mode: GameMode,
+    pub sound_set: SoundSet,
+    pub visual_mode: VisualMode,
+    silky_substep_accum: u32,
     /// Free-running tick counter for the name-entry caret blink (deviation D5).
     pub caret_tick: u32,
 }
@@ -202,6 +262,9 @@ impl App {
             scores: ScoreTable::load(),
             name_entry: NameEntry::new(),
             mode: GameMode::Classic,
+            sound_set: SoundSet::Faithful,
+            visual_mode: VisualMode::Faithful,
+            silky_substep_accum: 0,
             caret_tick: 0,
         }
     }
@@ -225,6 +288,14 @@ impl App {
                     if in_rect(click, BTN_TITLE_ZEN) {
                         self.start_game(GameMode::Zen);
                         break;
+                    }
+                    if in_rect(click, BTN_TITLE_SOUND) {
+                        self.sound_set = self.sound_set.toggled();
+                        continue;
+                    }
+                    if in_rect(click, BTN_TITLE_VISUAL) {
+                        self.visual_mode = self.visual_mode.toggled();
+                        continue;
                     }
                     if in_rect(click, BTN_TITLE_SCORES) {
                         self.phase = Phase::HighScores;
@@ -358,6 +429,7 @@ impl App {
 
     fn start_game(&mut self, mode: GameMode) {
         self.mode = mode;
+        self.silky_substep_accum = 0;
         self.phase = Phase::StartGameInit { tick: 1 };
     }
 
@@ -370,16 +442,32 @@ impl App {
         self.banner = None;
         self.bonus_hud_blanked = false;
         self.name_entry = NameEntry::new();
+        self.silky_substep_accum = 0;
         self.caret_tick = 0;
     }
 
     fn sim_tick(&mut self, input: &TickInput) -> Vec<SimEvent> {
-        self.world.as_mut().map_or_else(Vec::new, |world| {
-            world.tick(&SimInput {
-                mouse: input.mouse,
-                serve_clicks: input.clicks.len() as u32,
-            })
-        })
+        let input = SimInput {
+            mouse: input.mouse,
+            serve_clicks: input.clicks.len() as u32,
+        };
+        if self.visual_mode == VisualMode::Silky {
+            let substeps = self.silky_substeps();
+            return self
+                .world
+                .as_mut()
+                .map_or_else(Vec::new, |world| world.tick_silky(&input, substeps));
+        }
+        self.world
+            .as_mut()
+            .map_or_else(Vec::new, |world| world.tick(&input))
+    }
+
+    fn silky_substeps(&mut self) -> u32 {
+        self.silky_substep_accum += SILKY_PHYSICS_HZ;
+        let substeps = self.silky_substep_accum / TICK_HZ;
+        self.silky_substep_accum %= TICK_HZ;
+        substeps
     }
 
     /// Map sim events to sounds and animation triggers. Returns whether a

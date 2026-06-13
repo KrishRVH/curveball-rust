@@ -1,12 +1,10 @@
-//! Every gameplay- and presentation-relevant constant extracted from `curveball.swf`.
+//! Gameplay- and presentation-relevant constants for the port.
 //!
-//! Each value cites its source: a decompiled script under
-//! `reference/decompiled/scripts/` or the SWF tag stream (the reference kit's
-//! `reference/kit/tags.json`, deepened where needed by
-//! `reference/kit/swf_deep.py` — gradients, cxform keyframes, text runs,
-//! removal depths). Simulation constants are `f64` because AS1
-//! `Number` is an IEEE-754 double; the sim must reproduce its arithmetic bit
-//! for bit.
+//! Faithful values cite their source: a decompiled script under
+//! `reference/decompiled/scripts/` or the SWF tag stream. Port extensions are
+//! marked as deviations in `DEVIATIONS.md`. Simulation constants are `f64`
+//! because AS1 `Number` is an IEEE-754 double; the sim must reproduce its
+//! arithmetic bit for bit.
 
 // ---------------------------------------------------------------------------
 // Runtime
@@ -16,8 +14,14 @@
 pub const STAGE_W: f64 = 350.0;
 /// SWF header: stage is 350×250 px.
 pub const STAGE_H: f64 = 250.0;
+/// SWF header frame rate; one app/sim tick is one original Flash frame.
+pub const TICK_HZ: u32 = 30;
 /// SWF header: 30.0 fps; the game is frame-locked, so one tick = 1/30 s.
-pub const TICK_DT: f64 = 1.0 / 30.0;
+pub const TICK_DT: f64 = 1.0 / TICK_HZ as f64;
+/// Opt-in non-faithful Silky world-physics cadence.
+pub const SILKY_PHYSICS_HZ: u32 = 400;
+/// Fraction of one original Flash frame covered by one Silky physics slice.
+pub const SILKY_DT_SCALE: f64 = TICK_HZ as f64 / SILKY_PHYSICS_HZ as f64;
 /// Native render scale for vector/raster presentation. Simulation and input
 /// stay in the original 350×250 stage coordinates; the render target is 4×.
 pub const RENDER_SCALE: u32 = 4;
@@ -201,6 +205,10 @@ pub const BTN_TITLE_START: (f64, f64, f64, f64) = (140.61, 110.73, 209.99, 120.8
 pub const BTN_TITLE_SCORES: (f64, f64, f64, f64) = (138.51, 127.33, 211.99, 138.58);
 /// Title "zen" — local extension matching the title-menu pill style.
 pub const BTN_TITLE_ZEN: (f64, f64, f64, f64) = (143.50, 144.53, 207.50, 155.83);
+/// Title sound-set toggle — local extension matching the title-menu pill style.
+pub const BTN_TITLE_SOUND: (f64, f64, f64, f64) = (116.50, 161.73, 234.50, 173.03);
+/// Title visual-mode toggle — local extension matching the title-menu pill style.
+pub const BTN_TITLE_VISUAL: (f64, f64, f64, f64) = (116.50, 178.93, 234.50, 190.23);
 /// HighScores "main menu" — button 21 at (176.45, 215.85); pill unscaled (64 × 11.3).
 pub const BTN_HS_MENU: (f64, f64, f64, f64) = (144.45, 210.20, 208.45, 221.50);
 /// End-screen "main menu" — button 21 reused at (174.85, 139.85).
@@ -336,6 +344,10 @@ pub const TITLE_START_LABEL: (f32, f32) = (177.04, 117.91);
 pub const TITLE_SCORES_LABEL: (f32, f32) = (178.15, 135.11);
 /// See [`TITLE_START_LABEL`].
 pub const TITLE_ZEN_LABEL: (f32, f32) = (175.5, 152.31);
+/// See [`TITLE_START_LABEL`].
+pub const TITLE_SOUND_LABEL: (f32, f32) = (175.5, 169.51);
+/// See [`TITLE_START_LABEL`].
+pub const TITLE_VISUAL_LABEL: (f32, f32) = (175.5, 186.71);
 /// See [`TITLE_START_LABEL`].
 pub const HS_MENU_LABEL: (f32, f32) = (179.13, 218.66);
 /// See [`TITLE_START_LABEL`].

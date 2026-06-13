@@ -24,14 +24,15 @@ const FPS_COUNTER_TRACKING: f32 = 0.4;
 const FPS_COUNTER_ASPECT: f32 = 0.72;
 
 /// Cosmetic render snapshots interpolated between fixed 30 Hz simulation
-/// ticks. The sim state remains frame-accurate; this only prevents repeated
-/// visual positions on faster displays.
+/// ticks. In Faithful mode the sim state remains frame-accurate; Silky mode
+/// feeds this with its non-faithful 400 Hz substep results.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Visuals {
     pub(crate) player_pos: Option<(f64, f64)>,
     pub(crate) enemy_pos: Option<(f64, f64)>,
     pub(crate) ball_rect: Option<SimRect>,
     pub(crate) ring_z: Option<f64>,
+    pub(crate) cosmetic_alpha: f32,
 }
 
 impl Visuals {
@@ -45,6 +46,7 @@ impl Visuals {
             enemy_pos: world.enemy.as_ref().map(|enemy| enemy.pos),
             ball_rect: world.ball.as_ref().map(|ball| ball.prev_rect),
             ring_z: world.ball.as_ref().map(|_| world.ring_z),
+            cosmetic_alpha: 0.0,
         }
     }
 
@@ -56,6 +58,7 @@ impl Visuals {
             enemy_pos: blend_point(previous.enemy_pos, current.enemy_pos, alpha),
             ball_rect: blend_rect(previous.ball_rect, current.ball_rect, alpha),
             ring_z: blend_scalar(previous.ring_z, current.ring_z, alpha),
+            cosmetic_alpha: alpha as f32,
         }
     }
 
@@ -255,7 +258,7 @@ pub fn draw_scene(app: &App, textures: &Textures, visuals: &Visuals) {
     match app.phase {
         Phase::Title => {
             entities::draw_tunnel_grid();
-            menus::draw_title();
+            menus::draw_title(app);
         },
         Phase::HighScores => {
             entities::draw_tunnel_grid();
@@ -290,7 +293,7 @@ pub fn draw_scene(app: &App, textures: &Textures, visuals: &Visuals) {
         Phase::GameOver { .. } | Phase::NameEntry | Phase::End => {
             // Paddles/ball/ring are gone; banner bar and HUD persist;
             // "Game Over" sits at the paddle's old depth 43.
-            hud::draw_banner(app);
+            hud::draw_banner(app, visuals);
             hud::draw_text_hud(app);
             hud::draw_lives(app, textures);
             menus::draw_game_over_text();
@@ -319,7 +322,7 @@ fn draw_gameplay(app: &App, textures: &Textures, visuals: &Visuals, show_pop: bo
         entities::draw_ball(app, textures, visuals, show_pop);
     }
     // Depth 22.
-    hud::draw_banner(app);
+    hud::draw_banner(app, visuals);
     // Depths 26–42.
     hud::draw_text_hud(app);
     hud::draw_lives(app, textures);
@@ -356,6 +359,7 @@ mod tests {
                 h: 30.0,
             }),
             ring_z: Some(0.0),
+            cosmetic_alpha: 0.0,
         };
         let current = Visuals {
             player_pos: Some((30.0, 60.0)),
@@ -367,6 +371,7 @@ mod tests {
                 h: 40.0,
             }),
             ring_z: Some(10.0),
+            cosmetic_alpha: 0.0,
         };
 
         let blended = Visuals::between(previous, current, 0.25);
@@ -374,6 +379,7 @@ mod tests {
         assert_eq!(blended.player_pos, Some((15.0, 30.0)));
         assert_eq!(blended.enemy_pos, Some((100.0, 120.0)));
         assert_eq!(blended.ring_z, Some(2.5));
+        assert!((blended.cosmetic_alpha - 0.25).abs() < f32::EPSILON);
         assert_eq!(
             blended.ball_rect,
             Some(SimRect {
