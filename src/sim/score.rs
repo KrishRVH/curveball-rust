@@ -11,7 +11,7 @@
 use crate::consts::{
     ACCURACY_BONUS_INIT, ACCURACY_DEGRADE, BONUS_COUNTER_INIT, BONUS_DISPLAY_INIT,
     BONUS_DRAIN_STEP, CURVE_BONUS_INIT, CURVE_CLASS_HI, CURVE_CLASS_LO, CURVE_DEGRADE, HIT_DEGRADE,
-    HIT_SCORE_INIT, SUPER_CURVE_BONUS_INIT, SUPER_CURVE_DEGRADE,
+    HIT_SCORE_INIT, SILKY_PHYSICS_HZ, SUPER_CURVE_BONUS_INIT, SUPER_CURVE_DEGRADE, TICK_HZ,
 };
 
 /// Outcome of the curve-bonus classification (§3.7 branch order).
@@ -32,6 +32,8 @@ pub struct Economy {
     pub bonus_display: i32,
     /// `world.bonus` — the 11-tick drain counter.
     pub bonus_counter: i32,
+    /// Silky-only fractional original-frame accumulator for bonus drain.
+    pub silky_drain_accum: u32,
 }
 
 impl Economy {
@@ -46,6 +48,7 @@ impl Economy {
             accuracy_bonus: ACCURACY_BONUS_INIT,
             bonus_display: BONUS_DISPLAY_INIT,
             bonus_counter: BONUS_COUNTER_INIT,
+            silky_drain_accum: 0,
         }
     }
 
@@ -58,6 +61,7 @@ impl Economy {
         self.accuracy_bonus = ACCURACY_BONUS_INIT;
         self.bonus_display = BONUS_DISPLAY_INIT;
         self.bonus_counter = BONUS_COUNTER_INIT;
+        self.silky_drain_accum = 0;
     }
 
     /// Player-miss reset: rally bonuses return to initial values;
@@ -135,6 +139,20 @@ impl Economy {
         if self.bonus_counter < 0 {
             self.bonus_counter = BONUS_COUNTER_INIT;
             self.bonus_display -= BONUS_DRAIN_STEP;
+        }
+    }
+
+    /// One 400 Hz Silky world slice. This preserves the original 30 Hz drain
+    /// rate while allowing the ball/paddles/collisions to run every slice.
+    pub fn drain_silky_slice(&mut self, in_flight: bool) {
+        if in_flight && self.bonus_display > 0 {
+            self.silky_drain_accum += TICK_HZ;
+            if self.silky_drain_accum >= SILKY_PHYSICS_HZ {
+                self.silky_drain_accum -= SILKY_PHYSICS_HZ;
+                self.drain_tick(true);
+            }
+        } else {
+            self.drain_tick(false);
         }
     }
 }

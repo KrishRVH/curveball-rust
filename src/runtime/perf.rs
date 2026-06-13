@@ -83,19 +83,19 @@ fn millis(duration: Duration) -> f64 {
     duration.as_secs_f64() * 1000.0
 }
 
-pub fn sim_dt_from_env() -> f64 {
-    let hz = std::env::var("CURVEBALL_SIM_HZ").map_or(30.0, |raw| {
-        parse_sim_hz(&raw).unwrap_or_else(|err| {
-            eprintln!("curveball: invalid CURVEBALL_SIM_HZ value '{raw}': {err}; using 30");
-            30.0
-        })
+pub fn sim_dt_override_from_env() -> Option<f64> {
+    let raw = std::env::var("CURVEBALL_SIM_HZ").ok()?;
+    let hz = parse_sim_hz(&raw).unwrap_or_else(|err| {
+        eprintln!("curveball: invalid CURVEBALL_SIM_HZ value '{raw}': {err}; using mode default");
+        0.0
     });
-    if (hz - 30.0).abs() > f64::EPSILON {
-        eprintln!(
-            "curveball: CURVEBALL_SIM_HZ={hz} is an experimental non-faithful physics/timeline mode"
-        );
+    if hz <= 0.0 {
+        return None;
     }
-    1.0 / hz
+    eprintln!(
+        "curveball: CURVEBALL_SIM_HZ={hz} is an experimental non-faithful app/world cadence override"
+    );
+    Some(1.0 / hz)
 }
 
 fn parse_sim_hz(raw: &str) -> Result<f64, &'static str> {

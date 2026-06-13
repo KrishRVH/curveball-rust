@@ -102,11 +102,12 @@ fn draw_dot(texture: &Texture2D, cx: f32, cy: f32) {
 /// Depth 22: animated white bonus text per the §7.5 table.
 pub fn draw_banner(app: &App, visuals: &Visuals) {
     let Some(banner) = &app.banner else { return };
-    let phase = if app.visual_mode.smooths_cosmetics() {
-        banner.tick as f32 + visuals.cosmetic_alpha
+    let alpha = if app.visual_mode.smooths_cosmetics() {
+        visuals.cosmetic_alpha
     } else {
-        banner.tick as f32
+        0.0
     };
+    let phase = app.flash_phase(banner.tick, alpha);
     let (rel_y, alpha) = banner_frame(phase);
     let color = rgba((0xff, 0xff, 0xff), f32::from(alpha) / 256.0);
     text::centered_tracked_aspect(

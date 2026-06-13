@@ -267,8 +267,8 @@ pub fn draw_name_entry(app: &App) {
         NAME_ENTRY_TEXT_TRACKING,
         NAME_ENTRY_TEXT_ASPECT,
     );
-    // Blinking caret while editing (deviation D5): 15 ticks on, 15 off.
-    let caret = if app.caret_tick % 30 < 15 { "|" } else { "" };
+    // Blinking caret while editing (deviation D5): half a second on/off.
+    let caret = if app.caret_visible() { "|" } else { "" };
     let shown = text::text_buf::<32>(format_args!("{}{caret}", app.name_entry.text));
     text::centered_tracked_aspect(
         shown.as_str(),

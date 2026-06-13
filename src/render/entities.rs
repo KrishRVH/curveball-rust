@@ -611,7 +611,7 @@ fn flash_phase(app: &App, visuals: &Visuals, flash: PipFlash) -> f32 {
     } else {
         0.0
     };
-    flash.tick as f32 + alpha
+    app.flash_phase(flash.tick, alpha)
 }
 
 /// Depth 20: the ball (or the frozen pop during the Miss phase), drawn at its

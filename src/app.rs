@@ -1,11 +1,10 @@
 //! Top-level game: the timeline phase machine (PLAN.md §9), animation clocks,
 //! event → sound/flash/banner mapping, and high-score persistence.
 //!
-//! Phases mirror the main-timeline labels and their frame-accurate timings
-//! (all at 30 Hz): StartGame init spans frames 36–44, the Level splash 45–90,
-//! the Serve/Rally hold sits at frame 96, the Miss pop runs 19 ticks inside
-//! the ball sprite, and Game Over spans frames 97–103 before routing to name
-//! entry or the end screen.
+//! Phases mirror the main-timeline labels and their frame-accurate timings.
+//! Faithful mode advances them at 30 Hz. Silky mode runs the app/world at
+//! 400 Hz and advances those Flash-frame counters through a scaled accumulator
+//! so the wall-clock duration stays the same.
 
 use crate::consts::{
     BTN_END_MENU, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES, BTN_TITLE_SOUND, BTN_TITLE_START,
@@ -75,9 +74,11 @@ impl SoundSet {
     }
 }
 
-/// Runtime presentation mode. `Faithful` keeps the original 30 Hz world math;
-/// `Silky` runs non-faithful 400 Hz world substeps and blends render-only
-/// animation keyframes between fixed app ticks.
+/// Runtime presentation mode.
+///
+/// `Faithful` keeps the original 30 Hz app/world tick. `Silky` runs the
+/// app/world at a non-faithful 400 Hz while preserving the original wall-clock
+/// speed of Flash-frame counters.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum VisualMode {
     Faithful,
@@ -96,6 +97,22 @@ impl VisualMode {
     #[must_use]
     pub const fn smooths_cosmetics(self) -> bool {
         matches!(self, Self::Silky)
+    }
+
+    #[must_use]
+    pub const fn tick_hz(self) -> u32 {
+        match self {
+            Self::Faithful => TICK_HZ,
+            Self::Silky => SILKY_PHYSICS_HZ,
+        }
+    }
+
+    #[must_use]
+    pub const fn flash_frame_scale(self) -> f32 {
+        match self {
+            Self::Faithful => 1.0,
+            Self::Silky => TICK_HZ as f32 / SILKY_PHYSICS_HZ as f32,
+        }
     }
 
     const fn toggled(self) -> Self {
@@ -244,7 +261,7 @@ pub struct App {
     pub mode: GameMode,
     pub sound_set: SoundSet,
     pub visual_mode: VisualMode,
-    silky_substep_accum: u32,
+    silky_frame_accum: u32,
     /// Free-running tick counter for the name-entry caret blink (deviation D5).
     pub caret_tick: u32,
 }
@@ -264,12 +281,13 @@ impl App {
             mode: GameMode::Classic,
             sound_set: SoundSet::Faithful,
             visual_mode: VisualMode::Faithful,
-            silky_substep_accum: 0,
+            silky_frame_accum: 0,
             caret_tick: 0,
         }
     }
 
-    /// Advance one 30 Hz tick. Returns the sounds to start this tick.
+    /// Advance one runtime tick. Faithful ticks at 30 Hz; Silky ticks at
+    /// 400 Hz while scaling Flash-frame counters to preserve wall-clock speed.
     pub fn tick(&mut self, input: &TickInput) -> Vec<SoundId> {
         let mut sounds = Vec::new();
         self.caret_tick = self.caret_tick.wrapping_add(1);
@@ -295,10 +313,11 @@ impl App {
                     }
                     if in_rect(click, BTN_TITLE_VISUAL) {
                         self.visual_mode = self.visual_mode.toggled();
+                        self.reset_silky_frame_clock();
                         continue;
                     }
                     if in_rect(click, BTN_TITLE_SCORES) {
-                        self.phase = Phase::HighScores;
+                        self.enter_phase(Phase::HighScores);
                         break;
                     }
                 }
@@ -309,25 +328,27 @@ impl App {
                 }
             },
             Phase::StartGameInit { tick } => {
-                let t = tick + 1;
-                if t == START_GAME_TICKS {
-                    // frame_44 init: fresh world. D8 resets the title path by
-                    // clearing `world`, but intra-game reroutes preserve the
-                    // published parent-timeline variables.
-                    let published = self
-                        .world
-                        .take()
-                        .map_or_else(Published::default, |w| w.published);
-                    let mut world = World::new(published);
-                    world.unlimited_player_lives = self.mode.unlimited_player_lives();
-                    self.world = Some(world);
-                    self.bonus_hud_blanked = false;
-                    self.player_flash = None;
-                    self.enemy_flash = None;
-                    self.banner = None;
-                    self.phase = Phase::LevelSplash { tick: 0 };
-                } else {
-                    self.phase = Phase::StartGameInit { tick: t };
+                if self.flash_frame_due() {
+                    let t = tick + 1;
+                    if t == START_GAME_TICKS {
+                        // frame_44 init: fresh world. D8 resets the title path by
+                        // clearing `world`, but intra-game reroutes preserve the
+                        // published parent-timeline variables.
+                        let published = self
+                            .world
+                            .take()
+                            .map_or_else(Published::default, |w| w.published);
+                        let mut world = World::new(published);
+                        world.unlimited_player_lives = self.mode.unlimited_player_lives();
+                        self.world = Some(world);
+                        self.bonus_hud_blanked = false;
+                        self.player_flash = None;
+                        self.enemy_flash = None;
+                        self.banner = None;
+                        self.enter_phase(Phase::LevelSplash { tick: 0 });
+                    } else {
+                        self.phase = Phase::StartGameInit { tick: t };
+                    }
                 }
             },
             Phase::LevelSplash { tick } => {
@@ -335,23 +356,25 @@ impl App {
                 // the splash; serve clicks are no-ops with no ball on stage.
                 let events = self.sim_tick(input);
                 self.apply_events(&events, &mut sounds);
-                let t = tick + 1;
-                if t == SPLASH_TICKS {
-                    if let Some(world) = &mut self.world {
-                        world.level_setup();
+                if self.flash_frame_due() {
+                    let t = tick + 1;
+                    if t == SPLASH_TICKS {
+                        if let Some(world) = &mut self.world {
+                            world.level_setup();
+                        }
+                        self.enter_phase(Phase::Playing {
+                            frame: FRAME_SPLASH_END,
+                        });
+                    } else {
+                        self.phase = Phase::LevelSplash { tick: t };
                     }
-                    self.phase = Phase::Playing {
-                        frame: FRAME_SPLASH_END,
-                    };
-                } else {
-                    self.phase = Phase::LevelSplash { tick: t };
                 }
             },
             Phase::Playing { frame } => {
                 let events = self.sim_tick(input);
                 if self.apply_events(&events, &mut sounds) {
-                    self.phase = Phase::Miss { tick: 0 };
-                } else {
+                    self.enter_phase(Phase::Miss { tick: 0 });
+                } else if self.flash_frame_due() {
                     let f = (frame + 1).min(FRAME_PLAY_HOLD);
                     if let Some(world) = &mut self.world {
                         if f == FRAME_ENEMY_SPAWN && world.enemy.is_none() {
@@ -369,30 +392,34 @@ impl App {
                 // entire enterFrame. Pop serves (Q2) arrive via the input phase.
                 let events = self.sim_tick(input);
                 self.apply_events(&events, &mut sounds);
-                let t = tick + 1;
-                if t == MISS_TICKS {
-                    self.route_after_miss();
-                } else {
-                    self.phase = Phase::Miss { tick: t };
+                if self.flash_frame_due() {
+                    let t = tick + 1;
+                    if t == MISS_TICKS {
+                        self.route_after_miss();
+                    } else {
+                        self.phase = Phase::Miss { tick: t };
+                    }
                 }
             },
             Phase::GameOver { tick } => {
                 // No entity clips remain — the sim does not run. The banner
                 // clip persists and keeps animating (handled above).
-                let t = tick + 1;
-                if t == GAME_OVER_TICKS {
-                    let qualified = self
-                        .world
-                        .as_ref()
-                        .is_some_and(|w| self.scores.qualifies(w.economy.score));
-                    if qualified {
-                        self.name_entry = NameEntry::new();
-                        self.phase = Phase::NameEntry;
+                if self.flash_frame_due() {
+                    let t = tick + 1;
+                    if t == GAME_OVER_TICKS {
+                        let qualified = self
+                            .world
+                            .as_ref()
+                            .is_some_and(|w| self.scores.qualifies(w.economy.score));
+                        if qualified {
+                            self.name_entry = NameEntry::new();
+                            self.enter_phase(Phase::NameEntry);
+                        } else {
+                            self.enter_phase(Phase::End);
+                        }
                     } else {
-                        self.phase = Phase::End;
+                        self.phase = Phase::GameOver { tick: t };
                     }
-                } else {
-                    self.phase = Phase::GameOver { tick: t };
                 }
             },
             Phase::NameEntry => {
@@ -415,7 +442,7 @@ impl App {
                         );
                         self.scores.save();
                     }
-                    self.phase = Phase::HighScores;
+                    self.enter_phase(Phase::HighScores);
                 }
             },
             Phase::End => {
@@ -427,14 +454,34 @@ impl App {
         sounds
     }
 
+    #[must_use]
+    pub const fn tick_hz(&self) -> u32 {
+        self.visual_mode.tick_hz()
+    }
+
+    #[must_use]
+    pub fn tick_dt(&self) -> f64 {
+        1.0 / f64::from(self.tick_hz())
+    }
+
+    #[must_use]
+    pub fn flash_phase(&self, elapsed_ticks: u32, alpha: f32) -> f32 {
+        (elapsed_ticks as f32 + alpha) * self.visual_mode.flash_frame_scale()
+    }
+
+    #[must_use]
+    pub fn caret_visible(&self) -> bool {
+        let hz = self.tick_hz();
+        self.caret_tick % hz < hz / 2
+    }
+
     fn start_game(&mut self, mode: GameMode) {
         self.mode = mode;
-        self.silky_substep_accum = 0;
-        self.phase = Phase::StartGameInit { tick: 1 };
+        self.enter_phase(Phase::StartGameInit { tick: 1 });
     }
 
     fn return_to_title(&mut self) {
-        self.phase = Phase::Title;
+        self.enter_phase(Phase::Title);
         self.mode = GameMode::Classic;
         self.world = None;
         self.player_flash = None;
@@ -442,7 +489,6 @@ impl App {
         self.banner = None;
         self.bonus_hud_blanked = false;
         self.name_entry = NameEntry::new();
-        self.silky_substep_accum = 0;
         self.caret_tick = 0;
     }
 
@@ -452,22 +498,35 @@ impl App {
             serve_clicks: input.clicks.len() as u32,
         };
         if self.visual_mode == VisualMode::Silky {
-            let substeps = self.silky_substeps();
             return self
                 .world
                 .as_mut()
-                .map_or_else(Vec::new, |world| world.tick_silky(&input, substeps));
+                .map_or_else(Vec::new, |world| world.tick_silky_slice(&input));
         }
         self.world
             .as_mut()
             .map_or_else(Vec::new, |world| world.tick(&input))
     }
 
-    fn silky_substeps(&mut self) -> u32 {
-        self.silky_substep_accum += SILKY_PHYSICS_HZ;
-        let substeps = self.silky_substep_accum / TICK_HZ;
-        self.silky_substep_accum %= TICK_HZ;
-        substeps
+    fn flash_frame_due(&mut self) -> bool {
+        if self.visual_mode == VisualMode::Faithful {
+            return true;
+        }
+        self.silky_frame_accum += TICK_HZ;
+        if self.silky_frame_accum < SILKY_PHYSICS_HZ {
+            return false;
+        }
+        self.silky_frame_accum -= SILKY_PHYSICS_HZ;
+        true
+    }
+
+    fn enter_phase(&mut self, phase: Phase) {
+        self.phase = phase;
+        self.reset_silky_frame_clock();
+    }
+
+    fn reset_silky_frame_clock(&mut self) {
+        self.silky_frame_accum = 0;
     }
 
     /// Map sim events to sounds and animation triggers. Returns whether a
@@ -522,7 +581,7 @@ impl App {
     /// Sprite-80 frame-20 routing at the end of the pop.
     fn route_after_miss(&mut self) {
         let Some(world) = &mut self.world else {
-            self.phase = Phase::Title;
+            self.enter_phase(Phase::Title);
             return;
         };
         if world.enemy_lives < 1 {
@@ -532,7 +591,7 @@ impl App {
             self.enemy_flash = None;
             self.banner = None;
             // This routing tick renders frame 45 — splash tick 1.
-            self.phase = Phase::LevelSplash { tick: 1 };
+            self.enter_phase(Phase::LevelSplash { tick: 1 });
         } else if world.player_lives < 1 && !self.mode.unlimited_player_lives() {
             // Frame 97 removes the paddles, ball, and ring; the HUD persists
             // with the bonus strings blanked. The banner clip persists too.
@@ -541,14 +600,14 @@ impl App {
             self.player_flash = None;
             self.enemy_flash = None;
             self.bonus_hud_blanked = true;
-            self.phase = Phase::GameOver { tick: 1 };
+            self.enter_phase(Phase::GameOver { tick: 1 });
         } else {
             // Re-serve: gotoAndStop("Serve") lands on frame 91 — the ball and
             // ring are removed and respawn fresh at 92; the enemy persists.
             world.ball = None;
-            self.phase = Phase::Playing {
+            self.enter_phase(Phase::Playing {
                 frame: FRAME_ENEMY_SPAWN,
-            };
+            });
         }
     }
 
@@ -558,23 +617,32 @@ impl App {
     }
 
     fn advance_anims(&mut self) {
-        advance_flash(&mut self.player_flash);
-        advance_flash(&mut self.enemy_flash);
+        advance_flash(&mut self.player_flash, self.visual_mode);
+        advance_flash(&mut self.enemy_flash, self.visual_mode);
         if let Some(banner) = &mut self.banner {
             banner.tick += 1;
-            if banner.tick >= BANNER_TICKS {
+            if animation_complete(banner.tick, BANNER_TICKS, self.visual_mode) {
                 self.banner = None;
             }
         }
     }
 }
 
-fn advance_flash(slot: &mut Option<PipFlash>) {
+fn advance_flash(slot: &mut Option<PipFlash>, visual_mode: VisualMode) {
     if let Some(flash) = slot {
         flash.tick += 1;
-        if flash.tick >= PIP_FLASH_TICKS {
+        if animation_complete(flash.tick, PIP_FLASH_TICKS, visual_mode) {
             *slot = None;
         }
+    }
+}
+
+fn animation_complete(elapsed_ticks: u32, flash_frames: u32, visual_mode: VisualMode) -> bool {
+    match visual_mode {
+        VisualMode::Faithful => elapsed_ticks >= flash_frames,
+        VisualMode::Silky => {
+            elapsed_ticks.saturating_mul(TICK_HZ) >= flash_frames.saturating_mul(SILKY_PHYSICS_HZ)
+        },
     }
 }
 

@@ -18,9 +18,9 @@ pub const STAGE_H: f64 = 250.0;
 pub const TICK_HZ: u32 = 30;
 /// SWF header: 30.0 fps; the game is frame-locked, so one tick = 1/30 s.
 pub const TICK_DT: f64 = 1.0 / TICK_HZ as f64;
-/// Opt-in non-faithful Silky world-physics cadence.
+/// Opt-in non-faithful Silky app/world cadence.
 pub const SILKY_PHYSICS_HZ: u32 = 400;
-/// Fraction of one original Flash frame covered by one Silky physics slice.
+/// Fraction of one original Flash frame covered by one Silky tick.
 pub const SILKY_DT_SCALE: f64 = TICK_HZ as f64 / SILKY_PHYSICS_HZ as f64;
 /// Native render scale for vector/raster presentation. Simulation and input
 /// stay in the original 350×250 stage coordinates; the render target is 4×.

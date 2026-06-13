@@ -23,9 +23,9 @@ const FPS_COUNTER_FONT_PX: u16 = 7;
 const FPS_COUNTER_TRACKING: f32 = 0.4;
 const FPS_COUNTER_ASPECT: f32 = 0.72;
 
-/// Cosmetic render snapshots interpolated between fixed 30 Hz simulation
-/// ticks. In Faithful mode the sim state remains frame-accurate; Silky mode
-/// feeds this with its non-faithful 400 Hz substep results.
+/// Cosmetic render snapshots interpolated between fixed simulation ticks. In
+/// Faithful mode the sim state remains frame-accurate at 30 Hz; Silky mode
+/// feeds this with non-faithful 400 Hz app/world ticks.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Visuals {
     pub(crate) player_pos: Option<(f64, f64)>,

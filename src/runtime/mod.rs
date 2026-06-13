@@ -16,7 +16,7 @@ use self::config::{letterbox, letterbox_viewport};
 #[cfg(debug_assertions)]
 use self::debug::{debug_shot, debug_warp, fixed_mouse_from_env};
 use self::input::InputLatch;
-use self::perf::{PerfProbe, perf_elapsed, perf_now, sim_dt_from_env};
+use self::perf::{PerfProbe, perf_elapsed, perf_now, sim_dt_override_from_env};
 use crate::render;
 
 pub use self::config::window_conf;
@@ -31,7 +31,7 @@ pub async fn run() {
     let mut current_visuals = previous_visuals;
     let mut latch = InputLatch::default();
     let mut accumulator = 0.0_f64;
-    let sim_dt = sim_dt_from_env();
+    let sim_dt_override = sim_dt_override_from_env();
     let mut perf = PerfProbe::from_env();
 
     #[cfg(debug_assertions)]
@@ -66,8 +66,9 @@ pub async fn run() {
         latch.latch(fixed_mouse);
         let latch_elapsed = perf_elapsed(latch_start);
 
+        let tick_dt = sim_dt_override.unwrap_or_else(|| app.tick_dt());
         let frame_time = if canvas.is_some() {
-            sim_dt
+            tick_dt
         } else {
             f64::from(get_frame_time()).min(0.25)
         };
@@ -77,14 +78,15 @@ pub async fn run() {
             clippy::while_float,
             reason = "fixed-timestep accumulator per PLAN.md §5.2"
         )]
-        while accumulator >= sim_dt {
+        while accumulator >= sim_dt_override.unwrap_or_else(|| app.tick_dt()) {
+            let tick_dt = sim_dt_override.unwrap_or_else(|| app.tick_dt());
             let input = latch.drain();
             previous_visuals = render::Visuals::capture(&app);
             for sound in app.tick(&input) {
                 audio.play(app.sound_set, sound);
             }
             current_visuals = render::Visuals::capture(&app);
-            accumulator -= sim_dt;
+            accumulator -= tick_dt;
             #[cfg(debug_assertions)]
             {
                 sim_tick_count += 1;
@@ -92,10 +94,11 @@ pub async fn run() {
         }
         let tick_elapsed = perf_elapsed(tick_start);
 
+        let tick_dt = sim_dt_override.unwrap_or_else(|| app.tick_dt());
         let alpha = if canvas.is_some() {
             1.0
         } else {
-            (accumulator / sim_dt) as f32
+            (accumulator / tick_dt) as f32
         };
         let visuals = render::Visuals::between(previous_visuals, current_visuals, alpha);
         let (scale, off_x, off_y) = letterbox();
@@ -205,7 +208,10 @@ fn live_visuals(
     }
     let alpha = f64::from(alpha.clamp(0.0, 1.0));
     let pos = if app.visual_mode == VisualMode::Silky {
-        world.paddle.predicted_pos_scaled(mouse, alpha)
+        world.paddle.predicted_pos_scaled(
+            mouse,
+            alpha * f64::from(app.visual_mode.flash_frame_scale()),
+        )
     } else {
         let current = world.paddle.pos;
         let next = world.paddle.predicted_pos(mouse);

@@ -10,7 +10,9 @@
 )]
 #![expect(clippy::float_cmp, reason = "the sim specifies exact IEEE comparisons")]
 
-use curveball::app::{App, GameMode, Phase, SoundId, SoundSet, TickInput, VisualMode};
+use curveball::app::{
+    App, GameMode, PIP_FLASH_TICKS, Phase, PipFlash, SoundId, SoundSet, TickInput, VisualMode,
+};
 use curveball::consts::{
     BONUS_COUNTER_INIT, BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_SCORES, BTN_TITLE_SOUND,
     BTN_TITLE_START, BTN_TITLE_VISUAL, BTN_TITLE_ZEN, FRAME_PLAY_HOLD, GAME_OVER_TICKS, MISS_TICKS,
@@ -778,6 +780,10 @@ fn pinned_input(clicks: Vec<(f64, f64)>) -> TickInput {
     }
 }
 
+const fn silky_ticks_for_flash_frames(frames: u32) -> u32 {
+    (frames * SILKY_PHYSICS_HZ).div_ceil(TICK_HZ)
+}
+
 #[test]
 fn full_flow_frame_accurate_timings() {
     let mut app = App::new();
@@ -849,6 +855,112 @@ fn full_flow_frame_accurate_timings() {
         app.world.as_ref().is_some_and(|w| w.ball.is_some()),
         "fresh ball at frame 92"
     );
+}
+
+#[test]
+fn silky_app_ticks_at_400hz_without_speeding_wall_clock() {
+    let mut app = App::new();
+    app.visual_mode = VisualMode::Silky;
+
+    app.tick(&pinned_input(vec![rect_center(BTN_TITLE_START)]));
+    assert_eq!(app.phase, Phase::StartGameInit { tick: 1 });
+
+    let init_ticks = silky_ticks_for_flash_frames(START_GAME_TICKS - 1);
+    for _ in 1..init_ticks {
+        app.tick(&pinned_input(vec![]));
+    }
+    assert!(
+        matches!(app.phase, Phase::StartGameInit { .. }),
+        "init should still be in progress before the scaled wall-clock duration"
+    );
+
+    app.tick(&pinned_input(vec![]));
+    assert_eq!(app.phase, Phase::LevelSplash { tick: 0 });
+    assert!(
+        app.world.is_some(),
+        "world created at the scaled init boundary"
+    );
+}
+
+#[test]
+fn silky_app_tick_advances_one_400hz_world_slice() {
+    let mut world = World::new(Published::default());
+    world.spawn_ball();
+    let ball = world.ball.as_mut().expect("ball");
+    ball.just_spawned = false;
+    ball.vel.z = 2.0;
+
+    let mut app = App::new();
+    app.visual_mode = VisualMode::Silky;
+    app.world = Some(world);
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    for _ in 0..SILKY_PHYSICS_HZ {
+        app.tick(&pinned_input(vec![]));
+    }
+
+    let ball = app
+        .world
+        .as_ref()
+        .and_then(|world| world.ball)
+        .expect("ball");
+    assert!((ball.pos.z - 60.0).abs() < 1e-9, "z={}", ball.pos.z);
+}
+
+#[test]
+fn silky_bonus_drain_keeps_30hz_wall_clock_cadence() {
+    let mut world = World::new(Published::default());
+    world.level_setup();
+    world.spawn_ball();
+    let ball = world.ball.as_mut().expect("ball");
+    ball.just_spawned = false;
+    ball.vel.z = 2.0;
+
+    let mut app = App::new();
+    app.visual_mode = VisualMode::Silky;
+    app.world = Some(world);
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    let first_drain = silky_ticks_for_flash_frames(11);
+    for _ in 1..first_drain {
+        app.tick(&pinned_input(vec![]));
+    }
+    assert_eq!(
+        app.world.as_ref().expect("world").economy.bonus_display,
+        3000
+    );
+
+    app.tick(&pinned_input(vec![]));
+    assert_eq!(
+        app.world.as_ref().expect("world").economy.bonus_display,
+        2975
+    );
+}
+
+#[test]
+fn silky_flash_animation_keeps_original_wall_clock_duration() {
+    let mut app = App::new();
+    app.visual_mode = VisualMode::Silky;
+    app.player_flash = Some(PipFlash {
+        zone: Zone::C,
+        tick: 0,
+    });
+
+    let flash_ticks = silky_ticks_for_flash_frames(PIP_FLASH_TICKS);
+    for _ in 1..flash_ticks {
+        app.tick(&pinned_input(vec![]));
+    }
+    assert!(
+        app.player_flash.is_some(),
+        "flash should still be visible before the scaled wall-clock duration"
+    );
+
+    app.tick(&pinned_input(vec![]));
+    assert!(app.player_flash.is_none());
 }
 
 #[test]

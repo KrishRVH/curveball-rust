@@ -251,15 +251,7 @@ impl World {
         let mut in_flight = false;
         for step in 0..substeps {
             let clicks = if step == 0 { input.serve_clicks } else { 0 };
-            for _ in 0..clicks {
-                self.try_serve(&mut events);
-            }
-            self.paddle.step_scaled(input.mouse, SILKY_DT_SCALE);
-            if let Some(enemy) = &mut self.enemy {
-                enemy.step_scaled(&self.published, SILKY_DT_SCALE);
-            }
-            self.ring_step();
-            if let Some(flight) = self.ball_step_scaled(&mut events, SILKY_DT_SCALE) {
+            if let Some(flight) = self.silky_slice(input.mouse, clicks, &mut events) {
                 ran_ball = true;
                 in_flight = flight;
             }
@@ -268,6 +260,33 @@ impl World {
             self.economy.drain_tick(in_flight);
         }
         events
+    }
+
+    /// One 400 Hz Silky simulation slice. The caller also runs at 400 Hz, so
+    /// world motion and event detection share the same high-rate granularity.
+    pub fn tick_silky_slice(&mut self, input: &SimInput) -> Vec<SimEvent> {
+        let mut events = Vec::new();
+        if let Some(in_flight) = self.silky_slice(input.mouse, input.serve_clicks, &mut events) {
+            self.economy.drain_silky_slice(in_flight);
+        }
+        events
+    }
+
+    fn silky_slice(
+        &mut self,
+        mouse: (f64, f64),
+        serve_clicks: u32,
+        events: &mut Vec<SimEvent>,
+    ) -> Option<bool> {
+        for _ in 0..serve_clicks {
+            self.try_serve(events);
+        }
+        self.paddle.step_scaled(mouse, SILKY_DT_SCALE);
+        if let Some(enemy) = &mut self.enemy {
+            enemy.step_scaled(&self.published, SILKY_DT_SCALE);
+        }
+        self.ring_step();
+        self.ball_step_scaled(events, SILKY_DT_SCALE)
     }
 
     fn ring_step(&mut self) {
