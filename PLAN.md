@@ -400,12 +400,13 @@ loop {
 Input latching: record mouse position each display frame; latch `is_mouse_button_pressed` edges into a
 queue so a click between ticks is never dropped and is consumed by exactly one tick.
 
-Experimental timing override: `CURVEBALL_SIM_HZ=<hz>` changes the fixed-step cadence for feel tests.
-This is intentionally non-faithful because one `App::tick()` is still one original Flash frame; higher
-values therefore accelerate gameplay and timeline clocks. Do not use it for parity captures or tests.
+Experimental timing override: `CURVEBALL_SIM_HZ=<hz>` overrides the selected mode's fixed-step
+cadence for feel tests. This is intentionally non-faithful. Do not use it for parity captures or
+tests.
 The title-menu `VISUAL: FAITHFUL` / `VISUAL: SILKY` toggle (D14) keeps Faithful as the default. Silky
-runs 400 Hz world-physics substeps inside each 30 Hz app/timeline tick, keeps score-bonus drain and
-phase timers on the app cadence, and blends draw-time paddle flash / bonus-banner keyframes.
+runs a 400 Hz app/world tick for input, motion, collision/event detection, sounds, and menu handling.
+Flash-frame counters, score-bonus drain, caret blink, and SWF keyframe animations are scaled to keep
+their original 30 Hz wall-clock speed, and cosmetic keyframes are sampled fractionally at draw time.
 
 ### 5.3 Quirks ledger — preserve all of these **[VERIFIED]**
 
@@ -784,7 +785,7 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
    (render interpolation smooths high-refresh displays without mutating gameplay), D11
    (experimental sim-rate override is clearly non-faithful), D12 (FPS counter visibility),
    D13 (Modern audio is opt-in and generated from the faithful source clips), and D14
-   (Silky runs non-faithful 400 Hz world physics plus render-keyframe blending).
+   (Silky runs a non-faithful 400 Hz app/world tick with wall-clock-scaled counters).
 6. Close `DEVIATIONS.md`: it must contain only approved fidelity or product-quality deviations
    (currently D1-D14) plus implementation corrections C1-C4.
 7. Residual-risk check: the normative per-tick entity order (§4: paddle → enemy → ring → ball) follows
@@ -806,10 +807,10 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 | D8 | Post-game main-menu navigation clears stale gameplay state before returning to Title | Fixes restart behavior instead of preserving a SWF timeline wart |
 | D9 | Title-menu Zen mode starts a normal game with unlimited player lives | Requested quality-of-life mode |
 | D10 | Render interpolation between 30 Hz sim snapshots plus gated live player-paddle prediction | Smooth, responsive high-refresh presentation without changing gameplay math or desyncing player-hit sounds |
-| D11 | `CURVEBALL_SIM_HZ=<hz>` experimental sim/timeline-rate override | Feel-test 144/240/400 Hz behavior without changing the faithful default |
+| D11 | `CURVEBALL_SIM_HZ=<hz>` experimental app/world cadence override | Feel-test alternate rates without changing the mode defaults |
 | D12 | Always-visible FPS counter | Requested frame-pacing visibility |
 | D13 | Title-menu Faithful/Modern sound toggle | Higher-quality generated audio mode while keeping extracted SWF sounds as the default baseline |
-| D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz world physics and smoother render keyframes while keeping the faithful default baseline |
+| D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz app/world cadence and smoother render keyframes while keeping the faithful default baseline |
 
 ## 17. AS → Rust symbol map
 

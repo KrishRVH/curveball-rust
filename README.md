@@ -111,7 +111,7 @@ These are intended for parity work and frame-pacing checks.
 | `CURVEBALL_MOUSE=x,y` | Debug-only fixed virtual-stage mouse coordinate for deterministic captures. |
 | `CURVEBALL_SHOT=path.png[:ticks]` | Debug-only deterministic 4x PNG capture after a simulation tick count. |
 | `CURVEBALL_PERF=<frames>` | Print average frame timing over N rendered frames, then exit. |
-| `CURVEBALL_SIM_HZ=<hz>` | Experimental non-faithful sim/timeline cadence override, useful for feel-testing 144/240/400 Hz. |
+| `CURVEBALL_SIM_HZ=<hz>` | Experimental non-faithful app/world cadence override, useful for feel-testing alternate rates. |
 
 Example:
 
@@ -122,10 +122,12 @@ CURVEBALL_SHOT=/tmp/curveball-rally.png:45 \
 cargo run
 ```
 
-By default, gameplay state advances at the original 30 Hz. Rendering is not capped to 30 FPS;
-macroquad renders each display frame, interpolates autonomous visuals between fixed simulation
-snapshots, and renders the live player paddle toward the latest mouse sample only when no
+By default, Faithful gameplay state advances at the original 30 Hz. Rendering is not capped to
+30 FPS; macroquad renders each display frame, interpolates autonomous visuals between fixed
+simulation snapshots, and renders the live player paddle toward the latest mouse sample only when no
 player-side hit can occur. During serve, pop, and incoming-player-contact windows, the paddle stays
 synced to the fixed-step simulation so visible hits and paddle sounds land together. `VISUAL: SILKY`
-runs non-faithful 400 Hz world-physics substeps inside each 30 Hz app tick and blends paddle flash /
-bonus-banner keyframes between fixed ticks. A small FPS counter is always visible at the top left.
+runs a non-faithful 400 Hz app/world tick for input consumption, ball and paddle motion, enemy
+tracking, collisions, sounds, and menu handling while scaling Flash-frame counters, score-bonus
+drain, caret blink, and keyframe animations to preserve their original wall-clock speed. A small FPS
+counter is always visible at the top left.
