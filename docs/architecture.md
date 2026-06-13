@@ -49,7 +49,10 @@ flowchart TD
 
 The default fixed tick is the original 30 Hz. Rendering is display-rate and interpolates only visual
 positions; collision, scoring, AI, timeline phases, sound events, and high-score routing still happen
-inside `App::tick()`.
+inside `App::tick()`. The player paddle also renders toward the latest display-frame mouse sample,
+but only while no player-side contact can happen. During serve, miss-pop, and incoming player-hit
+windows, the rendered paddle stays on the fixed-step snapshot so the visible hit and sound trigger
+land on the same original tick.
 
 ```mermaid
 sequenceDiagram
@@ -104,7 +107,10 @@ That is not the canonical macroquad-only audio path. A small macroquad game woul
 `macroquad::audio`. This project avoids that backend because enabling `macroquad/audio` starts
 `quad-snd`, which can panic on WSL/Linux hosts without a usable ALSA/PipeWire PCM device before the
 game can choose a silent fallback. `rodio` gives this repo a normal Rust adapter seam: device setup can
-fail, the failure is logged, and the game keeps running.
+fail, the failure is logged, and the game keeps running. When audio is available, the backend decodes
+the five embedded WAV clips once after opening the output stream. Each game sound then starts a fresh
+overlapping source from the decoded sample buffer, matching Flash `Sound.start(0, 1)` without doing
+decode work on the hit path.
 
 ## Intentional Deviations
 
@@ -112,6 +118,7 @@ The implementation contract is [PLAN.md](../PLAN.md). Intentional product or pla
 kept in [DEVIATIONS.md](../DEVIATIONS.md). The most important architectural deviations are:
 
 - gameplay is faithful by default, but rendering is native-scale and interpolated for modern displays;
+- live player-paddle prediction is gated so player hits and hit sounds stay visually synced;
 - audio degrades to silence on broken hosts instead of crashing;
 - high scores are local because the original PHP endpoints are gone;
 - Zen mode is a Rust-only quality-of-life option;

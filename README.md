@@ -41,7 +41,9 @@ High scores are stored as `highscores.txt` beside the executable, for example
 Default builds include sound effects through `rodio`. Macroquad stays graphics-only, which avoids
 `quad-snd` audio-thread panics on hosts without a usable ALSA/PipeWire route. If no output device is
 detected, the game auto-detects that and runs silent instead of crashing. WSL is conservative by
-default: it starts silent unless you explicitly force an audio probe.
+default: it starts silent unless you explicitly force an audio probe. When audio is enabled, the
+runtime decodes the five embedded WAV clips once at startup and starts a fresh overlapping source per
+trigger, so hit sounds do not pay decode work at contact time.
 
 Useful options:
 
@@ -76,8 +78,11 @@ Use Rust `1.96.0` or newer.
 ```bash
 cargo fmt --check
 cargo test
+cargo test --no-default-features
+cargo test --no-default-features --features runtime
 cargo clippy --all-targets --all-features -- -D warnings
 cargo clippy --all-targets --no-default-features -- -D warnings
+cargo clippy --all-targets --no-default-features --features runtime -- -D warnings
 ```
 
 The release profile is optimized for the desktop game:
@@ -109,5 +114,7 @@ cargo run
 
 By default, gameplay state advances at the original 30 Hz. Rendering is not capped to 30 FPS;
 macroquad renders each display frame, interpolates autonomous visuals between fixed simulation
-snapshots, and renders the live player paddle toward the latest mouse sample without changing
-collision math. A small FPS counter is always visible at the top left.
+snapshots, and renders the live player paddle toward the latest mouse sample only when no
+player-side hit can occur. During serve, pop, and incoming-player-contact windows, the paddle stays
+synced to the fixed-step simulation so visible hits and paddle sounds land together. A small FPS
+counter is always visible at the top left.

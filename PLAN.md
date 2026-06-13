@@ -377,9 +377,10 @@ relative tolerance, not bit-exact.
 
 ### 5.2 Timing model
 Fixed-timestep accumulator at exactly 30 Hz; render every display frame. D10 interpolates
-cosmetic render snapshots between fixed sim ticks, and the live player paddle renders toward the
-latest mouse sample, so high-refresh displays are smooth while collision/scoring/timeline state
-remains 30 Hz faithful:
+cosmetic render snapshots between fixed sim ticks. The live player paddle renders toward the
+latest mouse sample only when no player-side hit can happen (no ball, or the ball is moving away
+from the player); during serve, pop, and incoming-player-contact windows it stays on the sim
+snapshot so visible hits and paddle sounds land on the same faithful 30 Hz tick:
 
 ```rust
 const DT: f64 = 1.0 / 30.0;
@@ -589,10 +590,11 @@ and some text metrics are the approximation.
 ## 8. Audio
 Embed the 5 WAVs with `include_bytes!`. Default builds use `rodio` for sound output while keeping
 macroquad graphics-only, avoiding `quad-snd` startup panics on Linux hosts without a usable PCM route.
-Triggers exactly as in §3.8 / §4.4 / §4.5: one playback per event, overlapping instances allowed
-(Flash `Sound.start(0, 1)` semantics), at master volume 0.8. If device setup or decode fails, log and
-continue silently. `cargo run --no-default-features --features runtime` compiles the playable silent
-no-op backend; plain `--no-default-features` remains for headless library/tests.
+The runtime decodes the embedded clips once during audio startup. Triggers exactly as in §3.8 /
+§4.4 / §4.5: one playback per event, overlapping instances allowed (Flash `Sound.start(0, 1)`
+semantics), at master volume 0.8. If device setup or decode fails, log and continue silently.
+`cargo run --no-default-features --features runtime` compiles the playable silent no-op backend;
+plain `--no-default-features` remains for headless library/tests.
 
 ---
 
@@ -786,7 +788,7 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 | D7 | Gameplay adds the desktop-reference tunnel lattice and framed paddles | Supplied desktop reference is the visual source of truth |
 | D8 | Post-game main-menu navigation clears stale gameplay state before returning to Title | Fixes restart behavior instead of preserving a SWF timeline wart |
 | D9 | Title-menu Zen mode starts a normal game with unlimited player lives | Requested quality-of-life mode |
-| D10 | Render interpolation between 30 Hz sim snapshots plus live player-paddle prediction | Smooth, responsive high-refresh presentation without changing gameplay math |
+| D10 | Render interpolation between 30 Hz sim snapshots plus gated live player-paddle prediction | Smooth, responsive high-refresh presentation without changing gameplay math or desyncing player-hit sounds |
 | D11 | `CURVEBALL_SIM_HZ=<hz>` experimental sim/timeline-rate override | Feel-test 144/240/400 Hz behavior without changing the faithful default |
 | D12 | Always-visible FPS counter | Requested frame-pacing visibility |
 

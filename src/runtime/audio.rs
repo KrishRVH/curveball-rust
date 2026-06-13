@@ -12,7 +12,10 @@ use curveball::consts::MASTER_VOLUME;
 #[cfg(feature = "audio")]
 use rodio::{Decoder, OutputStream, OutputStreamHandle, Source};
 #[cfg(feature = "audio")]
-use std::sync::mpsc::{self, Receiver, Sender, SyncSender};
+use std::sync::{
+    Arc,
+    mpsc::{self, Receiver, Sender, SyncSender},
+};
 #[cfg(feature = "audio")]
 use std::time::Duration;
 
@@ -29,13 +32,27 @@ struct Backend {
 }
 
 #[cfg(feature = "audio")]
-#[derive(Clone, Copy)]
 struct Sounds {
-    wall1: &'static [u8],
-    wall2: &'static [u8],
-    p_paddle: &'static [u8],
-    e_paddle: &'static [u8],
-    miss: &'static [u8],
+    wall1: DecodedSound,
+    wall2: DecodedSound,
+    p_paddle: DecodedSound,
+    e_paddle: DecodedSound,
+    miss: DecodedSound,
+}
+
+#[cfg(feature = "audio")]
+struct DecodedSound {
+    channels: u16,
+    sample_rate: u32,
+    samples: Arc<[f32]>,
+}
+
+#[cfg(feature = "audio")]
+struct SoundSource {
+    channels: u16,
+    sample_rate: u32,
+    samples: Arc<[f32]>,
+    cursor: usize,
 }
 
 #[cfg(not(feature = "audio"))]
@@ -84,23 +101,23 @@ impl Audio {
 
 #[cfg(feature = "audio")]
 fn audio_thread(rx: Receiver<SoundId>, ready_tx: SyncSender<bool>) {
-    let backend = match OutputStream::try_default() {
-        Ok((stream, handle)) => Backend {
-            _stream: stream,
-            handle,
-            sounds: Sounds {
-                wall1: include_bytes!("../../assets/sounds/wallBounce1.wav"),
-                wall2: include_bytes!("../../assets/sounds/wallBounce2.wav"),
-                p_paddle: include_bytes!("../../assets/sounds/pPaddleBounce.wav"),
-                e_paddle: include_bytes!("../../assets/sounds/ePaddleBounce.wav"),
-                miss: include_bytes!("../../assets/sounds/missSound.wav"),
-            },
-        },
+    let (stream, handle) = match OutputStream::try_default() {
+        Ok(output) => output,
         Err(err) => {
             eprintln!("curveball: audio output unavailable, running silent: {err}");
             let _ = ready_tx.send(false);
             return;
         },
+    };
+    let Some(sounds) = Sounds::decode() else {
+        eprintln!("curveball: failed to decode sound effects, running silent");
+        let _ = ready_tx.send(false);
+        return;
+    };
+    let backend = Backend {
+        _stream: stream,
+        handle,
+        sounds,
     };
 
     let _ = ready_tx.send(true);
@@ -110,24 +127,141 @@ fn audio_thread(rx: Receiver<SoundId>, ready_tx: SyncSender<bool>) {
 }
 
 #[cfg(feature = "audio")]
+impl Sounds {
+    fn decode() -> Option<Self> {
+        Some(Self {
+            wall1: decode_sound(include_bytes!("../../assets/sounds/wallBounce1.wav"))?,
+            wall2: decode_sound(include_bytes!("../../assets/sounds/wallBounce2.wav"))?,
+            p_paddle: decode_sound(include_bytes!("../../assets/sounds/pPaddleBounce.wav"))?,
+            e_paddle: decode_sound(include_bytes!("../../assets/sounds/ePaddleBounce.wav"))?,
+            miss: decode_sound(include_bytes!("../../assets/sounds/missSound.wav"))?,
+        })
+    }
+}
+
+#[cfg(feature = "audio")]
+fn decode_sound(bytes: &'static [u8]) -> Option<DecodedSound> {
+    let decoder = Decoder::new(std::io::Cursor::new(bytes)).ok()?;
+    let channels = decoder.channels();
+    let sample_rate = decoder.sample_rate();
+    let samples = decoder.convert_samples::<f32>().collect::<Vec<_>>();
+    (!samples.is_empty()).then(|| DecodedSound {
+        channels,
+        sample_rate,
+        samples: Arc::from(samples),
+    })
+}
+
+#[cfg(feature = "audio")]
 fn play(backend: &Backend, id: SoundId) {
-    let bytes = match id {
-        SoundId::WallBounce1 => backend.sounds.wall1,
-        SoundId::WallBounce2 => backend.sounds.wall2,
-        SoundId::PPaddleBounce => backend.sounds.p_paddle,
-        SoundId::EPaddleBounce => backend.sounds.e_paddle,
-        SoundId::Miss => backend.sounds.miss,
-    };
-    let cursor = std::io::Cursor::new(bytes);
-    let Ok(source) = Decoder::new(cursor) else {
-        eprintln!("curveball: failed to decode sound effect");
-        return;
+    let sound = match id {
+        SoundId::WallBounce1 => &backend.sounds.wall1,
+        SoundId::WallBounce2 => &backend.sounds.wall2,
+        SoundId::PPaddleBounce => &backend.sounds.p_paddle,
+        SoundId::EPaddleBounce => &backend.sounds.e_paddle,
+        SoundId::Miss => &backend.sounds.miss,
     };
     if let Err(err) = backend
         .handle
-        .play_raw(source.amplify(MASTER_VOLUME).convert_samples())
+        .play_raw(sound.source().amplify(MASTER_VOLUME))
     {
         eprintln!("curveball: failed to play sound effect: {err}");
+    }
+}
+
+#[cfg(feature = "audio")]
+impl DecodedSound {
+    fn source(&self) -> SoundSource {
+        SoundSource {
+            channels: self.channels,
+            sample_rate: self.sample_rate,
+            samples: Arc::clone(&self.samples),
+            cursor: 0,
+        }
+    }
+}
+
+#[cfg(feature = "audio")]
+impl Iterator for SoundSource {
+    type Item = f32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let sample = self.samples.get(self.cursor).copied();
+        self.cursor += usize::from(sample.is_some());
+        sample
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.samples.len().saturating_sub(self.cursor);
+        (remaining, Some(remaining))
+    }
+}
+
+#[cfg(feature = "audio")]
+impl Source for SoundSource {
+    fn current_frame_len(&self) -> Option<usize> {
+        None
+    }
+
+    fn channels(&self) -> u16 {
+        self.channels
+    }
+
+    fn sample_rate(&self) -> u32 {
+        self.sample_rate
+    }
+
+    fn total_duration(&self) -> Option<Duration> {
+        Some(Duration::from_secs_f64(
+            self.samples.len() as f64 / f64::from(self.sample_rate) / f64::from(self.channels),
+        ))
+    }
+}
+
+#[cfg(all(test, feature = "audio"))]
+mod tests {
+    #![expect(clippy::expect_used, reason = "tests assert embedded asset invariants")]
+
+    use super::*;
+
+    #[test]
+    fn embedded_sounds_decode_to_replayable_buffers() {
+        let sounds = Sounds::decode().expect("embedded wav sounds decode");
+        for sound in [
+            &sounds.wall1,
+            &sounds.wall2,
+            &sounds.p_paddle,
+            &sounds.e_paddle,
+            &sounds.miss,
+        ] {
+            assert!(sound.channels > 0);
+            assert!(sound.sample_rate > 0);
+            assert!(!sound.samples.is_empty());
+            assert!(sound.source().total_duration().is_some());
+        }
+    }
+
+    #[test]
+    fn decoded_sound_sources_share_samples_and_replay_from_start() {
+        let sounds = Sounds::decode().expect("embedded wav sounds decode");
+        let sound = &sounds.p_paddle;
+
+        let mut first_trigger = sound.source();
+        let second_trigger = sound.source();
+        assert!(Arc::ptr_eq(&first_trigger.samples, &second_trigger.samples));
+
+        let first_samples = first_trigger.by_ref().take(16).collect::<Vec<_>>();
+        let second_samples = second_trigger.take(16).collect::<Vec<_>>();
+
+        assert_eq!(first_samples.len(), 16);
+        assert_eq!(first_samples, second_samples);
+        assert_eq!(
+            first_trigger.size_hint(),
+            (
+                sound.samples.len().saturating_sub(16),
+                Some(sound.samples.len().saturating_sub(16)),
+            )
+        );
     }
 }
 

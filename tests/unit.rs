@@ -10,10 +10,11 @@
 )]
 #![expect(clippy::float_cmp, reason = "the sim specifies exact IEEE comparisons")]
 
-use curveball::app::{App, GameMode, Phase, TickInput};
+use curveball::app::{App, GameMode, Phase, SoundId, TickInput};
 use curveball::consts::{
-    BONUS_COUNTER_INIT, BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_START, BTN_TITLE_ZEN, GAME_OVER_TICKS,
-    MISS_TICKS, SPLASH_TICKS, START_GAME_TICKS, WALL_CURVE_DAMP, WORLD_CX, WORLD_CY,
+    BONUS_COUNTER_INIT, BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_START, BTN_TITLE_ZEN, FRAME_PLAY_HOLD,
+    GAME_OVER_TICKS, MISS_TICKS, SPLASH_TICKS, START_GAME_TICKS, WALL_CURVE_DAMP, WORLD_CX,
+    WORLD_CY,
 };
 use curveball::highscores::ScoreTable;
 use curveball::sim::{
@@ -583,6 +584,41 @@ fn player_return_curve_uses_current_paddle_speed_without_minimum_injection() {
     assert_eq!(ball.curve.0, -0.4);
     assert_eq!(ball.curve.1, -0.24);
     assert_eq!(world.economy.score, 250, "hitScore + super curve");
+}
+
+#[test]
+fn player_hit_sound_and_flash_start_on_same_app_tick() {
+    let mut world = flying_ball_world();
+    {
+        let ball = world.ball.as_mut().expect("ball");
+        ball.pos = Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: 1.0,
+        };
+        ball.vel = Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: -2.0,
+        };
+        ball.curve = (0.0, 0.0);
+        ball.prev_rect = Rect::centered((WORLD_CX, WORLD_CY), 30.0, 30.0);
+    }
+    let mut app = App::new();
+    app.world = Some(world);
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    let sounds = app.tick(&TickInput {
+        mouse: (WORLD_CX + 15.0, WORLD_CY - 9.0),
+        ..TickInput::default()
+    });
+
+    assert_eq!(sounds, [SoundId::PPaddleBounce]);
+    let flash = app.player_flash.expect("player flash");
+    assert_eq!(flash.zone, Zone::BL);
+    assert_eq!(flash.tick, 0);
 }
 
 // ---------------------------------------------------------------------------

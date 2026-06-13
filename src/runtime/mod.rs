@@ -200,6 +200,9 @@ fn live_visuals(
     let Some(world) = &app.world else {
         return visuals;
     };
+    if !player_prediction_allowed(world) {
+        return visuals;
+    }
     let current = world.paddle.pos;
     let next = world.paddle.predicted_pos(mouse);
     let alpha = f64::from(alpha.clamp(0.0, 1.0));
@@ -208,6 +211,13 @@ fn live_visuals(
         (next.1 - current.1).mul_add(alpha, current.1),
     );
     visuals.with_player_pos(Some(pos))
+}
+
+fn player_prediction_allowed(world: &curveball::sim::World) -> bool {
+    world
+        .ball
+        .as_ref()
+        .is_none_or(|ball| !ball.stopped && ball.vel.z > 0.0)
 }
 
 fn window_stage_camera() -> Camera2D {
@@ -225,7 +235,11 @@ fn capture_stage_camera() -> Camera2D {
 
 #[cfg(test)]
 mod tests {
+    #![expect(clippy::expect_used, reason = "test setup unwraps scenario invariants")]
+
     use super::*;
+    use curveball::consts::{WORLD_CX, WORLD_CY};
+    use curveball::sim::{Ball, Published, SimInput, World};
 
     #[test]
     fn window_stage_camera_uses_y_down_stage_coordinates() {
@@ -245,5 +259,79 @@ mod tests {
         let camera = capture_stage_camera();
 
         assert!(camera.zoom.y.is_sign_negative());
+    }
+
+    fn settled_world() -> World {
+        let mut world = World::new(Published::default());
+        world.tick(&SimInput {
+            mouse: (WORLD_CX, WORLD_CY),
+            serve_clicks: 0,
+        });
+        world
+    }
+
+    fn app_with_world(world: World) -> App {
+        let mut app = App::new();
+        app.world = Some(world);
+        app
+    }
+
+    fn app_with_ball(configure: impl FnOnce(&mut Ball)) -> (App, (f64, f64)) {
+        let mut world = settled_world();
+        world.spawn_ball();
+        configure(world.ball.as_mut().expect("ball"));
+        let current = world.paddle.pos;
+        (app_with_world(world), current)
+    }
+
+    fn live_player_pos(app: &App, current: (f64, f64)) -> Option<(f64, f64)> {
+        let visuals = render::Visuals::capture(app);
+        live_visuals(app, visuals, (current.0 + 15.0, current.1), 1.0).player_pos
+    }
+
+    #[test]
+    fn live_visuals_keep_player_paddle_synced_when_ball_can_hit_player() {
+        let (app, current) = app_with_ball(|ball| {
+            ball.just_spawned = false;
+            ball.vel.z = -1.0;
+        });
+
+        assert_eq!(live_player_pos(&app, current), Some(current));
+    }
+
+    #[test]
+    fn live_visuals_keep_player_paddle_synced_when_ball_is_stopped() {
+        let (app, current) = app_with_ball(|ball| {
+            ball.just_spawned = false;
+            ball.stopped = true;
+            ball.vel.z = 0.0;
+        });
+
+        assert_eq!(live_player_pos(&app, current), Some(current));
+    }
+
+    #[test]
+    fn live_visuals_predict_player_paddle_when_no_ball_exists() {
+        let world = settled_world();
+        let current = world.paddle.pos;
+        let app = app_with_world(world);
+
+        assert_eq!(
+            live_player_pos(&app, current),
+            Some((current.0 + 10.0, current.1))
+        );
+    }
+
+    #[test]
+    fn live_visuals_predict_player_paddle_when_ball_moves_away() {
+        let (app, current) = app_with_ball(|ball| {
+            ball.just_spawned = false;
+            ball.vel.z = 1.0;
+        });
+
+        assert_eq!(
+            live_player_pos(&app, current),
+            Some((current.0 + 10.0, current.1))
+        );
     }
 }
