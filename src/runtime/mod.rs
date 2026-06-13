@@ -85,7 +85,7 @@ pub async fn run() {
             let input = latch.drain();
             previous_visuals = render::Visuals::capture(&app);
             for sound in app.tick(&input) {
-                audio.play(app.sound_set, sound);
+                audio.play(sound);
             }
             current_visuals = render::Visuals::capture(&app);
             accumulator -= tick_dt;

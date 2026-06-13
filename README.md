@@ -31,8 +31,7 @@ Controls:
 - Move the mouse to move the near paddle.
 - Click to serve when the ball is waiting.
 - Type and backspace on the high-score name screen.
-- Main menu buttons: `START GAME`, `ZEN`, `HIGH SCORES`, `SOUND: FAITHFUL` / `SOUND: MODERN`, and
-  `VISUAL: FAITHFUL` / `VISUAL: SILKY`.
+- Main menu buttons: `START GAME`, `ZEN`, `HIGH SCORES`, and `VISUAL: FAITHFUL` / `VISUAL: SILKY`.
 
 High scores are stored as `highscores.txt` beside the executable, for example
 `target/debug/highscores.txt` in debug builds.
@@ -43,11 +42,8 @@ Default builds include sound effects through `rodio`. Macroquad stays graphics-o
 `quad-snd` audio-thread panics on hosts without a usable ALSA/PipeWire route. If no output device is
 detected, the game auto-detects that and runs silent instead of crashing. WSL is conservative by
 default: it starts silent unless you explicitly force an audio probe. When audio is enabled, the
-runtime decodes both embedded sound sets once at startup and starts a fresh overlapping source per
-trigger, so hit sounds do not pay decode work at contact time. `SOUND: FAITHFUL` is the default and
-uses the extracted SWF clips. `SOUND: MODERN` uses regenerated 48 kHz mono recreations from
-`assets/sounds/modern/`, produced from the originals by `reference/kit/recreate_sounds.py` with
-matched timing/level and restrained high-band reconstruction.
+runtime decodes the five extracted SWF clips once at startup and starts a fresh overlapping source
+per trigger, so hit sounds do not pay decode work at contact time.
 
 Useful options:
 
@@ -56,12 +52,6 @@ CURVEBALL_AUDIO=0 cargo run          # force silent runtime mode
 CURVEBALL_AUDIO=1 cargo run          # force audio attempt, including on WSL
 cargo run --no-default-features --features runtime  # run the no-audio backend
 cargo test --no-default-features                    # test the headless library only
-```
-
-Regenerate the modern clips with:
-
-```bash
-python3 reference/kit/recreate_sounds.py
 ```
 
 On WSL2 with WSLg, these packages and a Pulse-backed ALSA default are usually enough:

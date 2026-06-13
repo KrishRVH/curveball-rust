@@ -7,10 +7,10 @@
 //! so the wall-clock duration stays the same.
 
 use crate::consts::{
-    BTN_END_MENU, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES, BTN_TITLE_SOUND, BTN_TITLE_START,
-    BTN_TITLE_VISUAL, BTN_TITLE_ZEN, FRAME_BALL_SPAWN, FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD,
-    FRAME_SPLASH_END, GAME_OVER_TICKS, MISS_TICKS, NAME_MAX_LEN, NAME_PLACEHOLDER,
-    SILKY_PHYSICS_HZ, SPLASH_TICKS, START_GAME_TICKS, TICK_HZ,
+    BTN_END_MENU, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES, BTN_TITLE_START, BTN_TITLE_VISUAL,
+    BTN_TITLE_ZEN, FRAME_BALL_SPAWN, FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD, FRAME_SPLASH_END,
+    GAME_OVER_TICKS, MISS_TICKS, NAME_MAX_LEN, NAME_PLACEHOLDER, SILKY_PHYSICS_HZ, SPLASH_TICKS,
+    START_GAME_TICKS, TICK_HZ,
 };
 use crate::highscores::ScoreTable;
 use crate::sim::{CurveClass, Published, SimEvent, SimInput, World, Zone};
@@ -47,31 +47,6 @@ pub enum SoundId {
     EPaddleBounce,
     /// Either side misses.
     Miss,
-}
-
-/// Runtime sound asset set. `Faithful` is the extracted SWF audio; `Modern`
-/// keeps the same event mapping while using the recreated 48 kHz clips.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SoundSet {
-    Faithful,
-    Modern,
-}
-
-impl SoundSet {
-    #[must_use]
-    pub const fn label(self) -> &'static str {
-        match self {
-            Self::Faithful => "FAITHFUL",
-            Self::Modern => "MODERN",
-        }
-    }
-
-    const fn toggled(self) -> Self {
-        match self {
-            Self::Faithful => Self::Modern,
-            Self::Modern => Self::Faithful,
-        }
-    }
 }
 
 /// Runtime presentation mode.
@@ -259,7 +234,6 @@ pub struct App {
     pub scores: ScoreTable,
     pub name_entry: NameEntry,
     pub mode: GameMode,
-    pub sound_set: SoundSet,
     pub visual_mode: VisualMode,
     silky_frame_accum: u32,
     /// Free-running tick counter for the name-entry caret blink (deviation D5).
@@ -279,7 +253,6 @@ impl App {
             scores: ScoreTable::load(),
             name_entry: NameEntry::new(),
             mode: GameMode::Classic,
-            sound_set: SoundSet::Faithful,
             visual_mode: VisualMode::Faithful,
             silky_frame_accum: 0,
             caret_tick: 0,
@@ -306,10 +279,6 @@ impl App {
                     if in_rect(click, BTN_TITLE_ZEN) {
                         self.start_game(GameMode::Zen);
                         break;
-                    }
-                    if in_rect(click, BTN_TITLE_SOUND) {
-                        self.sound_set = self.sound_set.toggled();
-                        continue;
                     }
                     if in_rect(click, BTN_TITLE_VISUAL) {
                         self.visual_mode = self.visual_mode.toggled();

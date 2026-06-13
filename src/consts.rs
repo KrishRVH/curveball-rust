@@ -205,10 +205,8 @@ pub const BTN_TITLE_START: (f64, f64, f64, f64) = (140.61, 110.73, 209.99, 120.8
 pub const BTN_TITLE_SCORES: (f64, f64, f64, f64) = (138.51, 127.33, 211.99, 138.58);
 /// Title "zen" — local extension matching the title-menu pill style.
 pub const BTN_TITLE_ZEN: (f64, f64, f64, f64) = (143.50, 144.53, 207.50, 155.83);
-/// Title sound-set toggle — local extension matching the title-menu pill style.
-pub const BTN_TITLE_SOUND: (f64, f64, f64, f64) = (116.50, 161.73, 234.50, 173.03);
 /// Title visual-mode toggle — local extension matching the title-menu pill style.
-pub const BTN_TITLE_VISUAL: (f64, f64, f64, f64) = (116.50, 178.93, 234.50, 190.23);
+pub const BTN_TITLE_VISUAL: (f64, f64, f64, f64) = (116.50, 161.73, 234.50, 173.03);
 /// HighScores "main menu" — button 21 at (176.45, 215.85); pill unscaled (64 × 11.3).
 pub const BTN_HS_MENU: (f64, f64, f64, f64) = (144.45, 210.20, 208.45, 221.50);
 /// End-screen "main menu" — button 21 reused at (174.85, 139.85).
@@ -345,9 +343,7 @@ pub const TITLE_SCORES_LABEL: (f32, f32) = (178.15, 135.11);
 /// See [`TITLE_START_LABEL`].
 pub const TITLE_ZEN_LABEL: (f32, f32) = (175.5, 152.31);
 /// See [`TITLE_START_LABEL`].
-pub const TITLE_SOUND_LABEL: (f32, f32) = (175.5, 169.51);
-/// See [`TITLE_START_LABEL`].
-pub const TITLE_VISUAL_LABEL: (f32, f32) = (175.5, 186.71);
+pub const TITLE_VISUAL_LABEL: (f32, f32) = (175.5, 169.51);
 /// See [`TITLE_START_LABEL`].
 pub const HS_MENU_LABEL: (f32, f32) = (179.13, 218.66);
 /// See [`TITLE_START_LABEL`].
