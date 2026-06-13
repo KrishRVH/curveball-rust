@@ -110,7 +110,7 @@ These are intended for parity work and frame-pacing checks.
 | `CURVEBALL_WARP=<state>` | Debug-only warp to `highscores`, `splash`, `serve`, `rally`, `miss`, or game-over routing. |
 | `CURVEBALL_MOUSE=x,y` | Debug-only fixed virtual-stage mouse coordinate for deterministic captures. |
 | `CURVEBALL_SHOT=path.png[:ticks]` | Debug-only deterministic 4x PNG capture after a simulation tick count. |
-| `CURVEBALL_PERF=<frames>` | Print average frame timing over N rendered frames, then exit. |
+| `CURVEBALL_PERF=<frames>` | Print frame-time averages, p95/p99/max timing, and per-frame tick pacing over N rendered frames, then exit. |
 | `CURVEBALL_SIM_HZ=<hz>` | Experimental non-faithful app/world cadence override, useful for feel-testing alternate rates. |
 
 Example:
@@ -129,5 +129,8 @@ player-side hit can occur. During serve, pop, and incoming-player-contact window
 synced to the fixed-step simulation so visible hits and paddle sounds land together. `VISUAL: SILKY`
 runs a non-faithful 400 Hz app/world tick for input consumption, ball and paddle motion, enemy
 tracking, collisions, sounds, and menu handling while scaling Flash-frame counters, score-bonus
-drain, caret blink, and keyframe animations to preserve their original wall-clock speed. A small FPS
-counter is always visible at the top left.
+drain, caret blink, and keyframe animations to preserve their original wall-clock speed. Silky also
+late-samples the mouse for render-only paddle prediction, uses contact-aware prediction near the
+player plane, and performs swept ball/paddle checks inside 400 Hz slices. A small FPS counter is
+always visible at the top left; `CURVEBALL_PERF=<frames>` additionally reports frame-time percentiles
+and per-frame tick pacing.

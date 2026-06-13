@@ -17,17 +17,7 @@ pub struct InputLatch {
 impl InputLatch {
     /// Record this display frame's events in virtual-canvas coordinates.
     pub fn latch(&mut self, fixed_mouse: Option<(f64, f64)>) {
-        if let Some(mouse) = fixed_mouse {
-            self.mouse = mouse;
-        } else {
-            let (scale, off_x, off_y) = letterbox();
-            let (mx, my) = mouse_position();
-            // Unclamped: the paddle clamps itself.
-            self.mouse = (
-                f64::from((mx - off_x) / scale),
-                f64::from((my - off_y) / scale),
-            );
-        }
+        self.mouse = Self::sample_mouse(fixed_mouse);
         if is_mouse_button_pressed(MouseButton::Left) {
             self.clicks.push(self.mouse);
         }
@@ -50,5 +40,21 @@ impl InputLatch {
 
     pub const fn mouse(&self) -> (f64, f64) {
         self.mouse
+    }
+
+    /// Read the latest mouse position in virtual-canvas coordinates without
+    /// consuming button/key edges. Silky render prediction uses this as a
+    /// late-latched sample immediately before drawing.
+    pub fn sample_mouse(fixed_mouse: Option<(f64, f64)>) -> (f64, f64) {
+        if let Some(mouse) = fixed_mouse {
+            return mouse;
+        }
+        let (scale, off_x, off_y) = letterbox();
+        let (mx, my) = mouse_position();
+        // Unclamped: the paddle clamps itself.
+        (
+            f64::from((mx - off_x) / scale),
+            f64::from((my - off_y) / scale),
+        )
     }
 }

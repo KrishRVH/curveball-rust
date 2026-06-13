@@ -47,12 +47,18 @@ flowchart TD
 4. Capture previous/current render snapshots.
 5. Draw one display frame through macroquad.
 
-The default fixed tick is the original 30 Hz. Rendering is display-rate and interpolates only visual
-positions; collision, scoring, AI, timeline phases, sound events, and high-score routing still happen
-inside `App::tick()`. The player paddle also renders toward the latest display-frame mouse sample,
-but only while no player-side contact can happen. During serve, miss-pop, and incoming player-hit
+Faithful mode uses the original 30 Hz fixed tick. Rendering is display-rate and interpolates only
+visual positions; collision, scoring, AI, timeline phases, sound events, and high-score routing still
+happen inside `App::tick()`. The Faithful player paddle renders toward the latest latched mouse
+sample only while no player-side contact can happen. During serve, miss-pop, and incoming player-hit
 windows, the rendered paddle stays on the fixed-step snapshot so the visible hit and sound trigger
 land on the same original tick.
+
+Silky mode is intentionally non-faithful: `App::tick()` and `World::tick_silky_slice()` run at
+400 Hz. The runtime late-samples the mouse immediately before rendering for Silky-only paddle
+prediction, then suppresses prediction near the player plane if the predicted paddle would change the
+visible hit/miss result. The Silky ball path also checks swept contact at the player and enemy depth
+planes inside each 400 Hz slice.
 
 ```mermaid
 sequenceDiagram
@@ -118,7 +124,8 @@ The implementation contract is [PLAN.md](../PLAN.md). Intentional product or pla
 kept in [DEVIATIONS.md](../DEVIATIONS.md). The most important architectural deviations are:
 
 - gameplay is faithful by default, but rendering is native-scale and interpolated for modern displays;
-- live player-paddle prediction is gated so player hits and hit sounds stay visually synced;
+- Silky mode adds non-faithful 400 Hz world ticks, late mouse sampling, contact-aware prediction, and
+  swept paddle contact;
 - audio degrades to silence on broken hosts instead of crashing;
 - high scores are local because the original PHP endpoints are gone;
 - Zen mode is a Rust-only quality-of-life option;

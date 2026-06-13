@@ -12,6 +12,20 @@ pub struct PerfProbe {
     blit: Duration,
     wait: Duration,
     max_frame: Duration,
+    frame_samples: Vec<Duration>,
+    total_ticks: u64,
+    max_ticks_per_frame: u32,
+    frames_without_ticks: u64,
+}
+
+pub struct FrameSample {
+    pub frame: Duration,
+    pub latch: Duration,
+    pub tick: Duration,
+    pub scene: Duration,
+    pub blit: Duration,
+    pub wait: Duration,
+    pub ticks_this_frame: u32,
 }
 
 impl PerfProbe {
@@ -34,38 +48,44 @@ impl PerfProbe {
             blit: Duration::ZERO,
             wait: Duration::ZERO,
             max_frame: Duration::ZERO,
+            frame_samples: Vec::new(),
+            total_ticks: 0,
+            max_ticks_per_frame: 0,
+            frames_without_ticks: 0,
         })
     }
 
-    pub fn record(
-        &mut self,
-        frame: Duration,
-        latch: Duration,
-        tick: Duration,
-        scene: Duration,
-        blit: Duration,
-        wait: Duration,
-    ) -> bool {
+    pub fn record(&mut self, sample: FrameSample) -> bool {
         self.frames += 1;
-        self.total += frame;
-        self.latch += latch;
-        self.tick += tick;
-        self.scene += scene;
-        self.blit += blit;
-        self.wait += wait;
-        self.max_frame = self.max_frame.max(frame);
+        self.total += sample.frame;
+        self.latch += sample.latch;
+        self.tick += sample.tick;
+        self.scene += sample.scene;
+        self.blit += sample.blit;
+        self.wait += sample.wait;
+        self.max_frame = self.max_frame.max(sample.frame);
+        self.frame_samples.push(sample.frame);
+        self.total_ticks += u64::from(sample.ticks_this_frame);
+        self.max_ticks_per_frame = self.max_ticks_per_frame.max(sample.ticks_this_frame);
+        if sample.ticks_this_frame == 0 {
+            self.frames_without_ticks += 1;
+        }
         self.frames >= self.limit
     }
 
     pub fn report(&self) {
         let frames = self.frames.max(1) as f64;
         let total = self.total.as_secs_f64();
+        let mut frame_samples = self.frame_samples.clone();
+        frame_samples.sort_unstable();
         eprintln!(
-            "curveball perf: frames={} elapsed={:.3}s fps={:.1} avg_frame={:.3}ms max_frame={:.3}ms",
+            "curveball perf: frames={} elapsed={:.3}s fps={:.1} avg_frame={:.3}ms p95_frame={:.3}ms p99_frame={:.3}ms max_frame={:.3}ms",
             self.frames,
             total,
             frames / total.max(f64::EPSILON),
             millis(self.total) / frames,
+            millis(percentile(&frame_samples, 0.95)),
+            millis(percentile(&frame_samples, 0.99)),
             millis(self.max_frame),
         );
         eprintln!(
@@ -76,11 +96,25 @@ impl PerfProbe {
             millis(self.blit) / frames,
             millis(self.wait) / frames,
         );
+        eprintln!(
+            "curveball perf: avg_ticks_per_frame={:.2} max_ticks_per_frame={} frames_without_ticks={}",
+            self.total_ticks as f64 / frames,
+            self.max_ticks_per_frame,
+            self.frames_without_ticks,
+        );
     }
 }
 
 fn millis(duration: Duration) -> f64 {
     duration.as_secs_f64() * 1000.0
+}
+
+fn percentile(sorted_samples: &[Duration], percentile: f64) -> Duration {
+    if sorted_samples.is_empty() {
+        return Duration::ZERO;
+    }
+    let rank = ((sorted_samples.len() - 1) as f64 * percentile).round() as usize;
+    sorted_samples[rank.min(sorted_samples.len() - 1)]
 }
 
 pub fn sim_dt_override_from_env() -> Option<f64> {

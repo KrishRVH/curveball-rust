@@ -16,7 +16,8 @@ use curveball::app::{
 use curveball::consts::{
     BONUS_COUNTER_INIT, BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_SCORES, BTN_TITLE_SOUND,
     BTN_TITLE_START, BTN_TITLE_VISUAL, BTN_TITLE_ZEN, FRAME_PLAY_HOLD, GAME_OVER_TICKS, MISS_TICKS,
-    SILKY_PHYSICS_HZ, SPLASH_TICKS, START_GAME_TICKS, TICK_HZ, WALL_CURVE_DAMP, WORLD_CX, WORLD_CY,
+    SILKY_DT_SCALE, SILKY_PHYSICS_HZ, SPLASH_TICKS, START_GAME_TICKS, TICK_HZ, WALL_CURVE_DAMP,
+    WORLD_CX, WORLD_CY,
 };
 use curveball::highscores::ScoreTable;
 use curveball::sim::{
@@ -356,18 +357,11 @@ fn silky_400hz_ball_motion_preserves_wall_clock_speed() {
     ball.just_spawned = false;
     ball.vel.z = 2.0;
 
-    let mut accum = 0_u32;
-    for _ in 0..TICK_HZ {
-        accum += SILKY_PHYSICS_HZ;
-        let substeps = accum / TICK_HZ;
-        accum %= TICK_HZ;
-        world.tick_silky(
-            &SimInput {
-                mouse: (WORLD_CX, WORLD_CY),
-                serve_clicks: 0,
-            },
-            substeps,
-        );
+    for _ in 0..SILKY_PHYSICS_HZ {
+        world.tick_silky_slice(&SimInput {
+            mouse: (WORLD_CX, WORLD_CY),
+            serve_clicks: 0,
+        });
     }
 
     let ball = world.ball.expect("ball");
@@ -612,6 +606,40 @@ fn player_return_curve_uses_current_paddle_speed_without_minimum_injection() {
     assert_eq!(ball.curve.0, -0.4);
     assert_eq!(ball.curve.1, -0.24);
     assert_eq!(world.economy.score, 250, "hitScore + super curve");
+}
+
+#[test]
+fn silky_player_contact_sweeps_between_previous_rect_and_player_plane() {
+    let mut world = flying_ball_world();
+    {
+        let ball = world.ball.as_mut().expect("ball");
+        ball.pos = Vec3 {
+            x: WORLD_CX + 50.0,
+            y: WORLD_CY,
+            z: SILKY_DT_SCALE,
+        };
+        ball.vel = Vec3 {
+            x: -200.0,
+            y: 0.0,
+            z: -2.0,
+        };
+        ball.curve = (0.0, 0.0);
+        // The original previous-rect test alone would miss at this offset.
+        ball.prev_rect = Rect::centered((WORLD_CX + 50.0, WORLD_CY), 30.0, 30.0);
+    }
+
+    let events = world.tick_silky_slice(&SimInput {
+        mouse: (WORLD_CX, WORLD_CY),
+        serve_clicks: 0,
+    });
+
+    assert!(
+        matches!(events.as_slice(), [SimEvent::PlayerHit { .. }]),
+        "events: {events:?}"
+    );
+    let ball = world.ball.expect("ball");
+    assert_eq!(ball.pos.z, 0.0);
+    assert_eq!(ball.vel.z, 2.0);
 }
 
 #[test]

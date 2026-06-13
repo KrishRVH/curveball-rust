@@ -407,6 +407,9 @@ The title-menu `VISUAL: FAITHFUL` / `VISUAL: SILKY` toggle (D14) keeps Faithful 
 runs a 400 Hz app/world tick for input, motion, collision/event detection, sounds, and menu handling.
 Flash-frame counters, score-bonus drain, caret blink, and SWF keyframe animations are scaled to keep
 their original 30 Hz wall-clock speed, and cosmetic keyframes are sampled fractionally at draw time.
+Silky late-samples the mouse immediately before rendering for paddle prediction, gates incoming-ball
+prediction on near-contact hit/miss agreement, and adds swept plane contact checks inside the 400 Hz
+ball/paddle collision slices. Faithful does not use those non-faithful contact or prediction paths.
 
 ### 5.3 Quirks ledger — preserve all of these **[VERIFIED]**
 
@@ -810,7 +813,7 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 | D11 | `CURVEBALL_SIM_HZ=<hz>` experimental app/world cadence override | Feel-test alternate rates without changing the mode defaults |
 | D12 | Always-visible FPS counter | Requested frame-pacing visibility |
 | D13 | Title-menu Faithful/Modern sound toggle | Higher-quality generated audio mode while keeping extracted SWF sounds as the default baseline |
-| D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz app/world cadence and smoother render keyframes while keeping the faithful default baseline |
+| D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz app/world cadence, late mouse sampling, contact-aware prediction, swept contacts, and smoother render keyframes while keeping the faithful default baseline |
 
 ## 17. AS → Rust symbol map
 

@@ -7,16 +7,17 @@ mod input;
 mod perf;
 
 use curveball::app::{App, VisualMode};
+use curveball::consts::{BALL_DIAMETER, PADDLE_H, PADDLE_W, SILKY_DT_SCALE, STAGE_H, STAGE_W};
 #[cfg(debug_assertions)]
 use curveball::consts::{RENDER_SCALE, WORLD_CX, WORLD_CY};
-use curveball::consts::{STAGE_H, STAGE_W};
+use curveball::sim::{Rect as SimRect, Vec3, overlap, scale, vis};
 use macroquad::prelude::*;
 
 use self::config::{letterbox, letterbox_viewport};
 #[cfg(debug_assertions)]
 use self::debug::{debug_shot, debug_warp, fixed_mouse_from_env};
 use self::input::InputLatch;
-use self::perf::{PerfProbe, perf_elapsed, perf_now, sim_dt_override_from_env};
+use self::perf::{FrameSample, PerfProbe, perf_elapsed, perf_now, sim_dt_override_from_env};
 use crate::render;
 
 pub use self::config::window_conf;
@@ -74,6 +75,7 @@ pub async fn run() {
         };
         accumulator += frame_time;
         let tick_start = perf_now(perf.as_ref());
+        let mut ticks_this_frame = 0_u32;
         #[expect(
             clippy::while_float,
             reason = "fixed-timestep accumulator per PLAN.md §5.2"
@@ -87,6 +89,7 @@ pub async fn run() {
             }
             current_visuals = render::Visuals::capture(&app);
             accumulator -= tick_dt;
+            ticks_this_frame += 1;
             #[cfg(debug_assertions)]
             {
                 sim_tick_count += 1;
@@ -109,7 +112,12 @@ pub async fn run() {
             draw_capture_to_window(canvas, scale, off_x, off_y);
             perf_elapsed(blit_start)
         } else {
-            let visuals = live_visuals(&app, visuals, latch.mouse(), alpha);
+            let render_mouse = if app.visual_mode == VisualMode::Silky {
+                InputLatch::sample_mouse(fixed_mouse)
+            } else {
+                latch.mouse()
+            };
+            let visuals = live_visuals(&app, visuals, render_mouse, alpha);
             draw_to_window(scale, off_x, off_y, &app, &textures, &visuals);
             std::time::Duration::ZERO
         };
@@ -131,14 +139,15 @@ pub async fn run() {
         next_frame().await;
         let wait_elapsed = perf_elapsed(wait_start);
         if let Some(perf) = &mut perf
-            && perf.record(
-                perf_elapsed(frame_start),
-                latch_elapsed,
-                tick_elapsed,
-                scene_elapsed,
-                blit_elapsed,
-                wait_elapsed,
-            )
+            && perf.record(FrameSample {
+                frame: perf_elapsed(frame_start),
+                latch: latch_elapsed,
+                tick: tick_elapsed,
+                scene: scene_elapsed,
+                blit: blit_elapsed,
+                wait: wait_elapsed,
+                ticks_this_frame,
+            })
         {
             perf.report();
             break;
@@ -203,31 +212,127 @@ fn live_visuals(
     let Some(world) = &app.world else {
         return visuals;
     };
-    if !player_prediction_allowed(world) {
-        return visuals;
-    }
     let alpha = f64::from(alpha.clamp(0.0, 1.0));
-    let pos = if app.visual_mode == VisualMode::Silky {
-        world.paddle.predicted_pos_scaled(
-            mouse,
-            alpha * f64::from(app.visual_mode.flash_frame_scale()),
-        )
-    } else {
-        let current = world.paddle.pos;
-        let next = world.paddle.predicted_pos(mouse);
-        (
-            (next.0 - current.0).mul_add(alpha, current.0),
-            (next.1 - current.1).mul_add(alpha, current.1),
-        )
+    let pos = match app.visual_mode {
+        VisualMode::Faithful => faithful_live_player_pos(world, mouse, alpha),
+        VisualMode::Silky => silky_live_player_pos(world, mouse, alpha),
     };
-    visuals.with_player_pos(Some(pos))
+    pos.map_or(visuals, |pos| visuals.with_player_pos(Some(pos)))
 }
 
-fn player_prediction_allowed(world: &curveball::sim::World) -> bool {
+fn faithful_live_player_pos(
+    world: &curveball::sim::World,
+    mouse: (f64, f64),
+    alpha: f64,
+) -> Option<(f64, f64)> {
+    if !faithful_player_prediction_allowed(world) {
+        return None;
+    }
+    let current = world.paddle.pos;
+    let next = world.paddle.predicted_pos(mouse);
+    Some((
+        (next.0 - current.0).mul_add(alpha, current.0),
+        (next.1 - current.1).mul_add(alpha, current.1),
+    ))
+}
+
+fn silky_live_player_pos(
+    world: &curveball::sim::World,
+    mouse: (f64, f64),
+    alpha: f64,
+) -> Option<(f64, f64)> {
+    let pos = world.paddle.predicted_pos_scaled(
+        mouse,
+        alpha * f64::from(VisualMode::Silky.flash_frame_scale()),
+    );
+    if silky_player_prediction_allowed(world, pos) {
+        Some(pos)
+    } else {
+        None
+    }
+}
+
+fn faithful_player_prediction_allowed(world: &curveball::sim::World) -> bool {
     world
         .ball
         .as_ref()
         .is_none_or(|ball| !ball.stopped && ball.vel.z > 0.0)
+}
+
+fn silky_player_prediction_allowed(
+    world: &curveball::sim::World,
+    predicted_pos: (f64, f64),
+) -> bool {
+    let Some(ball) = &world.ball else {
+        return true;
+    };
+    if ball.stopped || ball.vel.z == 0.0 {
+        return false;
+    }
+    if ball.vel.z > 0.0 || !silky_player_contact_is_imminent(ball) {
+        return true;
+    }
+
+    let current_rect = SimRect::centered(world.paddle.pos, PADDLE_W, PADDLE_H);
+    let predicted_rect = SimRect::centered(predicted_pos, PADDLE_W, PADDLE_H);
+    let swept_rect = silky_player_plane_rect(ball);
+    let current_hit = paddle_contact_matches(ball.prev_rect, swept_rect, current_rect);
+    let predicted_hit = paddle_contact_matches(ball.prev_rect, swept_rect, predicted_rect);
+    current_hit == predicted_hit
+}
+
+fn silky_player_contact_is_imminent(ball: &curveball::sim::Ball) -> bool {
+    const CONTACT_GUARD_SLICES: f64 = 4.0;
+
+    let dz_per_slice = -ball.vel.z * SILKY_DT_SCALE;
+    dz_per_slice > 0.0 && ball.pos.z <= dz_per_slice * CONTACT_GUARD_SLICES
+}
+
+fn paddle_contact_matches(
+    previous_ball_rect: SimRect,
+    swept_ball_rect: Option<SimRect>,
+    paddle_rect: SimRect,
+) -> bool {
+    overlap(&previous_ball_rect, &paddle_rect)
+        || swept_ball_rect.is_some_and(|swept| overlap(&swept, &paddle_rect))
+}
+
+fn silky_player_plane_rect(ball: &curveball::sim::Ball) -> Option<SimRect> {
+    let start = ball.pos;
+    let end = Vec3 {
+        x: ball
+            .curve
+            .0
+            .mul_add(SILKY_DT_SCALE, ball.vel.x)
+            .mul_add(SILKY_DT_SCALE, ball.pos.x),
+        y: ball
+            .curve
+            .1
+            .mul_add(SILKY_DT_SCALE, ball.vel.y)
+            .mul_add(-SILKY_DT_SCALE, ball.pos.y),
+        z: ball.vel.z.mul_add(SILKY_DT_SCALE, ball.pos.z),
+    };
+    player_plane_crossing_rect(start, end)
+}
+
+fn player_plane_crossing_rect(start: Vec3, end: Vec3) -> Option<SimRect> {
+    let dz = end.z - start.z;
+    if dz == 0.0 || !(end.z < 0.0 && 0.0 <= start.z) {
+        return None;
+    }
+    let t = -start.z / dz;
+    let pos = Vec3 {
+        x: (end.x - start.x).mul_add(t, start.x),
+        y: (end.y - start.y).mul_add(t, start.y),
+        z: 0.0,
+    };
+    Some(ball_rect_at(pos))
+}
+
+fn ball_rect_at(pos: Vec3) -> SimRect {
+    let s = scale(pos.z);
+    let (vx, vy) = vis(pos.x, pos.y, pos.z);
+    SimRect::centered((vx, vy), BALL_DIAMETER * s, BALL_DIAMETER * s)
 }
 
 fn window_stage_camera() -> Camera2D {
@@ -249,7 +354,7 @@ mod tests {
 
     use super::*;
     use curveball::consts::{WORLD_CX, WORLD_CY};
-    use curveball::sim::{Ball, Published, SimInput, World};
+    use curveball::sim::{Ball, Published, Rect, SimInput, World};
 
     #[test]
     fn window_stage_camera_uses_y_down_stage_coordinates() {
@@ -343,5 +448,62 @@ mod tests {
             live_player_pos(&app, current),
             Some((current.0 + 10.0, current.1))
         );
+    }
+
+    #[test]
+    fn silky_live_visuals_predict_incoming_paddle_when_contact_is_not_imminent() {
+        let (mut app, current) = app_with_ball(|ball| {
+            ball.just_spawned = false;
+            ball.pos.z = 10.0;
+            ball.vel.z = -2.0;
+        });
+        app.visual_mode = VisualMode::Silky;
+        let mouse = (current.0 + 15.0, current.1);
+        let expected = app
+            .world
+            .as_ref()
+            .expect("world")
+            .paddle
+            .predicted_pos_scaled(mouse, f64::from(VisualMode::Silky.flash_frame_scale()));
+
+        let visuals = render::Visuals::capture(&app);
+        let pos = live_visuals(&app, visuals, mouse, 1.0).player_pos;
+
+        assert_eq!(pos, Some(expected));
+    }
+
+    #[test]
+    fn silky_live_visuals_hold_paddle_when_imminent_prediction_would_change_contact() {
+        let (mut app, current) = app_with_ball(|ball| {
+            ball.just_spawned = false;
+            ball.pos.x = WORLD_CX + 44.0;
+            ball.pos.z = 0.1;
+            ball.vel.z = -2.0;
+            ball.prev_rect = Rect::centered((WORLD_CX + 44.0, WORLD_CY), 30.0, 30.0);
+        });
+        app.visual_mode = VisualMode::Silky;
+
+        let visuals = render::Visuals::capture(&app);
+        let pos = live_visuals(&app, visuals, (-100.0, current.1), 1.0).player_pos;
+
+        assert_eq!(pos, Some(current));
+    }
+
+    #[test]
+    fn silky_live_visuals_hold_paddle_when_swept_contact_would_change_result() {
+        let (mut app, current) = app_with_ball(|ball| {
+            ball.just_spawned = false;
+            ball.pos.x = WORLD_CX + 50.0;
+            ball.pos.z = 0.1;
+            ball.vel.x = -200.0;
+            ball.vel.z = -2.0;
+            ball.prev_rect = Rect::centered((WORLD_CX + 50.0, WORLD_CY), 30.0, 30.0);
+        });
+        app.visual_mode = VisualMode::Silky;
+
+        let visuals = render::Visuals::capture(&app);
+        let pos = live_visuals(&app, visuals, (-100.0, current.1), 1.0).player_pos;
+
+        assert_eq!(pos, Some(current));
     }
 }

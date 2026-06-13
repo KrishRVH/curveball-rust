@@ -20,9 +20,9 @@ pub use project::{Rect, overlap, scale, vis};
 pub use score::{CurveClass, Economy};
 
 use crate::consts::{
-    ENEMY_LIVES_INIT, LEVEL_CURVE, LEVEL_SKILL, LEVEL_SPEED, PADDLE_H, PADDLE_W, PLAYER_LIVES_INIT,
-    SERVE_MIN_CURVE, SILKY_DT_SCALE, STRICT_LEVEL_11_SOFTLOCK, WORLD_CX, WORLD_CY, WORLD_DEPTH,
-    ZONE_DX, ZONE_DY,
+    BALL_DIAMETER, ENEMY_LIVES_INIT, LEVEL_CURVE, LEVEL_SKILL, LEVEL_SPEED, PADDLE_H, PADDLE_W,
+    PLAYER_LIVES_INIT, SERVE_MIN_CURVE, SILKY_DT_SCALE, STRICT_LEVEL_11_SOFTLOCK, WORLD_CX,
+    WORLD_CY, WORLD_DEPTH, ZONE_DX, ZONE_DY,
 };
 
 /// `_parent.ballPosX/Y/Z` and `ballDirX/Y/Z` parent-timeline variables.
@@ -243,25 +243,6 @@ impl World {
         events
     }
 
-    /// Non-faithful Silky simulation: run `substeps` 400 Hz physics slices
-    /// while the caller's app/timeline tick remains one original 30 Hz frame.
-    pub fn tick_silky(&mut self, input: &SimInput, substeps: u32) -> Vec<SimEvent> {
-        let mut events = Vec::new();
-        let mut ran_ball = false;
-        let mut in_flight = false;
-        for step in 0..substeps {
-            let clicks = if step == 0 { input.serve_clicks } else { 0 };
-            if let Some(flight) = self.silky_slice(input.mouse, clicks, &mut events) {
-                ran_ball = true;
-                in_flight = flight;
-            }
-        }
-        if ran_ball {
-            self.economy.drain_tick(in_flight);
-        }
-        events
-    }
-
     /// One 400 Hz Silky simulation slice. The caller also runs at 400 Hz, so
     /// world motion and event detection share the same high-rate granularity.
     pub fn tick_silky_slice(&mut self, input: &SimInput) -> Vec<SimEvent> {
@@ -373,11 +354,14 @@ impl World {
         };
         let enemy_snap = self.enemy.as_ref().map(|e| (e.pos, e.speed));
 
+        let start_pos = ball.pos;
         let (bounce_x, bounce_y) = if dt_scale < 1.0 {
             ball.integrate_and_walls_scaled(dt_scale)
         } else {
             ball.integrate_and_walls()
         };
+        let player_swept_rect = plane_crossing_rect(start_pos, ball.pos, 0.0, dt_scale);
+        let enemy_swept_rect = plane_crossing_rect(start_pos, ball.pos, WORLD_DEPTH, dt_scale);
         // The source checks (and sounds) the vertical walls first.
         if bounce_y {
             events.push(SimEvent::WallBounce { horizontal: false });
@@ -393,6 +377,7 @@ impl World {
                 let rect =
                     Rect::centered(vis(pos.0, pos.1, WORLD_DEPTH), PADDLE_W * s, PADDLE_H * s);
                 overlap(&ball.prev_rect, &rect)
+                    || enemy_swept_rect.is_some_and(|swept| overlap(&swept, &rect))
             });
             if let Some((e_pos, e_speed)) = hit {
                 let zone = classify(ball.pos.x, ball.pos.y, e_pos.0, e_pos.1);
@@ -409,7 +394,9 @@ impl World {
         } else if ball.pos.z < 0.0 {
             // Player side.
             let paddle_rect = Rect::centered(self.paddle.pos, PADDLE_W, PADDLE_H);
-            if overlap(&ball.prev_rect, &paddle_rect) {
+            if overlap(&ball.prev_rect, &paddle_rect)
+                || player_swept_rect.is_some_and(|swept| overlap(&swept, &paddle_rect))
+            {
                 let snap = ball.snapshot;
                 let zone = classify(ball.pos.x, ball.pos.y, snap.pos.0, snap.pos.1);
                 let accuracy = zone == Zone::C;
@@ -443,4 +430,35 @@ impl World {
         self.published = Published { pos, dir: ball.vel };
         Some(ball.vel.z != 0.0)
     }
+}
+
+fn plane_crossing_rect(start: Vec3, end: Vec3, plane_z: f64, dt_scale: f64) -> Option<Rect> {
+    if dt_scale >= 1.0 {
+        return None;
+    }
+    let dz = end.z - start.z;
+    if dz == 0.0 {
+        return None;
+    }
+    let crossed = if dz > 0.0 {
+        start.z <= plane_z && plane_z < end.z
+    } else {
+        end.z < plane_z && plane_z <= start.z
+    };
+    if !crossed {
+        return None;
+    }
+    let t = (plane_z - start.z) / dz;
+    let pos = Vec3 {
+        x: (end.x - start.x).mul_add(t, start.x),
+        y: (end.y - start.y).mul_add(t, start.y),
+        z: plane_z,
+    };
+    Some(ball_rect_at(pos))
+}
+
+fn ball_rect_at(pos: Vec3) -> Rect {
+    let s = scale(pos.z);
+    let (vx, vy) = vis(pos.x, pos.y, pos.z);
+    Rect::centered((vx, vy), BALL_DIAMETER * s, BALL_DIAMETER * s)
 }
