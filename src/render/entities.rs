@@ -464,7 +464,13 @@ fn pip_color(zone: Zone, flash: PipFlash) -> Color {
 
 /// A framed paddle with hit-flash overlays, scaled by `s` about the screen-space center
 /// (s = 1 unprojected player, s = scale(75) for the enemy).
-fn draw_paddle(center: (f32, f32), s: f32, texture: &Texture2D, flash: Option<&PipFlash>) {
+fn draw_paddle(
+    center: (f32, f32),
+    s: f32,
+    texture: &Texture2D,
+    flash: Option<&PipFlash>,
+    hit_outline: Option<Color>,
+) {
     let (cx, cy) = center;
     let (w, h) = (PADDLE_W as f32 * s, PADDLE_H as f32 * s);
     let x = cx - w / 2.0;
@@ -505,7 +511,53 @@ fn draw_paddle(center: (f32, f32), s: f32, texture: &Texture2D, flash: Option<&P
             ch,
             pip_color(Zone::C, *flash),
         );
+        if let Some(color) = hit_outline {
+            draw_hit_pip_outline(center, s, flash.zone, color);
+        }
     }
+}
+
+fn draw_hit_pip_outline(center: (f32, f32), s: f32, zone: Zone, color: Color) {
+    let (x, y, w, h) = pip_rect(center, s, zone);
+    outline(x, y, w, h, color);
+}
+
+fn pip_rect(center: (f32, f32), s: f32, zone: Zone) -> (f32, f32, f32, f32) {
+    let (cx, cy) = center;
+    let (dx, dy, w, h) = match zone {
+        Zone::UR => (
+            PIP_CORNER_OFFSET.0,
+            -PIP_CORNER_OFFSET.1,
+            PIP_CORNER_SIZE.0,
+            PIP_CORNER_SIZE.1,
+        ),
+        Zone::UL => (
+            -PIP_CORNER_OFFSET.0,
+            -PIP_CORNER_OFFSET.1,
+            PIP_CORNER_SIZE.0,
+            PIP_CORNER_SIZE.1,
+        ),
+        Zone::BL => (
+            -PIP_CORNER_OFFSET.0,
+            PIP_CORNER_OFFSET.1,
+            PIP_CORNER_SIZE.0,
+            PIP_CORNER_SIZE.1,
+        ),
+        Zone::BR => (
+            PIP_CORNER_OFFSET.0,
+            PIP_CORNER_OFFSET.1,
+            PIP_CORNER_SIZE.0,
+            PIP_CORNER_SIZE.1,
+        ),
+        Zone::C => (0.0, 0.0, PIP_CENTER_SIZE.0, PIP_CENTER_SIZE.1),
+    };
+    let (w, h) = (w * s, h * s);
+    (
+        dx.mul_add(s, cx) - w / 2.0,
+        dy.mul_add(s, cy) - h / 2.0,
+        w,
+        h,
+    )
 }
 
 /// Depth 13: the enemy paddle, projected at fixed z = 75.
@@ -520,6 +572,7 @@ pub fn draw_enemy(app: &App, textures: &Textures, visuals: &Visuals) {
         s,
         &textures.enemy_paddle,
         app.enemy_flash.as_ref(),
+        None,
     );
 }
 
@@ -532,6 +585,7 @@ pub fn draw_player(app: &App, textures: &Textures, visuals: &Visuals) {
         1.0,
         &textures.player_paddle,
         app.player_flash.as_ref(),
+        Some(rgb(COLOR_BLUE)),
     );
 }
 
@@ -556,4 +610,49 @@ pub fn draw_ball(app: &App, textures: &Textures, visuals: &Visuals, show_pop: bo
             ..Default::default()
         },
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use curveball::consts::{
+        PIP_CENTER_SIZE, PIP_CORNER_OFFSET, PIP_CORNER_SIZE, WORLD_CX, WORLD_CY,
+    };
+
+    use super::*;
+
+    #[test]
+    fn pip_rects_follow_source_offsets() {
+        let center = (WORLD_CX as f32, WORLD_CY as f32);
+
+        assert_eq!(
+            pip_rect(center, 1.0, Zone::C),
+            (
+                center.0 - PIP_CENTER_SIZE.0 / 2.0,
+                center.1 - PIP_CENTER_SIZE.1 / 2.0,
+                PIP_CENTER_SIZE.0,
+                PIP_CENTER_SIZE.1,
+            )
+        );
+        assert_eq!(
+            pip_rect(center, 1.0, Zone::UR),
+            (
+                center.0 + PIP_CORNER_OFFSET.0 - PIP_CORNER_SIZE.0 / 2.0,
+                center.1 - PIP_CORNER_OFFSET.1 - PIP_CORNER_SIZE.1 / 2.0,
+                PIP_CORNER_SIZE.0,
+                PIP_CORNER_SIZE.1,
+            )
+        );
+        let s = 0.25;
+        let pw = PIP_CORNER_SIZE.0 * s;
+        let ph = PIP_CORNER_SIZE.1 * s;
+        assert_eq!(
+            pip_rect(center, s, Zone::BL),
+            (
+                PIP_CORNER_OFFSET.0.mul_add(-s, center.0) - pw / 2.0,
+                PIP_CORNER_OFFSET.1.mul_add(s, center.1) - ph / 2.0,
+                pw,
+                ph,
+            )
+        );
+    }
 }

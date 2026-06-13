@@ -539,7 +539,10 @@ alpha: 256, 238, 219, 201, 182, 164, 145, 127, 108, 90
 ```
 
 Re-triggering restarts the animation. After tick 10, the D7 framed paddle remains and flash overlays
-hide instead of restoring the SWF idle overlay look.
+hide instead of restoring the SWF idle overlay look. Because the D7 player paddle uses a gray framed
+presentation, the Rust renderer adds a player-only blue outline around the active pip shape during
+the same 10-tick flash; the original alpha/color tables above still drive the fill, and the enemy
+paddle keeps the unoutlined SWF-derived flash.
 
 ### 7.5 Bonus banner **[VERIFIED]** — sprite at (175, 206): white, 14 px, centered text with content
 "Accuracy Bonus!" / "Curve Bonus!" / "Super Curve Bonus!". The SWF sprite includes a static black
