@@ -4,15 +4,18 @@ Target: a frame-accurate, systems-level Rust port of `curveball.swf` (Flash 5, G
 Every gameplay-relevant number and rule below was extracted from the decompiled ActionScript and the
 SWF tag stream — not from memory of the game. Sections are tagged:
 
+Status: implemented. Keep this file as the fidelity contract and provenance record for future
+maintenance; intentional product/platform differences live in `DEVIATIONS.md`.
+
 - **[VERIFIED]** — extracted directly from the SWF/decompiled source. Implement exactly.
-- **[APPROX]** — visual detail not fully recoverable from tags (e.g. embedded font glyphs). Implement
-  to spec, refine in the M6 audit.
+- **[APPROX]** — visual detail not fully recoverable from tags (e.g. embedded font glyphs).
+  Implemented to spec; final approximation notes live in `DEVIATIONS.md`.
 - **[DEVIATION]** — deliberate, documented departure from the original. Do not add new ones without
   recording them in `DEVIATIONS.md`.
 
 ---
 
-## 0. TL;DR build order
+## 0. Historical build order
 
 1. M0 — scaffold: configs below, fixed 30 Hz tick, 350×250 logical stage, native-scale presentation.
 2. M1 — `sim/`: pure-`f64`, std-only simulation core. Must pass the GOLD-1 trajectory test (§14) exactly.

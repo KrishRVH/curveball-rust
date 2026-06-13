@@ -113,12 +113,12 @@ backend uses `rodio` behind `src/runtime/audio.rs`.
 
 That is not the canonical macroquad-only audio path. A small macroquad game would normally use
 `macroquad::audio`. This project avoids that backend because enabling `macroquad/audio` starts
-`quad-snd`, which can panic on WSL/Linux hosts without a usable ALSA/PipeWire PCM device before the
-game can choose a silent fallback. `rodio` gives this repo a normal Rust adapter seam: device setup can
-fail, the failure is logged, and the game keeps running. When audio is available, the backend decodes
-the five embedded WAV clips once after opening the output stream. Each game sound then starts a fresh
-overlapping source from the decoded sample buffer, matching Flash `Sound.start(0, 1)` without doing
-decode work on the hit path.
+`quad-snd`, which can panic on WSL/Linux hosts without a usable PulseAudio, PipeWire-backed ALSA, or
+direct ALSA route before the game can choose a silent fallback. `rodio` gives this repo a normal Rust
+adapter seam: device setup can fail, the failure is logged, and the game keeps running. When audio is
+available, the backend decodes the five embedded WAV clips once after opening the output stream. Each
+game sound then starts a fresh overlapping source from the decoded sample buffer, matching Flash
+`Sound.start(0, 1)` without doing decode work on the hit path.
 
 ## Intentional Deviations
 

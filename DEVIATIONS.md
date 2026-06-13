@@ -22,7 +22,7 @@ is intended to be frame- and bit-faithful to the original (see `PLAN.md` §1).
 ## Plan corrections discovered during implementation
 
 These are *fidelity fixes*, not deviations — places where PLAN.md disagreed with the decompiled
-source / tag stream, which win by the plan's own rule (§1). Recorded for the M6 audit; the
+source / tag stream, which win by the plan's own rule (§1). Recorded during the final audit; the
 corresponding PLAN.md passages carry inline markers pointing back at the entries below. The
 tag-stream evidence comes from `reference/kit/swf_deep.py`, an extension of the kit's
 parser that decodes gradients, per-frame cxforms, text glyph runs, font code tables, and removal

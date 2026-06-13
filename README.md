@@ -39,17 +39,17 @@ High scores are stored as `highscores.txt` beside the executable, for example
 ## Audio
 
 Default builds include sound effects through `rodio`. Macroquad stays graphics-only, which avoids
-`quad-snd` audio-thread panics on hosts without a usable ALSA/PipeWire route. If no output device is
-detected, the game auto-detects that and runs silent instead of crashing. WSL is conservative by
-default: it starts silent unless you explicitly force an audio probe. When audio is enabled, the
-runtime decodes the five extracted SWF clips once at startup and starts a fresh overlapping source
-per trigger, so hit sounds do not pay decode work at contact time.
+`quad-snd` audio-thread panics on hosts without a usable ALSA/PipeWire route. On Linux and WSL, the
+runtime probes for PulseAudio, PipeWire-backed ALSA, or a direct ALSA card; if no route is detected,
+the game runs silent instead of crashing. When audio is enabled, the runtime decodes the five
+extracted SWF clips once at startup and starts a fresh overlapping source per trigger, so hit sounds
+do not pay decode work at contact time.
 
 Useful options:
 
 ```bash
 CURVEBALL_AUDIO=0 cargo run          # force silent runtime mode
-CURVEBALL_AUDIO=1 cargo run          # force audio attempt, including on WSL
+CURVEBALL_AUDIO=1 cargo run          # force an audio attempt even if probing finds no route
 cargo run --no-default-features --features runtime  # run the no-audio backend
 cargo test --no-default-features                    # test the headless library only
 ```

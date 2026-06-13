@@ -148,15 +148,6 @@ pub enum BannerKind {
 
 impl BannerKind {
     #[must_use]
-    pub const fn text(self) -> &'static str {
-        match self {
-            Self::Accuracy => "Accuracy Bonus!",
-            Self::Curve => "Curve Bonus!",
-            Self::SuperCurve => "Super Curve Bonus!",
-        }
-    }
-
-    #[must_use]
     pub const fn text_upper(self) -> &'static str {
         match self {
             Self::Accuracy => "ACCURACY BONUS!",

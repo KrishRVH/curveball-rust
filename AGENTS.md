@@ -17,8 +17,8 @@ contains parser/extraction helpers, tag dumps, and extracted source sounds. Avoi
 
 ## Build, Test, and Development Commands
 
-- `cargo run` launches the game with the rodio backend compiled; WSL or hosts without a detected
-  audio route auto-run silent unless `CURVEBALL_AUDIO=1`.
+- `cargo run` launches the game with the rodio backend compiled; Linux/WSL hosts without a detected
+  PulseAudio, PipeWire-backed ALSA, or direct ALSA route auto-run silent unless `CURVEBALL_AUDIO=1`.
 - `cargo run --no-default-features --features runtime` launches the playable silent fallback for
   headless or broken-audio hosts.
 - `cargo test --no-default-features` verifies the headless library without compiling the runtime.
@@ -53,11 +53,10 @@ example `serve_requires_paddle_overlap`.
 
 ## Commit & Pull Request Guidelines
 
-This checkout does not include `.git` history, so no local commit convention can be inferred.
-Use short, imperative commit messages such as `Fix serve collision timing`. Pull requests should
-describe gameplay impact, list commands run, and call out any intentional deviations from
-`PLAN.md` or `DEVIATIONS.md`. Include screenshots or short recordings for visible rendering,
-menu, or audio-control changes.
+Use short, direct commit messages such as `Fix serve collision timing`. Pull requests should describe
+gameplay impact, list commands run, and call out any intentional deviations from `PLAN.md` or
+`DEVIATIONS.md`. Include screenshots or short recordings for visible rendering, menu, or
+audio-control changes.
 
 ## Architecture Notes
 
