@@ -81,7 +81,7 @@ Key source files (paths under `reference/decompiled/scripts/`):
 | Stage | 350 × 250 px, background `#000000` |
 | Frame rate | 30.0 fps (tick = 1/30 s) |
 | Master volume | 80 % (`globalSound.setVolume(80)`) |
-| RNG | **None.** The game contains zero `random()` calls — fully deterministic. |
+| RNG | Original/Faithful gameplay has none. D15 Zen aimbot uses a seeded deterministic xorshift for swipe-plan variety; no external `rand` crate. |
 
 ### 3.2 World geometry **[VERIFIED]**
 
@@ -487,13 +487,15 @@ letterboxed viewport. Debug screenshot captures use the same 4× offscreen targe
 workflow. Audio = `runtime::audio` backed by rodio when enabled, with a no-op backend when
 `runtime` is enabled without `audio`.
 Text = `draw_text` / `TextParams` with bundled Michroma; D2 records the font deviation.
-No serde, no rand (game has no RNG), no ECS — the entity count is 4.
+No serde, no external `rand`, no ECS — the entity count is 4. Original/Faithful gameplay has no
+RNG; D15 Zen aimbot uses a seeded deterministic xorshift for swipe-plan variety.
 
 ### 6.3 Window & scaling
 Logical stage 350 × 250 rendered directly to a native window viewport at
 `scale = max(1, floor(min(win_w/350, win_h/250)))`, centered, black letterbox. Default window
 1400 × 1000. `CURVEBALL_SHOT` captures render to a 4× native `render_target` with
-`FilterMode::Linear` for deterministic visual audit PNGs.
+`FilterMode::Linear` for deterministic visual audit PNGs; the live FPS overlay is suppressed in
+capture renders.
 Mouse mapping: `virtual = (screen − offset) / scale`, unclamped (the paddle clamps itself, §4.2).
 
 ---
@@ -618,7 +620,7 @@ Timeline labels → phases (all durations in 30 Hz ticks):
 
 | Phase | Origin frames | Duration / exit |
 |---|---|---|
-| `Title` | 4–5 (+ intro 1–4) | until button: Start Game / Zen / High Scores |
+| `Title` | 4–5 (+ intro 1–4) | until button: Start Game / Zen / High Scores / Visual mode toggle |
 | `HighScores` | 14–19 | until Main Menu button; returning from a post-game high-score submission clears stale game state before `Title` (D8) |
 | `StartGameInit` | 36–44 | 9 ticks of transition, then init (§3 constants, score 0, lives 5/3, level 1, `bonus:` HUD strings restored after a prior Game Over blanked them) |
 | `LevelSplash` | 45–90 | 46 ticks total: "Level N" text shows for the first 45; on the final tick the text is removed, the **entire HUD appears** (it is absent during the splash — score/level/bonus/lives/banner bar all gone), and per-level setup applies (speed/skill/curve from tables, rally bonuses reset, bonusDisplay = 3000, drain counter = 10, enemy lives pips refreshed). Player paddle live throughout; ball/ring/enemy absent. |
@@ -639,9 +641,12 @@ Re-serve within a level resets only ball + ring (fresh instances); enemy and pla
 The original POSTs to `highscore.php` / `checkscore.php` / `enterscore.php` (with a hash salt
 `"a83l9xj"` — historical curiosity, do not reimplement). Replace with a local table:
 
-- File `highscores.txt` beside the executable; 10 lines, tab-separated `name<TAB>level<TAB>score`;
-  missing/corrupt file → defaults (name "none", level 0, score 0). std-only I/O; on write failure,
-  log via `eprintln!` and continue (never crash the game loop).
+- File `highscores.txt` under the user's data directory by default (`%APPDATA%\curveball\`,
+  `~/Library/Application Support/curveball/`, or `${XDG_DATA_HOME:-~/.local/share}/curveball/`),
+  with `CURVEBALL_HIGHSCORES` as an explicit file-path override; 10 lines, tab-separated
+  `name<TAB>level<TAB>score`; missing/corrupt file → defaults (name "none", level 0, score 0).
+  std-only I/O; save creates the parent directory, writes via temp file + rename, and logs via
+  `eprintln!` on failure (never crash the game loop).
 - Display formatting **[VERIFIED from placeholders]**: score zero-padded to 9 digits, level to 2.
 - Qualification: score strictly greater than the 10th entry's score → `NameEntry`; insert sorted desc.
 
@@ -649,6 +654,8 @@ Screen layouts **[VERIFIED anchors]**:
 - Title: "curveball" (white) at (60.3, 32.25); buttons "start game" (174.5, 115.1), "high scores"
   (175.5, 132.3), and Rust-only extensions "zen" (D9) and `VISUAL: ...` (D14) below them — white
   pill buttons, black ~7 px labels, centered.
+- Zen gameplay HUD extensions (D15): `SILKY: ON/OFF` and `AIMBOT: ON/OFF` pill buttons on the
+  top row. These controls are not drawn or consumed in Classic games.
 - High scores: white-bordered black panel spanning (66.5, 53)–(282.45, 197); headers `name` (154.15, 68.5),
   `level` (32.65, 68.5), `score` (82.15, 68.5); 10 rows at y = 85.5 + 10·i with level col x 29.2
   (centered in 15 px), score col x 81.55 (centered in 52.8 px), name col x 157.1 (centered in 92.4 px);
@@ -680,6 +687,7 @@ name = "curveball"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.96.0"
+publish = false
 
 [dependencies]
 macroquad = { version = "0.4", optional = true } # pin exact patch via Cargo.lock
@@ -699,12 +707,14 @@ required-features = ["runtime"]
 ```
 
 Notes: `panic = "abort"` + `lto = "fat"` + `strip = true` in release are compatible with macroquad.
-`unsafe_code = "forbid"` holds — no user-side unsafe is needed anywhere in this design.
+`unsafe_code = "forbid"` holds — no user-side unsafe is needed anywhere in this design. `publish =
+false` prevents accidental crates.io publication of the bundled reference/provenance material and
+assets.
 
 ## 12. Coding standards under this lint regime
 
-- `unwrap_used` / `expect_used` / `panic` are warn-level and CI runs `-D warnings`: prefer real error
-  handling and use Rust 2024's `#[expect(..., reason = "...")]` only for local, justified cases
+- `unwrap_used` / `expect_used` / `panic` are warn-level and manual CI runs `-D warnings`: prefer
+  real error handling and use Rust 2024's `#[expect(..., reason = "...")]` only for local, justified cases
   (tests, deterministic math checks, or an API boundary where failure is already handled). `main`
   performs setup and degrades gracefully (e.g. missing audio device → silent mode, logged).
 - Every constant lives in `consts.rs` with a doc comment citing its source
@@ -713,19 +723,22 @@ Notes: `panic = "abort"` + `lto = "fat"` + `strip = true` in release are compati
   mutability. `Sim::tick(&mut self, input: TickInput) -> Vec<SimEvent>` — sounds/banners/flashes are
   emitted as events so the sim stays headless-testable.
 - Nursery/pedantic groups are warn: fix rather than allow; any `#[expect]` needs a reason string.
-- CI: `cargo fmt --check && cargo clippy --all-targets --all-features -- -D warnings && cargo test`.
+- Manual CI (`workflow_dispatch` only): format, all-features tests, headless tests,
+  runtime-without-audio tests, all-features clippy, headless clippy, and
+  `cargo deny check advisories`. `deny.toml` intentionally ignores
+  `RUSTSEC-2025-0035` until macroquad has a patched release or the runtime is migrated/forked.
 
 ## 13. Milestones & acceptance criteria
 
 | M | Deliverable | Acceptance |
 |---|---|---|
-| M0 | Scaffold, configs, 30 Hz fixed-step loop, display-rate native presentation + letterboxed scaling | CI green; tick counter advances 30/s wall-clock ±0.1 %; window resizes with integer scaling; renderer is not capped to 30 FPS |
+| M0 | Scaffold, configs, 30 Hz fixed-step loop, display-rate native presentation + letterboxed scaling | Manual CI green; tick counter advances 30/s wall-clock ±0.1 %; window resizes with integer scaling; renderer is not capped to 30 FPS |
 | M1 | `sim/` complete | `tests/gold1.rs` passes (§14); unit tests for projection table, zone classifier, serve injection, economy, drain cadence, wall damp |
 | M2 | Entity renderer | Serve/rally screenshots match the SWF/Ruffle reference where applicable and the desktop reference for D7 tunnel/framed-paddle presentation |
 | M3 | Phase machine + HUD + scoring/lives | Full game loop playable start→game over; splash/miss/serve durations are 46/19/n ticks exactly (assert via tick-stamped logs) |
 | M4 | Anim tables + audio | Pip flash, banner, lives pips match §7.4–7.6 tables; 5 sounds fire per §3.8; Q2 quirk demonstrable |
 | M5 | Menus + local high scores + name entry | Round-trips `highscores.txt`; layout anchors per §10 |
-| M6 | Fidelity audit (§15) | Checklist complete; `DEVIATIONS.md` finalized with intentional D1-D12 and D14 tradeoffs |
+| M6 | Fidelity audit (§15) | Checklist complete; `DEVIATIONS.md` finalized with intentional D1-D12, D14, and D15 tradeoffs |
 
 ## 14. Test plan — GOLD-1 trajectory (normative values)
 
@@ -781,11 +794,14 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
    D8 (post-game main-menu restart returns to a clean Title and can start a fresh game), D9
    (Zen player misses re-serve without decrementing lives or entering Game Over), D10
    (render interpolation smooths high-refresh displays without mutating gameplay), D11
-   (experimental sim-rate override is clearly non-faithful), D12 (FPS counter visibility),
+   (experimental sim-rate override is clearly non-faithful), D12 (FPS counter visibility during
+   normal window rendering, suppressed for `CURVEBALL_SHOT` captures),
    and D14 (Silky runs a non-faithful 400 Hz app/world tick with wall-clock-scaled counters,
-   catch-up mouse distribution, zone-aware prediction, and swept crossing contacts).
+   catch-up mouse distribution, zone-aware prediction, and swept crossing contacts), and D15
+   (Zen-only in-game Silky/Aimbot controls, with level-11 pseudo-random angled swipe
+   assistance).
 6. Close `DEVIATIONS.md`: it must contain only approved fidelity or product-quality deviations
-   (currently D1-D12 and D14) plus implementation corrections C1-C4.
+   (currently D1-D12, D14, and D15) plus implementation corrections C1-C4.
 7. Residual-risk check: the normative per-tick entity order (§4: paddle → enemy → ring → ball) follows
    documented AVM1 instantiation-order semantics; the placement/replacement pattern preserves it across
    rallies and levels. If any dynamic discrepancy survives steps 1–5 with everything else exact, suspect
@@ -797,7 +813,7 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 |---|---|---|
 | D1 | Level ≥ 11 clamps to table index 9 (flag for strict zero-speed softlock) | Original softlocks after level 10; unplayable as shipped |
 | D2 | Bundled Michroma replaces the embedded BankGothicBT-Medium subset | Commercial font, not licensable; OFL substitute with retuned tracked metrics |
-| D3 | Local `highscores.txt` replaces dead PHP endpoints | Servers gone since ~2005 |
+| D3 | Local user-data `highscores.txt` replaces dead PHP endpoints | Servers gone since ~2005; user-data storage avoids installed-binary write failures |
 | D4 | Logical 350×250 stage renders to a 4× native target (default 1400×1000) | Desktop reference screenshot is high-resolution; this avoids low-res scaled output |
 | D5 | Name-entry editing niceties approximated | Flash TextField internals unspecified |
 | D6 | Title intro (timeline ticks 1–4, ~0.13 s) skipped — instant title screen | Transition content not recoverable from tags |
@@ -806,8 +822,9 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 | D9 | Title-menu Zen mode starts a normal game with unlimited player lives | Requested quality-of-life mode |
 | D10 | Render interpolation between 30 Hz sim snapshots plus gated live player-paddle prediction | Smooth, responsive high-refresh presentation without changing gameplay math or desyncing player-hit sounds |
 | D11 | `CURVEBALL_SIM_HZ=<hz>` experimental app/world cadence override | Feel-test alternate rates without changing the mode defaults |
-| D12 | Always-visible FPS counter | Requested frame-pacing visibility |
+| D12 | FPS counter visible during normal window rendering and suppressed for deterministic captures | Requested frame-pacing visibility |
 | D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz app/world cadence, late mouse sampling, catch-up mouse distribution, zone-aware prediction, swept crossing contacts, and smoother render keyframes while keeping the faithful default baseline |
+| D15 | Zen-only in-game Silky and Aimbot toggles | Requested assistance controls; aimbot uses level-11 AI plus pseudo-random angled swipe returns |
 
 ## 17. AS → Rust symbol map
 

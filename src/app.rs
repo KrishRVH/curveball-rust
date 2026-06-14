@@ -7,13 +7,15 @@
 //! so the wall-clock duration stays the same.
 
 use crate::consts::{
-    BTN_END_MENU, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES, BTN_TITLE_START, BTN_TITLE_VISUAL,
-    BTN_TITLE_ZEN, FRAME_BALL_SPAWN, FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD, FRAME_SPLASH_END,
-    GAME_OVER_TICKS, MISS_TICKS, NAME_MAX_LEN, NAME_PLACEHOLDER, SILKY_PHYSICS_HZ, SPLASH_TICKS,
-    START_GAME_TICKS, TICK_HZ,
+    BTN_END_MENU, BTN_GAME_AIMBOT, BTN_GAME_SILKY, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES,
+    BTN_TITLE_START, BTN_TITLE_VISUAL, BTN_TITLE_ZEN, ENEMY_EASE_HOME, FRAME_BALL_SPAWN,
+    FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD, FRAME_SPLASH_END, GAME_OVER_TICKS, MISS_TICKS,
+    NAME_MAX_LEN, NAME_PLACEHOLDER, PLAYER_EASE, SILKY_DT_SCALE, SILKY_PHYSICS_HZ, SPLASH_TICKS,
+    START_GAME_TICKS, TICK_HZ, WORLD_CX, WORLD_CY,
 };
 use crate::highscores::ScoreTable;
-use crate::sim::{CurveClass, Published, SimEvent, SimInput, World, Zone};
+use crate::sim::paddle::clamp_to_world;
+use crate::sim::{CurveClass, Published, SimEvent, SimInput, World, Zone, level_params};
 
 /// Length of the paddle pip-flash animation (sprites 59/75: 10 frames per label).
 pub const PIP_FLASH_TICKS: u32 = 10;
@@ -32,6 +34,104 @@ pub struct TickInput {
     pub chars: Vec<char>,
     /// Backspace press edges since the previous tick.
     pub backspaces: u32,
+}
+
+struct GameplayInput {
+    input: TickInput,
+    control_clicked: bool,
+    toggle_visual_after_tick: bool,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct AimbotSwipe {
+    windup_offset: (f64, f64),
+    strike_offset: (f64, f64),
+}
+
+const AIMBOT_RNG_SEED: u64 = 0x4d59_5df4_d0f3_3173;
+const AIMBOT_SWIPE_START_FRAMES: f64 = 8.0;
+const AIMBOT_SWIPE_LUNGE_TICKS: f64 = 1.12;
+const AIMBOT_SWIPE_CONTACT_TICKS: f64 = 1.0;
+const AIMBOT_WINDUP_RADIUS_MIN: f64 = 145.0;
+const AIMBOT_WINDUP_RADIUS_SPAN: f64 = 70.0;
+const AIMBOT_WINDUP_ANGLE_JITTER: f64 = 0.35;
+const AIMBOT_STRIKE_OFFSET_SPAN: f64 = 3.0;
+
+#[derive(Debug, Clone, Copy)]
+struct AimbotController {
+    enabled: bool,
+    swipe: Option<AimbotSwipe>,
+    rng: u64,
+}
+
+impl AimbotController {
+    const fn new() -> Self {
+        Self {
+            enabled: false,
+            swipe: None,
+            rng: AIMBOT_RNG_SEED,
+        }
+    }
+
+    fn reset_for_new_game(&mut self) {
+        self.enabled = false;
+        self.swipe = None;
+        self.rng = AIMBOT_RNG_SEED;
+    }
+
+    fn set_enabled(&mut self, enabled: bool) {
+        self.enabled = enabled;
+        if !enabled {
+            self.swipe = None;
+        }
+    }
+
+    fn toggle(&mut self) {
+        self.set_enabled(!self.enabled);
+    }
+
+    fn clear_swipe(&mut self) {
+        self.swipe = None;
+    }
+
+    fn update_swipe(&mut self, incoming: bool) {
+        if incoming {
+            if self.swipe.is_none() {
+                self.swipe = Some(self.next_swipe());
+            }
+        } else {
+            self.swipe = None;
+        }
+    }
+
+    fn next_swipe(&mut self) -> AimbotSwipe {
+        let bits = self.next_random();
+        let quadrant = (bits & 3) as u8;
+        let base_angle =
+            std::f64::consts::FRAC_PI_4 + f64::from(quadrant) * std::f64::consts::FRAC_PI_2;
+        let angle =
+            (random_unit(bits, 8) * 2.0 - 1.0).mul_add(AIMBOT_WINDUP_ANGLE_JITTER, base_angle);
+        let windup_radius =
+            AIMBOT_WINDUP_RADIUS_MIN + random_unit(bits, 16) * AIMBOT_WINDUP_RADIUS_SPAN;
+        let strike_angle = angle + std::f64::consts::PI;
+        let strike_radius = random_unit(bits, 24) * AIMBOT_STRIKE_OFFSET_SPAN;
+        AimbotSwipe {
+            windup_offset: (angle.cos() * windup_radius, angle.sin() * windup_radius),
+            strike_offset: (
+                strike_angle.cos() * strike_radius,
+                strike_angle.sin() * strike_radius,
+            ),
+        }
+    }
+
+    fn next_random(&mut self) -> u64 {
+        let mut x = self.rng;
+        x ^= x << 13;
+        x ^= x >> 7;
+        x ^= x << 17;
+        self.rng = x;
+        x
+    }
 }
 
 /// Sounds the bin layer plays — exported linkage names from frame_44.
@@ -226,6 +326,7 @@ pub struct App {
     pub name_entry: NameEntry,
     pub mode: GameMode,
     pub visual_mode: VisualMode,
+    aimbot: AimbotController,
     silky_frame_accum: u32,
     /// Free-running tick counter for the name-entry caret blink (deviation D5).
     pub caret_tick: u32,
@@ -245,6 +346,7 @@ impl App {
             name_entry: NameEntry::new(),
             mode: GameMode::Classic,
             visual_mode: VisualMode::Faithful,
+            aimbot: AimbotController::new(),
             silky_frame_accum: 0,
             caret_tick: 0,
         }
@@ -272,8 +374,7 @@ impl App {
                         break;
                     }
                     if in_rect(click, BTN_TITLE_VISUAL) {
-                        self.visual_mode = self.visual_mode.toggled();
-                        self.reset_silky_frame_clock();
+                        self.toggle_visual_mode();
                         continue;
                     }
                     if in_rect(click, BTN_TITLE_SCORES) {
@@ -299,7 +400,7 @@ impl App {
                             .take()
                             .map_or_else(Published::default, |w| w.published);
                         let mut world = World::new(published);
-                        world.unlimited_player_lives = self.mode.unlimited_player_lives();
+                        world.set_unlimited_player_lives(self.mode.unlimited_player_lives());
                         self.world = Some(world);
                         self.bonus_hud_blanked = false;
                         self.player_flash = None;
@@ -314,7 +415,7 @@ impl App {
             Phase::LevelSplash { tick } => {
                 // The player paddle is live (and mouse-tracking) throughout
                 // the splash; serve clicks are no-ops with no ball on stage.
-                let events = self.sim_tick(input);
+                let events = self.sim_tick(input, false);
                 self.apply_events(&events, &mut sounds);
                 if self.flash_frame_due() {
                     let t = tick + 1;
@@ -331,26 +432,31 @@ impl App {
                 }
             },
             Phase::Playing { frame } => {
-                let events = self.sim_tick(input);
+                let gameplay = self.consume_zen_tool_clicks(input);
+                let events = self.sim_tick(&gameplay.input, gameplay.control_clicked);
                 if self.apply_events(&events, &mut sounds) {
                     self.enter_phase(Phase::Miss { tick: 0 });
                 } else if self.flash_frame_due() {
                     let f = (frame + 1).min(FRAME_PLAY_HOLD);
                     if let Some(world) = &mut self.world {
-                        if f == FRAME_ENEMY_SPAWN && world.enemy.is_none() {
+                        if f == FRAME_ENEMY_SPAWN && !world.has_enemy() {
                             world.spawn_enemy();
                         }
-                        if f == FRAME_BALL_SPAWN && world.ball.is_none() {
+                        if f == FRAME_BALL_SPAWN && !world.has_ball() {
                             world.spawn_ball();
                         }
                     }
                     self.phase = Phase::Playing { frame: f };
                 }
+                if gameplay.toggle_visual_after_tick {
+                    self.toggle_visual_mode();
+                }
             },
             Phase::Miss { tick } => {
                 // Paddles and ring keep running; the stopped ball skips its
                 // entire enterFrame. Pop serves (Q2) arrive via the input phase.
-                let events = self.sim_tick(input);
+                let gameplay = self.consume_zen_tool_clicks(input);
+                let events = self.sim_tick(&gameplay.input, gameplay.control_clicked);
                 self.apply_events(&events, &mut sounds);
                 if self.flash_frame_due() {
                     let t = tick + 1;
@@ -359,6 +465,9 @@ impl App {
                     } else {
                         self.phase = Phase::Miss { tick: t };
                     }
+                }
+                if gameplay.toggle_visual_after_tick {
+                    self.toggle_visual_mode();
                 }
             },
             Phase::GameOver { tick } => {
@@ -435,14 +544,42 @@ impl App {
         self.caret_tick % hz < hz / 2
     }
 
+    #[must_use]
+    pub fn zen_tools_available(&self) -> bool {
+        self.mode == GameMode::Zen
+            && matches!(self.phase, Phase::Playing { .. } | Phase::Miss { .. })
+    }
+
+    #[must_use]
+    pub const fn aimbot_enabled(&self) -> bool {
+        self.aimbot.enabled
+    }
+
+    pub fn set_aimbot_enabled(&mut self, enabled: bool) {
+        self.aimbot.set_enabled(enabled);
+    }
+
+    #[must_use]
+    pub fn player_control_mouse(&self, mouse: (f64, f64)) -> (f64, f64) {
+        if self.zen_tools_available()
+            && self.aimbot.enabled
+            && let Some(world) = &self.world
+        {
+            return aimbot_mouse(world, self.visual_mode, self.aimbot.swipe);
+        }
+        mouse
+    }
+
     fn start_game(&mut self, mode: GameMode) {
         self.mode = mode;
+        self.aimbot.reset_for_new_game();
         self.enter_phase(Phase::StartGameInit { tick: 1 });
     }
 
     fn return_to_title(&mut self) {
         self.enter_phase(Phase::Title);
         self.mode = GameMode::Classic;
+        self.aimbot.reset_for_new_game();
         self.world = None;
         self.player_flash = None;
         self.enemy_flash = None;
@@ -452,10 +589,51 @@ impl App {
         self.caret_tick = 0;
     }
 
-    fn sim_tick(&mut self, input: &TickInput) -> Vec<SimEvent> {
-        let input = SimInput {
+    fn consume_zen_tool_clicks(&mut self, input: &TickInput) -> GameplayInput {
+        if !self.zen_tools_available() {
+            return GameplayInput {
+                input: input.clone(),
+                control_clicked: false,
+                toggle_visual_after_tick: false,
+            };
+        }
+
+        let mut gameplay_input = TickInput {
             mouse: input.mouse,
-            serve_clicks: input.clicks.len() as u32,
+            clicks: Vec::new(),
+            chars: input.chars.clone(),
+            backspaces: input.backspaces,
+        };
+        let mut control_clicked = false;
+        let mut toggle_visual_after_tick = false;
+        for &click in &input.clicks {
+            if in_rect(click, BTN_GAME_SILKY) {
+                toggle_visual_after_tick = true;
+                control_clicked = true;
+            } else if in_rect(click, BTN_GAME_AIMBOT) {
+                self.aimbot.toggle();
+                control_clicked = true;
+            } else {
+                gameplay_input.clicks.push(click);
+            }
+        }
+
+        GameplayInput {
+            input: gameplay_input,
+            control_clicked,
+            toggle_visual_after_tick,
+        }
+    }
+
+    fn sim_tick(&mut self, input: &TickInput, suppress_auto_serve: bool) -> Vec<SimEvent> {
+        let mut serve_clicks = input.clicks.len() as u32;
+        if !suppress_auto_serve && self.aimbot_should_auto_serve() {
+            serve_clicks = serve_clicks.saturating_add(1);
+        }
+        let mouse = self.player_control_mouse_for_tick(input.mouse);
+        let input = SimInput {
+            mouse,
+            serve_clicks,
         };
         if self.visual_mode == VisualMode::Silky {
             return self
@@ -466,6 +644,32 @@ impl App {
         self.world
             .as_mut()
             .map_or_else(Vec::new, |world| world.tick(&input))
+    }
+
+    fn aimbot_should_auto_serve(&self) -> bool {
+        self.zen_tools_available()
+            && self.aimbot.enabled
+            && matches!(self.phase, Phase::Playing { .. })
+            && self.world.as_ref().is_some_and(|world| {
+                world
+                    .ball
+                    .as_ref()
+                    .is_some_and(|ball| !ball.just_spawned && !ball.stopped && ball.vel.z == 0.0)
+            })
+    }
+
+    fn player_control_mouse_for_tick(&mut self, mouse: (f64, f64)) -> (f64, f64) {
+        if !self.zen_tools_available() || !self.aimbot.enabled {
+            self.aimbot.clear_swipe();
+            return mouse;
+        }
+        self.update_aimbot_swipe();
+        self.player_control_mouse(mouse)
+    }
+
+    fn update_aimbot_swipe(&mut self) {
+        let incoming = self.world.as_ref().is_some_and(aimbot_ball_incoming);
+        self.aimbot.update_swipe(incoming);
     }
 
     fn flash_frame_due(&mut self) -> bool {
@@ -487,6 +691,11 @@ impl App {
 
     fn reset_silky_frame_clock(&mut self) {
         self.silky_frame_accum = 0;
+    }
+
+    fn toggle_visual_mode(&mut self) {
+        self.visual_mode = self.visual_mode.toggled();
+        self.reset_silky_frame_clock();
     }
 
     /// Map sim events to sounds and animation triggers. Returns whether a
@@ -555,8 +764,7 @@ impl App {
         } else if world.player_lives < 1 && !self.mode.unlimited_player_lives() {
             // Frame 97 removes the paddles, ball, and ring; the HUD persists
             // with the bonus strings blanked. The banner clip persists too.
-            world.ball = None;
-            world.enemy = None;
+            world.clear_entities_for_game_over();
             self.player_flash = None;
             self.enemy_flash = None;
             self.bonus_hud_blanked = true;
@@ -564,7 +772,7 @@ impl App {
         } else {
             // Re-serve: gotoAndStop("Serve") lands on frame 91 — the ball and
             // ring are removed and respawn fresh at 92; the enemy persists.
-            world.ball = None;
+            world.clear_ball_for_reserve();
             self.enter_phase(Phase::Playing {
                 frame: FRAME_ENEMY_SPAWN,
             });
@@ -606,6 +814,122 @@ fn animation_complete(elapsed_ticks: u32, flash_frames: u32, visual_mode: Visual
     }
 }
 
+fn aimbot_mouse(world: &World, visual_mode: VisualMode, swipe: Option<AimbotSwipe>) -> (f64, f64) {
+    let desired = level_11_cpu_desired_pos(world, visual_mode, swipe);
+    let alpha = player_ease_alpha(visual_mode);
+    if alpha <= 0.0 {
+        return desired;
+    }
+    let current = world.paddle.pos;
+    (
+        (desired.0 - current.0) / alpha + current.0,
+        (desired.1 - current.1) / alpha + current.1,
+    )
+}
+
+fn level_11_cpu_desired_pos(
+    world: &World,
+    visual_mode: VisualMode,
+    swipe: Option<AimbotSwipe>,
+) -> (f64, f64) {
+    let (target, divisor) = aimbot_target_and_divisor(world, visual_mode, swipe);
+    let current = world.paddle.pos;
+    let mut desired = if divisor <= 0.0 {
+        target
+    } else {
+        let alpha = match visual_mode {
+            VisualMode::Faithful => 1.0 / divisor,
+            VisualMode::Silky => 1.0 - (1.0 - 1.0 / divisor).powf(SILKY_DT_SCALE),
+        };
+        (
+            (target.0 - current.0).mul_add(alpha, current.0),
+            (target.1 - current.1).mul_add(alpha, current.1),
+        )
+    };
+    clamp_to_world(&mut desired);
+    desired
+}
+
+fn aimbot_target_and_divisor(
+    world: &World,
+    visual_mode: VisualMode,
+    swipe: Option<AimbotSwipe>,
+) -> ((f64, f64), f64) {
+    let cpu_skill = level_params(11).skill;
+    let home = (WORLD_CX, WORLD_CY);
+    let Some(ball) = &world.ball else {
+        return (home, ENEMY_EASE_HOME);
+    };
+    if !ball.stopped && ball.vel.z == 0.0 {
+        return ((ball.pos.x, ball.pos.y), cpu_skill);
+    }
+    if !ball.stopped && world.published.dir.z < 0.0 {
+        let mut target = (world.published.pos.x, world.published.pos.y);
+        if let Some(swipe) = swipe {
+            let (dx, dy) = aimbot_swipe_offset(world, visual_mode, swipe);
+            target.0 += dx;
+            target.1 += dy;
+        }
+        return (target, cpu_skill);
+    }
+    (home, ENEMY_EASE_HOME)
+}
+
+fn aimbot_ball_incoming(world: &World) -> bool {
+    world
+        .ball
+        .as_ref()
+        .is_some_and(|ball| !ball.stopped && ball.vel.z < 0.0 && world.published.dir.z < 0.0)
+}
+
+fn aimbot_swipe_offset(world: &World, visual_mode: VisualMode, swipe: AimbotSwipe) -> (f64, f64) {
+    let frames_to_contact = world
+        .ball
+        .as_ref()
+        .and_then(|ball| {
+            if ball.vel.z < 0.0 {
+                Some((ball.pos.z / -ball.vel.z).max(0.0))
+            } else {
+                None
+            }
+        })
+        .unwrap_or(AIMBOT_SWIPE_START_FRAMES);
+
+    let start = swipe.windup_offset;
+    let end = swipe.strike_offset;
+    let tick_frames = aimbot_tick_frame_width(visual_mode);
+    let contact_frames = tick_frames * AIMBOT_SWIPE_CONTACT_TICKS;
+    let lunge_frames = tick_frames * AIMBOT_SWIPE_LUNGE_TICKS;
+    if frames_to_contact >= AIMBOT_SWIPE_START_FRAMES {
+        start
+    } else if frames_to_contact <= 0.0 || frames_to_contact < contact_frames {
+        end
+    } else if frames_to_contact >= lunge_frames {
+        start
+    } else {
+        let t = (lunge_frames - frames_to_contact) / (lunge_frames - contact_frames);
+        let smooth = t * t * 2.0_f64.mul_add(-t, 3.0);
+        (
+            (end.0 - start.0).mul_add(smooth, start.0),
+            (end.1 - start.1).mul_add(smooth, start.1),
+        )
+    }
+}
+
+fn aimbot_tick_frame_width(visual_mode: VisualMode) -> f64 {
+    match visual_mode {
+        VisualMode::Faithful => 1.0,
+        VisualMode::Silky => SILKY_DT_SCALE,
+    }
+}
+
+fn player_ease_alpha(visual_mode: VisualMode) -> f64 {
+    match visual_mode {
+        VisualMode::Faithful => 1.0 / PLAYER_EASE,
+        VisualMode::Silky => 1.0 - (1.0 - 1.0 / PLAYER_EASE).powf(SILKY_DT_SCALE),
+    }
+}
+
 impl Default for App {
     fn default() -> Self {
         Self::new()
@@ -614,4 +938,9 @@ impl Default for App {
 
 fn in_rect(p: (f64, f64), r: (f64, f64, f64, f64)) -> bool {
     (r.0..=r.2).contains(&p.0) && (r.1..=r.3).contains(&p.1)
+}
+
+fn random_unit(bits: u64, shift: u32) -> f64 {
+    let byte = ((bits >> shift) & 0xff) as u8;
+    f64::from(byte) / 255.0
 }

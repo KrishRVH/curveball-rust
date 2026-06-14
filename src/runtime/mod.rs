@@ -132,6 +132,7 @@ pub async fn run() {
             } else {
                 latch.mouse()
             };
+            let render_mouse = render_control_mouse(&app, render_mouse);
             let visuals = live_visuals(&app, visuals, render_mouse, alpha);
             draw_to_window(scale, off_x, off_y, &app, &textures, &visuals);
             std::time::Duration::ZERO
@@ -212,7 +213,7 @@ fn draw_to_capture_target(
     camera.render_target = Some(canvas.clone());
     camera.viewport = None;
     set_camera(&camera);
-    render::draw_scene(app, textures, visuals);
+    render::draw_scene(app, textures, visuals, false);
 }
 
 fn draw_capture_to_window(canvas: &RenderTarget, scale: f32, off_x: f32, off_y: f32) {
@@ -246,8 +247,12 @@ fn draw_to_window(
     set_default_camera();
     clear_background(BLACK);
     set_camera(&camera);
-    render::draw_scene(app, textures, visuals);
+    render::draw_scene(app, textures, visuals, true);
     set_default_camera();
+}
+
+fn render_control_mouse(app: &App, sampled_mouse: (f64, f64)) -> (f64, f64) {
+    app.player_control_mouse(sampled_mouse)
 }
 
 fn live_visuals(
@@ -415,6 +420,8 @@ mod tests {
     #![expect(clippy::expect_used, reason = "test setup unwraps scenario invariants")]
 
     use super::*;
+    use curveball::app::{GameMode, Phase};
+    use curveball::consts::FRAME_PLAY_HOLD;
     use curveball::consts::{WORLD_CX, WORLD_CY};
     use curveball::sim::{Ball, Published, Rect, SimInput, World};
 
@@ -546,6 +553,28 @@ mod tests {
             live_player_pos(&app, current),
             Some((current.0 + 10.0, current.1))
         );
+    }
+
+    #[test]
+    fn render_control_mouse_uses_zen_aimbot_before_live_visual_prediction() {
+        let world = settled_world();
+        let current = world.paddle.pos;
+        let mut app = app_with_world(world);
+        app.mode = GameMode::Zen;
+        app.phase = Phase::Playing {
+            frame: FRAME_PLAY_HOLD,
+        };
+        app.set_aimbot_enabled(true);
+        let physical_mouse = (current.0 + 60.0, current.1 + 60.0);
+
+        let bot_mouse = render_control_mouse(&app, physical_mouse);
+        let visuals = render::Visuals::capture(&app);
+        let bot_visual = live_visuals(&app, visuals, bot_mouse, 1.0).player_pos;
+        let physical_visual = live_visuals(&app, visuals, physical_mouse, 1.0).player_pos;
+
+        assert_eq!(bot_mouse, current);
+        assert_eq!(bot_visual, Some(current));
+        assert_ne!(physical_visual, Some(current));
     }
 
     #[test]

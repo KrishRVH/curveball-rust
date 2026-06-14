@@ -3,6 +3,7 @@ name = "curveball"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.96.0"
+publish = false
 
 [dependencies]
 macroquad = { version = "0.4", optional = true }

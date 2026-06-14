@@ -14,9 +14,10 @@ use curveball::app::{
     App, GameMode, PIP_FLASH_TICKS, Phase, PipFlash, SoundId, TickInput, VisualMode,
 };
 use curveball::consts::{
-    BONUS_COUNTER_INIT, BTN_END_MENU, BTN_HS_MENU, BTN_TITLE_SCORES, BTN_TITLE_START,
-    BTN_TITLE_VISUAL, BTN_TITLE_ZEN, FRAME_PLAY_HOLD, GAME_OVER_TICKS, MISS_TICKS, SILKY_DT_SCALE,
-    SILKY_PHYSICS_HZ, SPLASH_TICKS, START_GAME_TICKS, TICK_HZ, WALL_CURVE_DAMP, WORLD_CX, WORLD_CY,
+    BONUS_COUNTER_INIT, BTN_END_MENU, BTN_GAME_AIMBOT, BTN_GAME_SILKY, BTN_HS_MENU,
+    BTN_TITLE_SCORES, BTN_TITLE_START, BTN_TITLE_VISUAL, BTN_TITLE_ZEN, FRAME_PLAY_HOLD,
+    GAME_OVER_TICKS, MISS_TICKS, SILKY_DT_SCALE, SILKY_PHYSICS_HZ, SPLASH_TICKS, START_GAME_TICKS,
+    TICK_HZ, WALL_CURVE_DAMP, WORLD_CX, WORLD_CY,
 };
 use curveball::highscores::ScoreTable;
 use curveball::sim::{
@@ -284,7 +285,7 @@ fn drain_counter_persists_across_rallies_q11() {
     world.spawn_enemy();
     world.spawn_ball();
     world.economy.bonus_counter = 3; // mid-cycle when the rally ends
-    world.ball = None; // re-serve routing replaces only ball + ring
+    world.clear_ball_for_reserve(); // re-serve routing replaces only ball + ring
     world.spawn_ball();
     assert_eq!(world.economy.bonus_counter, 3, "carries across rallies");
     world.level_setup();
@@ -828,7 +829,7 @@ fn pop_serve_scores_once_and_stays_frozen() {
 #[test]
 fn zen_world_keeps_player_lives_on_miss() {
     let mut world = serve_world((WORLD_CX, WORLD_CY));
-    world.unlimited_player_lives = true;
+    world.set_unlimited_player_lives(true);
     world.tick(&SimInput {
         mouse: (WORLD_CX, WORLD_CY),
         serve_clicks: 1,
@@ -1100,6 +1101,410 @@ fn returning_to_title_preserves_runtime_visual_settings() {
 }
 
 #[test]
+fn in_game_silky_button_only_exists_in_zen() {
+    let mut classic = App::new();
+    classic.mode = GameMode::Classic;
+    classic.world = Some(serve_world((WORLD_CX, WORLD_CY)));
+    classic.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    classic.tick(&pinned_input(vec![rect_center(BTN_GAME_SILKY)]));
+
+    assert_eq!(classic.visual_mode, VisualMode::Faithful);
+    assert!(
+        classic
+            .world
+            .as_ref()
+            .and_then(|world| world.ball)
+            .is_some_and(|ball| ball.vel.z > 0.0),
+        "Classic treats the same click as a normal serve click"
+    );
+
+    let mut zen = App::new();
+    zen.mode = GameMode::Zen;
+    zen.world = Some(World::new(Published::default()));
+    zen.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    zen.tick(&pinned_input(vec![rect_center(BTN_GAME_SILKY)]));
+
+    assert_eq!(zen.visual_mode, VisualMode::Silky);
+    assert_eq!(
+        zen.phase,
+        Phase::Playing {
+            frame: FRAME_PLAY_HOLD
+        }
+    );
+}
+
+#[test]
+fn in_game_aimbot_button_only_exists_in_zen() {
+    let mut classic = App::new();
+    classic.mode = GameMode::Classic;
+    classic.world = Some(serve_world((WORLD_CX, WORLD_CY)));
+    classic.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    classic.tick(&pinned_input(vec![rect_center(BTN_GAME_AIMBOT)]));
+
+    assert!(!classic.aimbot_enabled());
+    assert!(
+        classic
+            .world
+            .as_ref()
+            .and_then(|world| world.ball)
+            .is_some_and(|ball| ball.vel.z > 0.0),
+        "Classic treats the same click as a normal serve click"
+    );
+}
+
+#[test]
+fn in_game_silky_toggle_uses_current_tick_cadence_before_switching() {
+    fn app_with_moving_ball(visual_mode: VisualMode) -> App {
+        let mut world = flying_ball_world();
+        if let Some(ball) = &mut world.ball {
+            ball.pos = Vec3 {
+                x: WORLD_CX,
+                y: WORLD_CY,
+                z: 10.0,
+            };
+            ball.vel = Vec3 {
+                x: 0.0,
+                y: 0.0,
+                z: 2.0,
+            };
+            ball.curve = (0.0, 0.0);
+            ball.prev_rect = Rect::centered((WORLD_CX, WORLD_CY), 30.0, 30.0);
+        }
+
+        let mut app = App::new();
+        app.mode = GameMode::Zen;
+        app.visual_mode = visual_mode;
+        app.world = Some(world);
+        app.phase = Phase::Playing {
+            frame: FRAME_PLAY_HOLD,
+        };
+        app
+    }
+
+    let mut faithful_to_silky = app_with_moving_ball(VisualMode::Faithful);
+    faithful_to_silky.tick(&pinned_input(vec![rect_center(BTN_GAME_SILKY)]));
+    assert_eq!(faithful_to_silky.visual_mode, VisualMode::Silky);
+    assert_eq!(
+        faithful_to_silky
+            .world
+            .as_ref()
+            .and_then(|world| world.ball)
+            .expect("ball")
+            .pos
+            .z
+            .to_bits(),
+        12.0_f64.to_bits(),
+        "the toggle tick should still advance at the old Faithful cadence"
+    );
+
+    let mut silky_to_faithful = app_with_moving_ball(VisualMode::Silky);
+    silky_to_faithful.tick(&pinned_input(vec![rect_center(BTN_GAME_SILKY)]));
+    assert_eq!(silky_to_faithful.visual_mode, VisualMode::Faithful);
+    assert_eq!(
+        silky_to_faithful
+            .world
+            .as_ref()
+            .and_then(|world| world.ball)
+            .expect("ball")
+            .pos
+            .z
+            .to_bits(),
+        2.0_f64.mul_add(SILKY_DT_SCALE, 10.0).to_bits(),
+        "the toggle tick should still advance at the old Silky cadence"
+    );
+}
+
+#[test]
+fn zen_aimbot_button_toggles_and_consumes_the_click() {
+    let mut app = App::new();
+    app.mode = GameMode::Zen;
+    app.world = Some(serve_world((WORLD_CX, WORLD_CY)));
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    app.tick(&pinned_input(vec![rect_center(BTN_GAME_AIMBOT)]));
+
+    assert!(app.aimbot_enabled());
+    assert_eq!(
+        app.world
+            .as_ref()
+            .and_then(|world| world.ball)
+            .expect("ball")
+            .vel
+            .z,
+        0.0,
+        "the toggle click is not also a serve click"
+    );
+
+    app.tick(&pinned_input(vec![]));
+
+    assert!(
+        app.world
+            .as_ref()
+            .and_then(|world| world.ball)
+            .is_some_and(|ball| ball.vel.z > 0.0),
+        "the bot auto-serves on the next eligible gameplay tick"
+    );
+}
+
+#[test]
+fn zen_tool_clicks_are_consumed_during_miss_pop() {
+    let control_click = rect_center(BTN_GAME_AIMBOT);
+    let mut world = World::new(Published::default());
+    world.level_setup();
+    world.spawn_enemy();
+    world.spawn_ball();
+    world.paddle.pos = (control_click.0, 45.0);
+    if let Some(ball) = &mut world.ball {
+        ball.just_spawned = false;
+        ball.stopped = true;
+        ball.pos = Vec3 {
+            x: control_click.0,
+            y: control_click.1,
+            z: 0.0,
+        };
+        ball.vel = Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        };
+        ball.prev_rect = Rect::centered(control_click, 30.0, 30.0);
+        ball.snapshot = PaddleSnapshot {
+            pos: control_click,
+            speed: (6.0, -6.0),
+        };
+    }
+
+    let mut app = App::new();
+    app.mode = GameMode::Zen;
+    app.world = Some(world);
+    app.phase = Phase::Miss { tick: 0 };
+
+    let sounds = app.tick(&pinned_input(vec![
+        control_click,
+        rect_center(BTN_GAME_SILKY),
+    ]));
+
+    assert!(
+        sounds.is_empty(),
+        "Zen tool clicks must not trigger Q2 pop serve"
+    );
+    assert!(app.aimbot_enabled());
+    assert_eq!(app.visual_mode, VisualMode::Silky);
+    assert_eq!(
+        app.world
+            .as_ref()
+            .and_then(|world| world.ball)
+            .expect("ball")
+            .vel
+            .z,
+        0.0
+    );
+}
+
+#[test]
+fn zen_aimbot_swipes_incoming_ball_for_spin() {
+    let mut world = flying_ball_world();
+    world.published = Published {
+        pos: Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: 1.0,
+        },
+        dir: Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: -2.0,
+        },
+    };
+    if let Some(ball) = &mut world.ball {
+        ball.pos = Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: 3.0,
+        };
+        ball.vel.z = -2.0;
+        ball.prev_rect = Rect::centered((WORLD_CX, WORLD_CY), 30.0, 30.0);
+    }
+
+    let mut app = App::new();
+    app.mode = GameMode::Zen;
+    app.set_aimbot_enabled(true);
+    app.world = Some(world);
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    let sounds = app.tick(&pinned_input(vec![]));
+    assert!(sounds.is_empty(), "first tick winds up before contact");
+
+    let windup_pos = app.world.as_ref().expect("world").paddle.pos;
+    let horizontal_windup = windup_pos.0 - WORLD_CX;
+    let vertical_windup = windup_pos.1 - WORLD_CY;
+    assert!(
+        horizontal_windup.hypot(vertical_windup) > 110.0,
+        "windup should be long; got {windup_pos:?}"
+    );
+    assert!(
+        horizontal_windup.abs() > 40.0 && vertical_windup.abs() > 40.0,
+        "windup should mix x and y; got {windup_pos:?}"
+    );
+
+    let sounds = app.tick(&pinned_input(vec![]));
+
+    assert_eq!(sounds, [SoundId::PPaddleBounce]);
+    let paddle_pos = app.world.as_ref().expect("world").paddle.pos;
+    assert!(
+        (paddle_pos.0 - WORLD_CX).abs() <= 3.0 && (paddle_pos.1 - WORLD_CY).abs() <= 3.0,
+        "contact should happen near paddle center; got {paddle_pos:?}"
+    );
+    let ball = app
+        .world
+        .as_ref()
+        .and_then(|world| world.ball)
+        .expect("ball");
+    assert!(
+        ball.curve.0.abs() > 1.5 && ball.curve.1.abs() > 1.5,
+        "swipe should add mixed curve; got ({}, {})",
+        ball.curve.0,
+        ball.curve.1
+    );
+}
+
+#[test]
+fn zen_aimbot_uses_a_new_swipe_plan_for_each_incoming_ball() {
+    fn incoming_world() -> World {
+        let mut world = flying_ball_world();
+        world.published = Published {
+            pos: Vec3 {
+                x: WORLD_CX,
+                y: WORLD_CY,
+                z: 1.0,
+            },
+            dir: Vec3 {
+                x: 0.0,
+                y: 0.0,
+                z: -2.0,
+            },
+        };
+        if let Some(ball) = &mut world.ball {
+            ball.pos = Vec3 {
+                x: WORLD_CX,
+                y: WORLD_CY,
+                z: 3.0,
+            };
+            ball.vel.z = -2.0;
+            ball.prev_rect = Rect::centered((WORLD_CX, WORLD_CY), 30.0, 30.0);
+        }
+        world
+    }
+
+    let mut app = App::new();
+    app.mode = GameMode::Zen;
+    app.set_aimbot_enabled(true);
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    app.world = Some(incoming_world());
+    assert!(app.tick(&pinned_input(vec![])).is_empty());
+    let first_windup = app.world.as_ref().expect("world").paddle.pos;
+    app.world = Some(World::new(Published::default()));
+    app.tick(&pinned_input(vec![]));
+
+    app.world = Some(incoming_world());
+    assert!(app.tick(&pinned_input(vec![])).is_empty());
+    let second_windup = app.world.as_ref().expect("world").paddle.pos;
+
+    for windup in [first_windup, second_windup] {
+        let dx = windup.0 - WORLD_CX;
+        let dy = windup.1 - WORLD_CY;
+        assert!(
+            dx.abs() > 40.0 && dy.abs() > 40.0,
+            "each plan should mix x and y; got {windup:?}"
+        );
+    }
+    assert!(
+        (second_windup.0 - first_windup.0).hypot(second_windup.1 - first_windup.1) > 1.0,
+        "successive incoming balls should not reuse the same swipe plan"
+    );
+}
+
+#[test]
+fn silky_zen_aimbot_swipes_on_the_contact_slice() {
+    let mut world = flying_ball_world();
+    world.published = Published {
+        pos: Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: SILKY_DT_SCALE,
+        },
+        dir: Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: -2.0,
+        },
+    };
+    if let Some(ball) = &mut world.ball {
+        ball.pos = Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: 4.0_f64.mul_add(SILKY_DT_SCALE, -0.01),
+        };
+        ball.vel.z = -2.0;
+        ball.prev_rect = Rect::centered((WORLD_CX, WORLD_CY), 30.0, 30.0);
+    }
+
+    let mut app = App::new();
+    app.mode = GameMode::Zen;
+    app.visual_mode = VisualMode::Silky;
+    app.set_aimbot_enabled(true);
+    app.world = Some(world);
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    let sounds = app.tick(&pinned_input(vec![]));
+    assert!(
+        sounds.is_empty(),
+        "first Silky slice winds up before contact"
+    );
+
+    let windup_pos = app.world.as_ref().expect("world").paddle.pos;
+    let horizontal_windup = windup_pos.0 - WORLD_CX;
+    let vertical_windup = windup_pos.1 - WORLD_CY;
+    assert!(
+        horizontal_windup.hypot(vertical_windup) > 110.0,
+        "windup should be long; got {windup_pos:?}"
+    );
+
+    let sounds = app.tick(&pinned_input(vec![]));
+
+    assert_eq!(sounds, [SoundId::PPaddleBounce]);
+    let ball = app
+        .world
+        .as_ref()
+        .and_then(|world| world.ball)
+        .expect("ball");
+    assert!(
+        ball.curve.0.abs() > 20.0 && ball.curve.1.abs() > 20.0,
+        "Silky contact slice should keep mixed swipe speed; got ({}, {})",
+        ball.curve.0,
+        ball.curve.1
+    );
+}
+
+#[test]
 fn level_up_routing_banks_bonus_and_replays_splash() {
     let mut app = App::new();
     app.tick(&pinned_input(vec![(175.0, 116.0)]));
@@ -1174,11 +1579,12 @@ fn name_entry_records_only_edited_names() {
     app.tick(&input);
     assert_eq!(app.phase, Phase::HighScores);
     assert_eq!(
-        app.scores.entries[0].name, "k",
+        app.scores.entries()[0].name,
+        "k",
         "backspace applied before submit"
     );
-    assert_eq!(app.scores.entries[0].score, 777);
-    assert_eq!(app.scores.entries[0].level, 4);
+    assert_eq!(app.scores.entries()[0].score, 777);
+    assert_eq!(app.scores.entries()[0].level, 4);
 
     app.tick(&pinned_input(vec![rect_center(BTN_HS_MENU)]));
     assert_eq!(app.phase, Phase::Title);
@@ -1190,7 +1596,7 @@ fn name_entry_records_only_edited_names() {
 #[test]
 fn game_over_routes_after_seven_ticks() {
     let mut app = App::new();
-    // Isolate from any real score file beside the test executable.
+    // Isolate from any real/default score file with an explicit temp path.
     app.scores = ScoreTable::load_from(unique_temp_path("curveball-nonexistent"));
     app.tick(&pinned_input(vec![(175.0, 116.0)]));
     for _ in 0..START_GAME_TICKS - 1 {
@@ -1308,10 +1714,10 @@ fn highscores_defaults_qualify_and_insert() {
     let path = dir.join("highscores.txt");
 
     let mut table = ScoreTable::load_from(path.clone());
-    assert_eq!(table.entries.len(), 10);
+    assert_eq!(table.entries().len(), 10);
     assert!(
         table
-            .entries
+            .entries()
             .iter()
             .all(|e| e.name == "none" && e.level == 0 && e.score == 0)
     );
@@ -1321,14 +1727,14 @@ fn highscores_defaults_qualify_and_insert() {
     table.insert("alpha".to_owned(), 3, 500);
     table.insert("beta".to_owned(), 2, 800);
     table.insert("gamma".to_owned(), 1, 500); // tie inserts after equals
-    assert_eq!(table.entries[0].name, "beta");
-    assert_eq!(table.entries[1].name, "alpha");
-    assert_eq!(table.entries[2].name, "gamma");
-    assert_eq!(table.entries.len(), 10);
+    assert_eq!(table.entries()[0].name, "beta");
+    assert_eq!(table.entries()[1].name, "alpha");
+    assert_eq!(table.entries()[2].name, "gamma");
+    assert_eq!(table.entries().len(), 10);
 
     table.save();
     let reloaded = ScoreTable::load_from(path.clone());
-    assert_eq!(reloaded.entries, table.entries);
+    assert_eq!(reloaded.entries(), table.entries());
 
     // Corrupt lines fall back to defaults individually.
     std::fs::write(
@@ -1337,10 +1743,47 @@ fn highscores_defaults_qualify_and_insert() {
     )
     .expect("write corrupt file");
     let corrupt = ScoreTable::load_from(path);
-    assert_eq!(corrupt.entries[0].name, "good");
-    assert_eq!(corrupt.entries[1].name, "none");
-    assert_eq!(corrupt.entries[2].name, "none");
-    assert_eq!(corrupt.entries.len(), 10);
+    assert_eq!(corrupt.entries()[0].name, "good");
+    assert_eq!(corrupt.entries()[1].name, "none");
+    assert_eq!(corrupt.entries()[2].name, "none");
+    assert_eq!(corrupt.entries().len(), 10);
+    let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
+fn highscores_save_creates_parent_directory() {
+    let dir = unique_temp_path("curveball-hs-parent");
+    let path = dir.join("nested").join("highscores.txt");
+    let mut table = ScoreTable::load_from(path.clone());
+    table.insert("writer".to_owned(), 7, 900);
+
+    table.save();
+
+    let reloaded = ScoreTable::load_from(path);
+    assert_eq!(reloaded.entries()[0].name, "writer");
+    assert_eq!(reloaded.entries()[0].level, 7);
+    assert_eq!(reloaded.entries()[0].score, 900);
+    let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
+fn highscores_save_replaces_existing_file() {
+    let dir = unique_temp_path("curveball-hs-replace");
+    std::fs::create_dir_all(&dir).expect("temp dir");
+    let path = dir.join("highscores.txt");
+    let mut table = ScoreTable::load_from(path.clone());
+    table.insert("first".to_owned(), 1, 100);
+    table.save();
+
+    let mut table = ScoreTable::load_from(path.clone());
+    table.insert("second".to_owned(), 2, 200);
+    table.save();
+
+    let reloaded = ScoreTable::load_from(path);
+    assert_eq!(reloaded.entries()[0].name, "second");
+    assert_eq!(reloaded.entries()[0].score, 200);
+    assert_eq!(reloaded.entries()[1].name, "first");
+    assert_eq!(reloaded.entries()[1].score, 100);
     let _ = std::fs::remove_dir_all(dir);
 }
 
@@ -1359,20 +1802,20 @@ fn highscores_load_sorts_truncates_and_pads() {
     )
     .expect("write unsorted table");
     let table = ScoreTable::load_from(path.clone());
-    assert_eq!(table.entries.len(), 10);
-    assert_eq!(table.entries[0].name, "p11");
-    assert_eq!(table.entries[0].score, 210);
-    assert_eq!(table.entries[9].name, "p2");
-    assert_eq!(table.entries[9].score, 120);
+    assert_eq!(table.entries().len(), 10);
+    assert_eq!(table.entries()[0].name, "p11");
+    assert_eq!(table.entries()[0].score, 210);
+    assert_eq!(table.entries()[9].name, "p2");
+    assert_eq!(table.entries()[9].score, 120);
     assert!(table.qualifies(121));
     assert!(!table.qualifies(120));
 
     std::fs::write(&path, "low\t1\t10\nhigh\t2\t50\n").expect("write short table");
     let padded = ScoreTable::load_from(path);
-    assert_eq!(padded.entries.len(), 10);
-    assert_eq!(padded.entries[0].name, "high");
-    assert_eq!(padded.entries[1].name, "low");
-    assert_eq!(padded.entries[2].name, "none");
-    assert_eq!(padded.entries[2].score, 0);
+    assert_eq!(padded.entries().len(), 10);
+    assert_eq!(padded.entries()[0].name, "high");
+    assert_eq!(padded.entries()[1].name, "low");
+    assert_eq!(padded.entries()[2].name, "none");
+    assert_eq!(padded.entries()[2].score, 0);
     let _ = std::fs::remove_dir_all(dir);
 }

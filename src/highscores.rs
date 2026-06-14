@@ -1,9 +1,10 @@
 //! Local high-score table — deviation D3's replacement for the original's
 //! dead PHP endpoints.
 //!
-//! `highscores.txt` lives beside the executable: 10 lines of
-//! `name<TAB>level<TAB>score`. A missing or corrupt file (or line) falls back
-//! to the defaults (name "none", level 0, score 0). All I/O failures degrade
+//! `highscores.txt` lives under the user's data directory by default, or at
+//! `CURVEBALL_HIGHSCORES` when that override is set: 10 lines of
+//! `name<TAB>level<TAB>score`. A missing or corrupt file (or line) falls back to
+//! the defaults (name "none", level 0, score 0). All I/O failures degrade
 //! gracefully — the game never crashes over its score file.
 
 use std::path::PathBuf;
@@ -30,16 +31,52 @@ impl Default for Entry {
 #[derive(Debug)]
 pub struct ScoreTable {
     /// Always exactly [`HIGH_SCORE_ROWS`] entries, sorted descending by score.
-    pub entries: Vec<Entry>,
+    entries: Vec<Entry>,
     path: PathBuf,
 }
 
 fn default_path() -> PathBuf {
+    if let Some(path) = std::env::var_os("CURVEBALL_HIGHSCORES") {
+        return PathBuf::from(path);
+    }
+    user_data_dir()
+        .unwrap_or_else(executable_dir)
+        .join("curveball")
+        .join("highscores.txt")
+}
+
+fn executable_dir() -> PathBuf {
     std::env::current_exe()
         .ok()
         .and_then(|exe| exe.parent().map(std::path::Path::to_path_buf))
         .unwrap_or_default()
-        .join("highscores.txt")
+}
+
+fn user_data_dir() -> Option<PathBuf> {
+    #[cfg(target_os = "windows")]
+    {
+        std::env::var_os("APPDATA").map(PathBuf::from)
+    }
+    #[cfg(target_os = "macos")]
+    {
+        std::env::var_os("HOME")
+            .map(PathBuf::from)
+            .map(|home| home.join("Library").join("Application Support"))
+    }
+    #[cfg(all(unix, not(target_os = "macos")))]
+    {
+        std::env::var_os("XDG_DATA_HOME")
+            .map(PathBuf::from)
+            .or_else(|| {
+                std::env::var_os("HOME")
+                    .map(PathBuf::from)
+                    .map(|home| home.join(".local").join("share"))
+            })
+    }
+    #[cfg(not(any(target_os = "windows", target_os = "macos", unix)))]
+    {
+        None
+    }
 }
 
 fn parse_line(line: &str) -> Option<Entry> {
@@ -60,8 +97,29 @@ fn normalize_entries(mut entries: Vec<Entry>) -> Vec<Entry> {
     entries
 }
 
+fn replace_file(tmp_path: &std::path::Path, path: &std::path::Path) -> std::io::Result<()> {
+    let backup_path = path.with_extension("txt.bak");
+    let _ = std::fs::remove_file(&backup_path);
+    if path.exists() {
+        std::fs::rename(path, &backup_path)?;
+    }
+
+    match std::fs::rename(tmp_path, path) {
+        Ok(()) => {
+            let _ = std::fs::remove_file(backup_path);
+            Ok(())
+        },
+        Err(err) => {
+            if backup_path.exists() {
+                let _ = std::fs::rename(&backup_path, path);
+            }
+            Err(err)
+        },
+    }
+}
+
 impl ScoreTable {
-    /// Load from the default location beside the executable.
+    /// Load from the default high-score path.
     #[must_use]
     pub fn load() -> Self {
         Self::load_from(default_path())
@@ -79,6 +137,11 @@ impl ScoreTable {
             .unwrap_or_default();
         let entries = normalize_entries(entries);
         Self { entries, path }
+    }
+
+    #[must_use]
+    pub fn entries(&self) -> &[Entry] {
+        &self.entries
     }
 
     /// Qualification mirrors the original `checkscore.php` contract: strictly
@@ -108,7 +171,18 @@ impl ScoreTable {
             // Writing to a String cannot fail.
             let _ = writeln!(text, "{}\t{}\t{}", e.name, e.level, e.score);
         }
-        if let Err(err) = std::fs::write(&self.path, text) {
+        if let Some(parent) = self.path.parent()
+            && let Err(err) = std::fs::create_dir_all(parent)
+        {
+            eprintln!("curveball: failed to create {}: {err}", parent.display());
+            return;
+        }
+
+        let tmp_path = self.path.with_extension("txt.tmp");
+        let result =
+            std::fs::write(&tmp_path, text).and_then(|()| replace_file(&tmp_path, &self.path));
+        if let Err(err) = result {
+            let _ = std::fs::remove_file(&tmp_path);
             eprintln!("curveball: failed to write {}: {err}", self.path.display());
         }
     }

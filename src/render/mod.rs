@@ -249,7 +249,7 @@ pub mod text {
 }
 
 /// Draw the full scene for the current phase, in stage-depth order.
-pub fn draw_scene(app: &App, textures: &Textures, visuals: &Visuals) {
+pub fn draw_scene(app: &App, textures: &Textures, visuals: &Visuals, show_fps: bool) {
     clear_background(BLACK);
     // Depth 1: the bounds border is placed at frame 1 and never removed —
     // it is visible on every screen, menus included.
@@ -305,7 +305,9 @@ pub fn draw_scene(app: &App, textures: &Textures, visuals: &Visuals) {
         },
     }
 
-    draw_fps_counter();
+    if show_fps {
+        draw_fps_counter();
+    }
 }
 
 fn draw_gameplay(app: &App, textures: &Textures, visuals: &Visuals, show_pop: bool) {
@@ -323,9 +325,10 @@ fn draw_gameplay(app: &App, textures: &Textures, visuals: &Visuals, show_pop: bo
     }
     // Depth 22.
     hud::draw_banner(app, visuals);
-    // Depths 26–42.
+    // Original HUD depths 26–42 plus D15 Zen tool pills.
     hud::draw_text_hud(app);
     hud::draw_lives(app, textures);
+    hud::draw_zen_tools(app);
     // Depth 43: the player paddle draws over the ball and the HUD.
     entities::draw_player(app, textures, visuals);
 }

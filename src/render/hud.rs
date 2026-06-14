@@ -4,11 +4,12 @@
 //! through Game Over and the screens over it; only the bonus strings blank
 //! at Game Over. The bonus banner renders text over the stage background.
 
-use curveball::app::App;
+use curveball::app::{App, VisualMode};
 use curveball::consts::{
-    BANNER_BASELINE_OFFSET, BANNER_TEXT_ANCHOR_Y, BANNER_TEXT_CX, BONUS_LABEL_X, COLOR_HUD,
-    HUD_BOTTOM_BASELINE, HUD_FONT_PX, HUD_TOP_BASELINE, LEVEL_LABEL_X, LIVES_DOT_SPACING,
-    LIVES_ENEMY_ANCHOR, LIVES_PLAYER_ANCHOR, SCORE_LABEL_X,
+    BANNER_BASELINE_OFFSET, BANNER_TEXT_ANCHOR_Y, BANNER_TEXT_CX, BONUS_LABEL_X, BTN_GAME_AIMBOT,
+    BTN_GAME_SILKY, COLOR_HUD, GAME_AIMBOT_LABEL, GAME_SILKY_LABEL, HUD_BOTTOM_BASELINE,
+    HUD_FONT_PX, HUD_TOP_BASELINE, LEVEL_LABEL_X, LIVES_DOT_SPACING, LIVES_ENEMY_ANCHOR,
+    LIVES_PLAYER_ANCHOR, SCORE_LABEL_X,
 };
 use macroquad::prelude::*;
 
@@ -82,6 +83,23 @@ pub fn draw_lives(app: &App, textures: &Textures) {
             LIVES_PLAYER_ANCHOR.1,
         );
     }
+}
+
+pub fn draw_zen_tools(app: &App) {
+    if !app.zen_tools_available() {
+        return;
+    }
+    let silky_state = if app.visual_mode == VisualMode::Silky {
+        "ON"
+    } else {
+        "OFF"
+    };
+    let silky = text::text_buf::<16>(format_args!("SILKY: {silky_state}"));
+    super::menus::draw_pill(BTN_GAME_SILKY, silky.as_str(), GAME_SILKY_LABEL);
+
+    let aimbot_state = if app.aimbot_enabled() { "ON" } else { "OFF" };
+    let aimbot = text::text_buf::<16>(format_args!("AIMBOT: {aimbot_state}"));
+    super::menus::draw_pill(BTN_GAME_AIMBOT, aimbot.as_str(), GAME_AIMBOT_LABEL);
 }
 
 fn draw_dot(texture: &Texture2D, cx: f32, cy: f32) {

@@ -191,6 +191,29 @@ impl World {
         }
     }
 
+    pub fn set_unlimited_player_lives(&mut self, unlimited: bool) {
+        self.unlimited_player_lives = unlimited;
+    }
+
+    #[must_use]
+    pub fn has_enemy(&self) -> bool {
+        self.enemy.is_some()
+    }
+
+    #[must_use]
+    pub fn has_ball(&self) -> bool {
+        self.ball.is_some()
+    }
+
+    pub fn clear_entities_for_game_over(&mut self) {
+        self.ball = None;
+        self.enemy = None;
+    }
+
+    pub fn clear_ball_for_reserve(&mut self) {
+        self.ball = None;
+    }
+
     /// frame_90 per-level setup: table parameters and the per-level economy
     /// reset. Lives and score are untouched.
     pub fn level_setup(&mut self) {

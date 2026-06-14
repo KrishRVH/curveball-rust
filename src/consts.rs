@@ -16,8 +16,6 @@ pub const STAGE_W: f64 = 350.0;
 pub const STAGE_H: f64 = 250.0;
 /// SWF header frame rate; one app/sim tick is one original Flash frame.
 pub const TICK_HZ: u32 = 30;
-/// SWF header: 30.0 fps; the game is frame-locked, so one tick = 1/30 s.
-pub const TICK_DT: f64 = 1.0 / TICK_HZ as f64;
 /// Opt-in non-faithful Silky app/world cadence.
 pub const SILKY_PHYSICS_HZ: u32 = 400;
 /// Fraction of one original Flash frame covered by one Silky tick.
@@ -207,6 +205,10 @@ pub const BTN_TITLE_SCORES: (f64, f64, f64, f64) = (138.51, 127.33, 211.99, 138.
 pub const BTN_TITLE_ZEN: (f64, f64, f64, f64) = (143.50, 144.53, 207.50, 155.83);
 /// Title visual-mode toggle — local extension matching the title-menu pill style.
 pub const BTN_TITLE_VISUAL: (f64, f64, f64, f64) = (116.50, 161.73, 234.50, 173.03);
+/// In-game Silky toggle — local extension, top HUD row.
+pub const BTN_GAME_SILKY: (f64, f64, f64, f64) = (92.0, 6.0, 172.0, 17.0);
+/// In-game aimbot toggle — local extension, top HUD row.
+pub const BTN_GAME_AIMBOT: (f64, f64, f64, f64) = (178.0, 6.0, 258.0, 17.0);
 /// HighScores "main menu" — button 21 at (176.45, 215.85); pill unscaled (64 × 11.3).
 pub const BTN_HS_MENU: (f64, f64, f64, f64) = (144.45, 210.20, 208.45, 221.50);
 /// End-screen "main menu" — button 21 reused at (174.85, 139.85).
@@ -344,6 +346,10 @@ pub const TITLE_SCORES_LABEL: (f32, f32) = (178.15, 135.11);
 pub const TITLE_ZEN_LABEL: (f32, f32) = (175.5, 152.31);
 /// See [`TITLE_START_LABEL`].
 pub const TITLE_VISUAL_LABEL: (f32, f32) = (175.5, 169.51);
+/// In-game Silky button label anchor.
+pub const GAME_SILKY_LABEL: (f32, f32) = (132.0, 14.45);
+/// In-game aimbot button label anchor.
+pub const GAME_AIMBOT_LABEL: (f32, f32) = (218.0, 14.45);
 /// See [`TITLE_START_LABEL`].
 pub const HS_MENU_LABEL: (f32, f32) = (179.13, 218.66);
 /// See [`TITLE_START_LABEL`].

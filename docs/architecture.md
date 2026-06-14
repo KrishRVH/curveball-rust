@@ -130,6 +130,11 @@ kept in [DEVIATIONS.md](../DEVIATIONS.md). The most important architectural devi
   distribution, zone-aware prediction, exact plane-crossing hit classification, and swept paddle
   contact;
 - audio degrades to silence on broken hosts instead of crashing;
-- high scores are local because the original PHP endpoints are gone;
-- Zen mode is a Rust-only quality-of-life option;
+- high scores are local user-data files because the original PHP endpoints are gone;
+- Zen mode is a Rust-only quality-of-life option with in-game Silky and level-11 aimbot toggles;
+  the aimbot adds pseudo-random angled swipe plans on incoming balls so returns carry mixed spin;
 - returning to the title from post-game screens starts the next game from a clean state.
+
+`deny.toml` tracks RustSec advisories. The current macroquad advisory (`RUSTSEC-2025-0035`) is an
+explicit release risk because RustSec lists no patched macroquad version; the project carries that
+ignore until macroquad is fixed, forked, or replaced.

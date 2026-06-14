@@ -39,7 +39,7 @@ const NAME_ENTRY_SUBMIT_ASPECT: f32 = 0.72;
 const NAME_ENTRY_SUBMIT_TRACKING: f32 = 0.15;
 
 /// A white pill button (rounded rect) with a black label, from its hit rect.
-fn draw_pill(rect: (f64, f64, f64, f64), label: &str, anchor: (f32, f32)) {
+pub(super) fn draw_pill(rect: (f64, f64, f64, f64), label: &str, anchor: (f32, f32)) {
     let (x0, y0, x1, y1) = (rect.0 as f32, rect.1 as f32, rect.2 as f32, rect.3 as f32);
     let h = y1 - y0;
     let radius = h / 2.0;
@@ -189,7 +189,7 @@ pub fn draw_high_scores(app: &App) {
         MENU_HEADER_TRACKING,
         MENU_HEADER_ASPECT,
     );
-    for (i, entry) in app.scores.entries.iter().enumerate() {
+    for (i, entry) in app.scores.entries().iter().enumerate() {
         if entry.name == "none" && entry.level == 0 && entry.score == 0 {
             continue;
         }
