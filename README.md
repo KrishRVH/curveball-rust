@@ -33,9 +33,8 @@ Controls:
 - Type and backspace on the high-score name screen.
 - Main menu buttons: `START GAME`, `ZEN`, `HIGH SCORES`, and `VISUAL: FAITHFUL` / `VISUAL: SILKY`.
 - Zen games show in-game `SILKY` and `AIMBOT` toggles. Aimbot mirrors the level-11 CPU on the player
-  paddle and adds pseudo-random angled swipe spin on incoming returns. When enabled, aimbot
-  auto-serves on eligible waiting-ball gameplay ticks; the toggle click itself is consumed so it does
-  not also serve.
+  paddle and aims far-corner edge swipes on incoming returns. When enabled, aimbot auto-serves on
+  eligible waiting-ball gameplay ticks; the toggle click itself is consumed so it does not also serve.
 
 High scores are stored as `highscores.txt` under the user's data directory by default:
 `%APPDATA%\curveball\` on Windows, `~/Library/Application Support/curveball/` on macOS, and

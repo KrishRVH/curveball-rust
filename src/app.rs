@@ -7,11 +7,12 @@
 //! so the wall-clock duration stays the same.
 
 use crate::consts::{
-    BTN_END_MENU, BTN_GAME_AIMBOT, BTN_GAME_SILKY, BTN_HS_MENU, BTN_SUBMIT, BTN_TITLE_SCORES,
-    BTN_TITLE_START, BTN_TITLE_VISUAL, BTN_TITLE_ZEN, ENEMY_EASE_HOME, FRAME_BALL_SPAWN,
-    FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD, FRAME_SPLASH_END, GAME_OVER_TICKS, MISS_TICKS,
-    NAME_MAX_LEN, NAME_PLACEHOLDER, PLAYER_EASE, SILKY_DT_SCALE, SILKY_PHYSICS_HZ, SPLASH_TICKS,
-    START_GAME_TICKS, TICK_HZ, WORLD_CX, WORLD_CY,
+    BALL_DIAMETER, BTN_END_MENU, BTN_GAME_AIMBOT, BTN_GAME_SILKY, BTN_HS_MENU, BTN_SUBMIT,
+    BTN_TITLE_SCORES, BTN_TITLE_START, BTN_TITLE_VISUAL, BTN_TITLE_ZEN, ENEMY_EASE_HOME,
+    FRAME_BALL_SPAWN, FRAME_ENEMY_SPAWN, FRAME_PLAY_HOLD, FRAME_SPLASH_END, GAME_OVER_TICKS,
+    MISS_TICKS, NAME_MAX_LEN, NAME_PLACEHOLDER, PLAYER_EASE, SILKY_DT_SCALE, SILKY_PHYSICS_HZ,
+    SPLASH_TICKS, START_GAME_TICKS, TICK_HZ, WORLD_BOTTOM, WORLD_CX, WORLD_CY, WORLD_LEFT,
+    WORLD_RIGHT, WORLD_TOP,
 };
 use crate::highscores::ScoreTable;
 use crate::sim::paddle::clamp_to_world;
@@ -52,10 +53,11 @@ const AIMBOT_RNG_SEED: u64 = 0x4d59_5df4_d0f3_3173;
 const AIMBOT_SWIPE_START_FRAMES: f64 = 8.0;
 const AIMBOT_SWIPE_LUNGE_TICKS: f64 = 1.12;
 const AIMBOT_SWIPE_CONTACT_TICKS: f64 = 1.0;
-const AIMBOT_WINDUP_RADIUS_MIN: f64 = 145.0;
-const AIMBOT_WINDUP_RADIUS_SPAN: f64 = 70.0;
-const AIMBOT_WINDUP_ANGLE_JITTER: f64 = 0.35;
-const AIMBOT_STRIKE_OFFSET_SPAN: f64 = 3.0;
+const AIMBOT_WINDUP_OVERSHOOT: f64 = 400.0;
+const AIMBOT_STRIKE_X_MIN: f64 = 38.0;
+const AIMBOT_STRIKE_X_SPAN: f64 = 4.0;
+const AIMBOT_STRIKE_Y_MIN: f64 = 28.0;
+const AIMBOT_STRIKE_Y_SPAN: f64 = 4.0;
 
 #[derive(Debug, Clone, Copy)]
 struct AimbotController {
@@ -94,34 +96,19 @@ impl AimbotController {
         self.swipe = None;
     }
 
-    fn update_swipe(&mut self, incoming: bool) {
+    fn update_swipe(&mut self, incoming: bool, world: &World) {
         if incoming {
             if self.swipe.is_none() {
-                self.swipe = Some(self.next_swipe());
+                self.swipe = Some(self.next_swipe(world));
             }
         } else {
             self.swipe = None;
         }
     }
 
-    fn next_swipe(&mut self) -> AimbotSwipe {
+    fn next_swipe(&mut self, world: &World) -> AimbotSwipe {
         let bits = self.next_random();
-        let quadrant = (bits & 3) as u8;
-        let base_angle =
-            std::f64::consts::FRAC_PI_4 + f64::from(quadrant) * std::f64::consts::FRAC_PI_2;
-        let angle =
-            (random_unit(bits, 8) * 2.0 - 1.0).mul_add(AIMBOT_WINDUP_ANGLE_JITTER, base_angle);
-        let windup_radius =
-            AIMBOT_WINDUP_RADIUS_MIN + random_unit(bits, 16) * AIMBOT_WINDUP_RADIUS_SPAN;
-        let strike_angle = angle + std::f64::consts::PI;
-        let strike_radius = random_unit(bits, 24) * AIMBOT_STRIKE_OFFSET_SPAN;
-        AimbotSwipe {
-            windup_offset: (angle.cos() * windup_radius, angle.sin() * windup_radius),
-            strike_offset: (
-                strike_angle.cos() * strike_radius,
-                strike_angle.sin() * strike_radius,
-            ),
-        }
+        select_aimbot_swipe(world, bits)
     }
 
     fn next_random(&mut self) -> u64 {
@@ -636,14 +623,14 @@ impl App {
             serve_clicks,
         };
         if self.visual_mode == VisualMode::Silky {
-            return self
-                .world
+            self.world
                 .as_mut()
-                .map_or_else(Vec::new, |world| world.tick_silky_slice(&input));
+                .map_or_else(Vec::new, |world| world.tick_silky_slice(&input))
+        } else {
+            self.world
+                .as_mut()
+                .map_or_else(Vec::new, |world| world.tick(&input))
         }
-        self.world
-            .as_mut()
-            .map_or_else(Vec::new, |world| world.tick(&input))
     }
 
     fn aimbot_should_auto_serve(&self) -> bool {
@@ -668,8 +655,11 @@ impl App {
     }
 
     fn update_aimbot_swipe(&mut self) {
-        let incoming = self.world.as_ref().is_some_and(aimbot_ball_incoming);
-        self.aimbot.update_swipe(incoming);
+        let Some(world) = self.world.as_ref() else {
+            self.aimbot.clear_swipe();
+            return;
+        };
+        self.aimbot.update_swipe(aimbot_ball_incoming(world), world);
     }
 
     fn flash_frame_due(&mut self) -> bool {
@@ -811,6 +801,65 @@ fn animation_complete(elapsed_ticks: u32, flash_frames: u32, visual_mode: Visual
         VisualMode::Silky => {
             elapsed_ticks.saturating_mul(TICK_HZ) >= flash_frames.saturating_mul(SILKY_PHYSICS_HZ)
         },
+    }
+}
+
+fn select_aimbot_swipe(world: &World, bits: u64) -> AimbotSwipe {
+    let ball_pos = world
+        .ball
+        .as_ref()
+        .map_or((WORLD_CX, WORLD_CY), |ball| (ball.pos.x, ball.pos.y));
+    let enemy_pos = world
+        .enemy
+        .as_ref()
+        .map_or((WORLD_CX, WORLD_CY), |enemy| enemy.pos);
+    let radius = BALL_DIAMETER / 2.0;
+    let targets = [
+        (WORLD_LEFT + radius, WORLD_TOP + radius),
+        (WORLD_RIGHT - radius, WORLD_TOP + radius),
+        (WORLD_LEFT + radius, WORLD_BOTTOM - radius),
+        (WORLD_RIGHT - radius, WORLD_BOTTOM - radius),
+    ];
+
+    let mut best_target = targets[0];
+    let mut best_score = f64::NEG_INFINITY;
+    for (index, target) in targets.into_iter().enumerate() {
+        let dx = target.0 - enemy_pos.0;
+        let dy = target.1 - enemy_pos.1;
+        let tie_break = random_unit(bits, 8 + index as u32 * 8);
+        let score = dx.mul_add(dx, dy * dy) + tie_break;
+        if score > best_score {
+            best_score = score;
+            best_target = target;
+        }
+    }
+
+    aimbot_swipe_for_target(ball_pos, best_target, bits)
+}
+
+fn aimbot_swipe_for_target(ball_pos: (f64, f64), target: (f64, f64), bits: u64) -> AimbotSwipe {
+    let target_x = nonzero_sign(target.0 - ball_pos.0, bits & (1_u64 << 32) == 0);
+    let target_y = nonzero_sign(target.1 - ball_pos.1, bits & (1_u64 << 33) == 0);
+    let speed_sign = (-target_x, -target_y);
+    let strike_x = AIMBOT_STRIKE_X_MIN + random_unit(bits, 40) * AIMBOT_STRIKE_X_SPAN;
+    let strike_y = AIMBOT_STRIKE_Y_MIN + random_unit(bits, 48) * AIMBOT_STRIKE_Y_SPAN;
+
+    AimbotSwipe {
+        windup_offset: (
+            -speed_sign.0 * AIMBOT_WINDUP_OVERSHOOT,
+            -speed_sign.1 * AIMBOT_WINDUP_OVERSHOOT,
+        ),
+        strike_offset: (speed_sign.0 * strike_x, speed_sign.1 * strike_y),
+    }
+}
+
+fn nonzero_sign(value: f64, positive_tie: bool) -> f64 {
+    if value < 0.0 {
+        -1.0
+    } else if value > 0.0 || positive_tie {
+        1.0
+    } else {
+        -1.0
     }
 }
 

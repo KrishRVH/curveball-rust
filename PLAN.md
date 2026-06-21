@@ -798,8 +798,7 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
    normal window rendering, suppressed for `CURVEBALL_SHOT` captures),
    and D14 (Silky runs a non-faithful 400 Hz app/world tick with wall-clock-scaled counters,
    catch-up mouse distribution, zone-aware prediction, and swept crossing contacts), and D15
-   (Zen-only in-game Silky/Aimbot controls, with level-11 pseudo-random angled swipe
-   assistance).
+   (Zen-only in-game Silky/Aimbot controls and far-corner edge-swipe assistance).
 6. Close `DEVIATIONS.md`: it must contain only approved fidelity or product-quality deviations
    (currently D1-D12, D14, and D15) plus implementation corrections C1-C4.
 7. Residual-risk check: the normative per-tick entity order (§4: paddle → enemy → ring → ball) follows
@@ -824,7 +823,7 @@ Q11 drain-counter carry-over across rallies (counter only resets at level setup)
 | D11 | `CURVEBALL_SIM_HZ=<hz>` experimental app/world cadence override | Feel-test alternate rates without changing the mode defaults |
 | D12 | FPS counter visible during normal window rendering and suppressed for deterministic captures | Requested frame-pacing visibility |
 | D14 | Title-menu Faithful/Silky visual toggle | Non-faithful 400 Hz app/world cadence, late mouse sampling, catch-up mouse distribution, zone-aware prediction, swept crossing contacts, and smoother render keyframes while keeping the faithful default baseline |
-| D15 | Zen-only in-game Silky and Aimbot toggles | Requested assistance controls; aimbot uses level-11 AI plus pseudo-random angled swipe returns |
+| D15 | Zen-only in-game Silky and Aimbot toggles | Requested assistance controls; aimbot uses level-11 AI plus far-corner edge swipes |
 
 ## 17. AS → Rust symbol map
 

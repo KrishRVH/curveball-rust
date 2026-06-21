@@ -1364,9 +1364,11 @@ fn zen_aimbot_swipes_incoming_ball_for_spin() {
 
     assert_eq!(sounds, [SoundId::PPaddleBounce]);
     let paddle_pos = app.world.as_ref().expect("world").paddle.pos;
+    let contact_offset = (paddle_pos.0 - WORLD_CX, paddle_pos.1 - WORLD_CY);
     assert!(
-        (paddle_pos.0 - WORLD_CX).abs() <= 3.0 && (paddle_pos.1 - WORLD_CY).abs() <= 3.0,
-        "contact should happen near paddle center; got {paddle_pos:?}"
+        (35.0..=43.0).contains(&contact_offset.0.abs())
+            && (25.0..=33.0).contains(&contact_offset.1.abs()),
+        "contact should happen near a safe paddle edge; got {paddle_pos:?}"
     );
     let ball = app
         .world
@@ -1374,10 +1376,78 @@ fn zen_aimbot_swipes_incoming_ball_for_spin() {
         .and_then(|world| world.ball)
         .expect("ball");
     assert!(
-        ball.curve.0.abs() > 1.5 && ball.curve.1.abs() > 1.5,
+        ball.curve.0.abs() > 5.0 && ball.curve.1.abs() > 3.0,
         "swipe should add mixed curve; got ({}, {})",
         ball.curve.0,
         ball.curve.1
+    );
+}
+
+#[test]
+fn zen_aimbot_level_10_uses_legal_edge_swipe_pressure() {
+    let mut world = World::new(Published::default());
+    world.level = 10;
+    world.level_setup();
+    world.spawn_enemy();
+    world.spawn_ball();
+    for _ in 0..2 {
+        world.tick(&SimInput {
+            mouse: (WORLD_CX, WORLD_CY),
+            serve_clicks: 0,
+        });
+    }
+    world.published = Published {
+        pos: Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: 1.0,
+        },
+        dir: Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: -2.0,
+        },
+    };
+    if let Some(ball) = &mut world.ball {
+        ball.pos = Vec3 {
+            x: WORLD_CX,
+            y: WORLD_CY,
+            z: 3.0,
+        };
+        ball.vel = Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: -2.0,
+        };
+        ball.curve = (0.0, 0.0);
+        ball.prev_rect = Rect::centered((WORLD_CX, WORLD_CY), 30.0, 30.0);
+    }
+
+    let mut app = App::new();
+    app.mode = GameMode::Zen;
+    app.set_aimbot_enabled(true);
+    app.world = Some(world);
+    app.phase = Phase::Playing {
+        frame: FRAME_PLAY_HOLD,
+    };
+
+    assert!(app.tick(&pinned_input(vec![])).is_empty());
+    assert_eq!(app.tick(&pinned_input(vec![])), [SoundId::PPaddleBounce]);
+    let returned = app
+        .world
+        .as_ref()
+        .and_then(|world| world.ball)
+        .expect("ball");
+    assert_eq!(
+        returned.vel.z, 2.0,
+        "aimbot should keep outgoing z speed at the legal reflected incoming speed"
+    );
+    assert_eq!(returned.vel.x, 0.0);
+    assert_eq!(returned.vel.y, 0.0);
+    assert!(
+        returned.curve.0.abs() > 10.0 && returned.curve.1.abs() > 8.0,
+        "Level 10 aimbot return should carry strong legal curve; got {:?}",
+        returned.curve
     );
 }
 
